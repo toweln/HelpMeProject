@@ -1,4 +1,4 @@
 # HelpMe
 A peer tutoring app.
 
-Uber/StackOverflow/eHarmony/Piazza for homework.
+Uber/StackOverflow/eHarmony/Piazza/Chegg for homework.
