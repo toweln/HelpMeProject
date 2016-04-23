@@ -43,7 +43,6 @@ public class Main {
   }
 
   private String[] args;
-  private File db;
 
   private Main(String[] args) {
     this.args = args;
@@ -53,14 +52,7 @@ public class Main {
     OptionParser parser = new OptionParser();
 
     parser.accepts("gui");
-    OptionSpec<File> fileSpec = parser.nonOptions().ofType(File.class);
     OptionSet options = parser.parse(args);
-
-    db = options.valueOf(fileSpec);
-    if (db == null) {
-      System.out.println("ERROR: Please specify a star file");
-      System.exit(1);
-    }
 
     if (options.has("gui")) {
       runSparkServer();
@@ -88,15 +80,14 @@ public class Main {
     FreeMarkerEngine freeMarker = createEngine();
 
     // Setup Spark Routes
-    Spark.get("/stars", new FrontHandler(), freeMarker);
+    Spark.get("/", new FrontHandler(), freeMarker);
   }
 
   private class FrontHandler implements TemplateViewRoute {
     @Override
     public ModelAndView handle(Request req, Response res) {
       Map<String, Object> variables =
-        ImmutableMap.of("title", "Stars: Query the database",
-                        "db", db);
+        ImmutableMap.of("title", "HelpMe!");
       return new ModelAndView(variables, "query.ftl");
     }
   }
@@ -114,7 +105,6 @@ public class Main {
       }
       res.body(stacktrace.toString());
     }
-  }
-
+	}
 
 }
