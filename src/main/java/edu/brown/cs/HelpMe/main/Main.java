@@ -52,6 +52,8 @@ public class Main {
     OptionParser parser = new OptionParser();
 
     parser.accepts("gui");
+    args = new String[1];
+    args[0] = "--gui";
     OptionSet options = parser.parse(args);
 
     if (options.has("gui")) {
