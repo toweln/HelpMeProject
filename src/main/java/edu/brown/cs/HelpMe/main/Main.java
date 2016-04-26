@@ -100,6 +100,10 @@ public class Main {
       QueryParamsMap qm = req.queryMap();
       String userName = qm.value("username");
       String password = qm.value("password");
+      userName = userName.substring(1,userName.length() - 1);
+      password = password.substring(1,password.length() - 1);
+      System.out.println(userName);
+      System.out.println(password);
       Boolean status = false;
       try {
         status = dbQuery.certifyLogin(userName, password);
