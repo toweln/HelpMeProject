@@ -4,20 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * the high-level database of tags.
- * @author andrewjones
- *
- */
-public class TagDatabase {
+public class TagDatabaseTaxonomy {
 
 	public static List<Discipline> tagTaxonomy;
 
-	/**
-	 * initliaze a database.
-	 */
-	public TagDatabase() {
-		TagDatabase.tagTaxonomy = new ArrayList<>();
+	public TagDatabaseTaxonomy() {
+		TagDatabaseTaxonomy.tagTaxonomy = new ArrayList<>();
 
 		// languages
 		Discipline languages = new Discipline(new Tag("Languages"));
@@ -106,10 +98,6 @@ public class TagDatabase {
 		tagTaxonomy.add(history);
 	}
 
-	/**
-	 * get the taxonomy of tags.
-	 * @return list of disciplines which have subdisciplines.
-	 */
 	public List<Discipline> getTaxonomy() {
 		return tagTaxonomy;
 	}
