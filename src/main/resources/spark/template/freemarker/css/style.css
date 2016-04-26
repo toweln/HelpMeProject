@@ -731,7 +731,7 @@
 	}
 
 	div#login-container {
-		position: fixed;
+		position: absolute;
 		margin-top: 230px;
 		left: 50%;
 		margin-left: -250px;
