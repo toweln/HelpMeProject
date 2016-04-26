@@ -86,8 +86,10 @@ public class Main {
   private class FrontHandler implements TemplateViewRoute {
     @Override
     public ModelAndView handle(Request req, Response res) {
-      Map<String, Object> variables = ImmutableMap.of("title", "HelpMe!");
-      return new ModelAndView(variables, "query.ftl");
+
+      Map<String, String> variables =
+        ImmutableMap.of("title", "HelpMe!");
+      return new ModelAndView(variables, "index.html");
     }
   }
 
