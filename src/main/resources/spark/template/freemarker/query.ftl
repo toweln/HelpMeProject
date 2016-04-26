@@ -1,18 +1,27 @@
 <#assign content>
 
-<h1> Query ${db} </h1>
+<h1> HelpMe! </h1>
 
-<p> for neighbors
-<form method="GET" action="/neighbors">
-  <input type="submit">
-</form>
-</p>
+<button onclick="getLocation()">Try It</button>
 
-<p> by radius
-<form method="GET" action="/radius">
-  <input type="submit">
-</form>
-</p>
+<p id="demo"></p>
+
+<script>
+var x = document.getElementById("demo");
+
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else { 
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+
+function showPosition(position) {
+    x.innerHTML = "Latitude: " + position.coords.latitude + 
+    "<br>Longitude: " + position.coords.longitude;	
+}
+</script>
 
 </#assign>
 <#include "main.ftl">

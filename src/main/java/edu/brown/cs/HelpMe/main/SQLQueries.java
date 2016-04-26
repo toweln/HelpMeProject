@@ -1,4 +1,4 @@
-package helpMe;
+package edu.brown.cs.HelpMe.main;
 
 
 import java.sql.Connection;
