@@ -29,14 +29,14 @@ CP=$(cat .mvn-classpath)
 # package name from the current directory, instead of hard coding.
 # But this relies on some conventions in naming.  You'll have to call
 # your class "Main" and use our recommended package structure.
-CWD=`pwd`
-PROJECT=${CWD##*/}
+
+PROJECT=$(basename $(pwd))
 
 # The funny symbol: "$@" passes the command-line arguments on from
 # this script to your Java program.
 
 #cp /course/cs032/data/bacon/bacon.sqlite3 /ltmp/
 
-java -cp "$TARGET;$CP" edu.brown.cs.$PROJECT.main.Main "$@"
+java -cp "$TARGET;$CP" edu.brown.cs.$PROJECT.Main "$@"
 
 #rm /ltmp/bacon.sqlite3

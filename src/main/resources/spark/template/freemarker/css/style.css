@@ -721,6 +721,7 @@
 
 	#login-form {
 		margin: 1px;
+		width: 500px;
 		border: 1px solid #D00;
 	}
 
@@ -890,4 +891,12 @@
 
 	.fightme #fav {
 		width: 300px;
+	}
+
+	#error {
+		color: white;
+	}
+
+	.hidden {
+		display: none;
 	}
