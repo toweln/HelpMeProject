@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Help Me</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<script src="js/jquery.min.js"></script>
+		<script src="js/jquery.dropotron.min.js"></script>
+		<script src="js/skel.min.js"></script>
+		<script src="js/skel-layers.min.js"></script>
+		<script src="js/init.js"></script>
+		<script type="text/javascript" src="js/jquery.event.drag-2.0.js"></script>
+		<script src="http://localhost:4000/socket.io/socket.io.js"></script>
+		<link rel="icon" type="image/x-icon" href="favicon.ico">
+		<script type="text/javascript" src="scripts.js"></script>
+		<noscript>
+			<link rel="stylesheet" href="css/skel.css" />
+			<link rel="stylesheet" href="css/style.css" />
+		</noscript>
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div class="wrapper style1">
+
+				<!-- Header -->
+					<div id="header" class="skel-panels-fixed">
+					<a href='home.html'><div id='small-logo'></div></a>
+						<div id="logo">
+							<div id='radio'>
+								<input type="radio" name="radio" id="radio1" class="radio"/>
+								<label for="radio1">Radius Sort</label>
+							</div>
+							<div id='radio'>
+								<input type="radio" name="radio" id="radio2" class="radio"/>
+								<label for="radio2">Topic Sort</label>
+							</div>
+							<div id='radio'>
+								<input type="radio" name="radio" id="radio3" class="radio"/>
+								<label for="radio3">Date Sort</label>
+							</div>
+						</div>
+						<nav id="nav">
+							<ul>
+								<li class="active"><a href="profile.html">Profile</a></li>
+								<li><a href='settings.html'>Settings</a></li>
+								<li><a href='leaderboard.html'>Leaderboard</a></li>
+								<li><a href='index.html'>Log Out</a></li>
+							</ul>
+						</nav>
+					</div>
+
+					<center><h2 style='font-size: 48px; margin: 20px'>Settings and Preferences</h2>
+					<form method="post" action="q.html" style='margin-top: 50px'>
+
+						<div class="row half">
+							<div class="12u">
+								<input class="text" type="text" name="name" id="settings-form" placeholder="Name" style='width: 500px'/>
+							</div>
+						</div>
+						<div class="row half">
+							<div class="12u">
+								<input class="text" type="text" name="username" id="settings-form" placeholder="Username" style='width: 500px'/>
+							</div>
+						</div>
+						<div class="row half">
+							<div class="12u">
+								<input class="text" type="password" name="password" id="settings-form" placeholder="Password" style='width: 500px' />
+							</div>
+						</div>
+						<div class="row half">
+							<div class="12u">
+								<input class="text" type="password" name="password" id="settings-form" placeholder="Confirm Password" style='width: 500px' />
+							</div>
+						</div>
+						<div class="row half">
+							<div class="12u">
+								<input class="text" type="text" name="phone" id="settings-form" placeholder="Phone number" style='width: 500px' />
+							</div>
+						</div>
+						<div class="row half">
+							<div class="12u">
+								<input class="text" type="text" name="topics" id="settings-form" placeholder="Topics you have experience in" style='width: 500px' />
+							</div>
+						</div>
+						<input type='checkbox' name='notif' value='email'>Email notifications
+						<input type='checkbox' name='notif' value='text'>Text notifications<br><br><br>
+
+						<div class="row half">
+							<div class="12u">
+								<ul class="actions">
+									<li>
+									<center><a href="signup.html" class="button wrapper style2" style='height: 0px; padding-top: 7px; margin-top: -5px; font-size: 20px; width: 400px; margin-left: -200px'>Upload a new profile picture!</a><br><br>
+										<input type="submit" value="Save changes!" class="button alt" /></center>
+									</li>
+								</ul>
+
+						</div>
+					</div>
+					</form></center>
+
+			</div>
+		</div>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+		<script type="text/javascript" src="js/jquery.event.drag-2.0.js"></script>
+		<script src="http://localhost:4000/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="scripts.js"></script>
+	</body>
+</html>
