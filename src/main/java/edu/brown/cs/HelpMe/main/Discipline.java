@@ -1,4 +1,4 @@
-package edu.brown.cs.acj.helpme;
+package edu.brown.cs.HelpMe.main;
 
 import java.util.ArrayList;
 import java.util.List;

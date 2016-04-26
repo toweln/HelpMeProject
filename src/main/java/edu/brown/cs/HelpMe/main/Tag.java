@@ -1,4 +1,4 @@
-package edu.brown.cs.acj.helpme;
+package edu.brown.cs.HelpMe.main;
 
 /**
  * a class for a tag of a question or user's expertise. questions and users can
