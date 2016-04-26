@@ -2,20 +2,25 @@ package edu.brown.cs.acj.helpme;
 
 import java.util.UUID;
 
-public class QuestionTaxonomy {
+/**
+ * a class for a question submitted on the site.
+ * 
+ * @author andrewjones
+ *
+ */
+public class Question {
 
-	String title;
-	String message;
-	UUID ID;
-	UserTaxonomy owner;
-	TagRating tr;
-	WordCount wc;
-	TagRatingTaxonomy rating;
-	TagDatabaseTaxonomy td;
+	private String title;
+	private String message;
+	private UUID ID;
+	private User owner;
+	private WordCount wc;
+	private TagRating rating;
+	private TagDatabase td;
 
 	/**
 	 * create new question.
-	 * 
+	 *
 	 * @param title
 	 *            title of question
 	 * @param message
@@ -25,27 +30,30 @@ public class QuestionTaxonomy {
 	 * @param rating
 	 *            TagRating of question
 	 */
-	public QuestionTaxonomy(String title, String message, UserTaxonomy owner,
-			TagRatingTaxonomy rating) {
+	public Question(String title, String message, User owner, TagRating rating,
+			TagDatabase td) {
 		this.title = title;
 		this.message = message;
 		this.owner = owner;
 		this.ID = UUID.randomUUID();
 		this.rating = rating;
 		this.wc = new WordCount(message);
+		this.td = td;
 
-		// edit each tag's WordCount.
-		for (Tag t : rating.getRating().keySet()) {
-			t.updateWordCount(message);
-			for (Tag sub : rating.getRating().keySet()) {
-				sub.updateWordCount(message);
+		for (Discipline d : td.getTaxonomy()) {
+			if (rating.getRating().containsKey(d)) {
+				for (Tag t : d.getSubdisciplines()) {
+					if (rating.getRating().get(d).containsKey(t)) {
+						t.updateWordCount(message);
+					}
+				}
 			}
 		}
 	}
 
 	/**
 	 * get the question's title.
-	 * 
+	 *
 	 * @return the title.
 	 */
 	public String getTitle() {
@@ -54,7 +62,7 @@ public class QuestionTaxonomy {
 
 	/**
 	 * get the question's message.
-	 * 
+	 *
 	 * @return the message.
 	 */
 	public String getMessage() {
@@ -63,16 +71,16 @@ public class QuestionTaxonomy {
 
 	/**
 	 * get the user who asked the question.
-	 * 
+	 *
 	 * @return the asking user.
 	 */
-	public UserTaxonomy getOwner() {
+	public User getOwner() {
 		return owner;
 	}
 
 	/**
 	 * get the id of the question.
-	 * 
+	 *
 	 * @return the id.
 	 */
 	public String getID() {
@@ -81,7 +89,7 @@ public class QuestionTaxonomy {
 
 	/**
 	 * get the word count associated with the question.
-	 * 
+	 *
 	 * @return the word count.
 	 */
 	public WordCount getWordCount() {
@@ -90,16 +98,16 @@ public class QuestionTaxonomy {
 
 	/**
 	 * get the TagRating associated with question.
-	 * 
+	 *
 	 * @return the TagRatign.
 	 */
-	public TagRatingTaxonomy getRating() {
+	public TagRating getRating() {
 		return rating;
 	}
 
 	/**
 	 * set the WordCount of the question.
-	 * 
+	 *
 	 * @param wc
 	 *            the word count.
 	 */
