@@ -25,7 +25,6 @@ import com.google.common.collect.Sets;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
-
 import freemarker.template.Configuration;
 import spark.Spark;
 import spark.ModelAndView;
@@ -88,7 +87,7 @@ public class Main {
   private class FrontHandler implements TemplateViewRoute {
     @Override
     public ModelAndView handle(Request req, Response res) {
-      Map<String, Object> variables =
+      Map<String, String> variables =
         ImmutableMap.of("title", "HelpMe!");
       return new ModelAndView(variables, "query.ftl");
     }
