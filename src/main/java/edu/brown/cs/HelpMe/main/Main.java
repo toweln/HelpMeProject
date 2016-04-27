@@ -104,11 +104,11 @@ public class Main {
 		Spark.post("/login", new LoginHandler());
 		Spark.post("/suggest", new SuggestHandler());
 		Spark.get("/signup", new SignupDropdownHandler(), freeMarker);
-		Spark.get("/home", new HomeHandler(), freeMarker);
+		Spark.get("/home.html", new HomeHandler(), freeMarker);
 		Spark.get("/leaderboard", new LeaderboardHandler(), freeMarker);
-		Spark.get("/q_new", new NewQuestionHandler(), freeMarker);
+		Spark.get("/q_new.html", new NewQuestionHandler(), freeMarker);
 		Spark.get("/q.html", new SubmittedQuestion(), freeMarker);
-		Spark.post("/submitQuestion", new SubmitQuestionHandler());
+		// Spark.post("/submitQuestion", new SubmitQuestionHandler());
 	}
 
 	private class FrontHandler implements TemplateViewRoute {
@@ -119,7 +119,7 @@ public class Main {
 			return new ModelAndView(variables, "index.html");
 		}
 	}
-	
+
 	private class HomeHandler implements TemplateViewRoute {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
@@ -128,7 +128,7 @@ public class Main {
 			return new ModelAndView(variables, "home.html");
 		}
 	}
-	
+
 	private class LeaderboardHandler implements TemplateViewRoute {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
@@ -149,6 +149,7 @@ public class Main {
 	private class NewQuestionHandler implements TemplateViewRoute {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
+			System.out.println("GOT HEREEEEE");
 
 			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!");
 			return new ModelAndView(variables, "q_new.html");
@@ -158,8 +159,13 @@ public class Main {
 	private class SubmittedQuestion implements TemplateViewRoute {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
+			QueryParamsMap qm = req.queryMap();
+			String questionTitle = qm.value("title");
+			String questionMessage = qm.value("message");
+//			System.out.println(questionTitle);
 
-			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!");
+			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!",
+					"questionTitle", questionTitle, "questionMessage", questionMessage);
 			return new ModelAndView(variables, "q.html");
 		}
 	}
