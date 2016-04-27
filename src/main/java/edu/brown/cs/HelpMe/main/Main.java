@@ -102,9 +102,10 @@ public class Main {
 		// SPARK REQUESTS I WROTE --JARED
 		Spark.post("/login", new LoginHandler());
 		Spark.post("/suggest", new SuggestHandler());
-		Spark.get("/signup.html", new SignupDropdownHandler(), freeMarker);
+		Spark.get("/signup", new SignupDropdownHandler(), freeMarker);
 		Spark.get("/home", new HomeHandler(), freeMarker);
-		Spark.get("/q_new.html", new NewQuestionHandler(), freeMarker);
+		Spark.get("/leaderboard", new LeaderboardHandler(), freeMarker);
+		Spark.get("/q_new", new NewQuestionHandler(), freeMarker);
 		Spark.get("/q.html", new SubmittedQuestion(), freeMarker);
 }
 
@@ -123,6 +124,15 @@ public class Main {
 
 			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!");
 			return new ModelAndView(variables, "home.html");
+		}
+	}
+	
+	private class LeaderboardHandler implements TemplateViewRoute {
+		@Override
+		public ModelAndView handle(Request req, Response res) {
+
+			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!");
+			return new ModelAndView(variables, "leaderboard.html");
 		}
 	}
 
