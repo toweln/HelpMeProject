@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -105,7 +106,8 @@ public class Main {
 		Spark.get("/signup.html", new SignupDropdownHandler(), freeMarker);
 		Spark.get("/q_new.html", new NewQuestionHandler(), freeMarker);
 		Spark.get("/q.html", new SubmittedQuestion(), freeMarker);
-}
+		Spark.post("/submitQuestion", new SubmitQuestionHandler());
+	}
 
 	private class FrontHandler implements TemplateViewRoute {
 		@Override
@@ -132,7 +134,7 @@ public class Main {
 			return new ModelAndView(variables, "q_new.html");
 		}
 	}
-	
+
 	private class SubmittedQuestion implements TemplateViewRoute {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
@@ -164,6 +166,20 @@ public class Main {
 		}
 	}
 
+	private static class SubmitQuestionHandler implements Route {
+		@Override
+		public Object handle(Request req, Response res) {
+			QueryParamsMap qm = req.queryMap();
+			String title = qm.value("title");
+			String rawTags = qm.value("tags");
+			List<String> tags = Arrays.asList(rawTags.split("\\s*,\\s*"));
+			String message = qm.value("message");
+
+			// CHANGE THIS
+			return GSON.toJson(message);
+		}
+	}
+
 	private static class SuggestHandler implements Route {
 		@Override
 		public Object handle(Request req, Response res) {
@@ -178,15 +194,15 @@ public class Main {
 			for (String sugg : suggestions) {
 				StringBuffer sb = new StringBuffer();
 
-			    String[] split = sugg.split(" ");
-			    for (String str : split) {
-			        char[] stringArray = str.trim().toCharArray();
-			        stringArray[0] = Character.toUpperCase(stringArray[0]);
-			        str = new String(stringArray);
+				String[] split = sugg.split(" ");
+				for (String str : split) {
+					char[] stringArray = str.trim().toCharArray();
+					stringArray[0] = Character.toUpperCase(stringArray[0]);
+					str = new String(stringArray);
 
-			        sb.append(str).append(" ");
-			    }
-			    capSuggs.add(sb.toString());
+					sb.append(str).append(" ");
+				}
+				capSuggs.add(sb.toString());
 			}
 			Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
 					.put("suggestions", capSuggs).build();
