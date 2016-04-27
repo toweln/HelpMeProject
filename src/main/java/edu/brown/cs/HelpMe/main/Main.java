@@ -220,10 +220,10 @@ public class Main {
 		}
 	}
 
-   * Handler for handling signups.
-   * @author Jared
-   *
-   */
+   /** Handler for handling signups.
+   	* @author Jared
+   	*
+   	*/
    private static class signupHandler implements Route {
       @Override
       public Object handle(Request req, Response res) {
