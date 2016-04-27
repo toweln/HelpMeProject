@@ -176,35 +176,38 @@ public class SQLQueries {
   }
 
   public void insertNewUser(String userid, String first, String last,
-      String email, String phoneNumber, String pw) throws SQLException {
-    String query = "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?)";
+      String email, String phoneNumber, String userName, String pw) throws SQLException {
+    String query = "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?)";
     PreparedStatement stat = conn.prepareStatement(query);
     stat.setString(1, userid);
     stat.setString(2, first);
     stat.setString(3, last);
     stat.setString(4, email);
     stat.setString(5, phoneNumber);
+    stat.setString(6, userName);
     stat.setString(6, pw);
     stat.executeQuery();
   }
 
-  public void insertNewRequest(String reqid, String tuteeid, String tutorid,
-      String tags, String summary, String body, String postLat, String postLon,
+  public void insertNewRequest(String reqid, String tuteeid, String tutorid, String disc,
+      List<String> tags, String summary, String body, String postLat, String postLon,
       String timePosted, String timeResponded, String rating)
       throws SQLException {
-    String query = "INSERT INTO requests VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    String query = "INSERT INTO requests VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     PreparedStatement stat = conn.prepareStatement(query);
     stat.setString(1, reqid);
     stat.setString(2, tuteeid);
     stat.setString(3, tutorid);
-    stat.setString(4, tags);
-    stat.setString(5, summary);
-    stat.setString(6, body);
-    stat.setString(7, postLat);
-    stat.setString(8, postLon);
-    stat.setString(9, timePosted);
-    stat.setString(10, timeResponded);
-    stat.setString(11, rating);
+    stat.setString(4,  disc);
+    String nTags = this.tagsToString(disc, tags);
+    stat.setString(5, nTags);
+    stat.setString(6, summary);
+    stat.setString(7, body);
+    stat.setString(8, postLat);
+    stat.setString(9, postLon);
+    stat.setString(10, timePosted);
+    stat.setString(11, timeResponded);
+    stat.setString(12, rating);
     stat.executeQuery();
   }
 
@@ -259,19 +262,21 @@ public class SQLQueries {
     String ret = results.getString(1);
     return ret;
   }
-  public String getPasswordFromUserName(String user) throws SQLException{
+
+  public String getPasswordFromUserName(String user) throws SQLException {
     String query = "SELECT password FROM users WHERE username=?";
     PreparedStatement stat = conn.prepareStatement(query);
-    stat.setString(1,  user);
+    stat.setString(1, user);
     ResultSet results = stat.executeQuery();
     String ret = results.getString(1);
     return ret;
   }
+
   public boolean certifyLogin(String userName, String pw) throws SQLException {
     String password = "";
     if (userName.contains("@")) {
       password = getPasswordFromEmail(userName);
-    }else{
+    } else {
       password = getPasswordFromUserName(userName);
     }
     if (password.equals(pw)) {

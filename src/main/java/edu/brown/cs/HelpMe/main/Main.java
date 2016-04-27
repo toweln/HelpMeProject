@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -40,6 +41,8 @@ public class Main {
 	private static final Gson GSON = new Gson();
 	private CommandParser cp;
 	private static SuggestionGenerator sg;
+	private User currentUser;
+	private static String userID;
 
 	private Main(String[] args) {
 		this.args = args;
@@ -103,12 +106,15 @@ public class Main {
 		// SPARK REQUESTS I WROTE --JARED
 		Spark.post("/login", new LoginHandler());
 		Spark.post("/suggest", new SuggestHandler());
-		Spark.get("/signup", new SignupDropdownHandler(), freeMarker);
+    //Spark.post("/submitQuestion", new SubmitQuestionHandler());
+    Spark.post("/newUser", new signupHandler());
+
+
+		Spark.get("/signup.html", new SignupDropdownHandler(), freeMarker);
 		Spark.get("/home.html", new HomeHandler(), freeMarker);
 		Spark.get("/leaderboard", new LeaderboardHandler(), freeMarker);
 		Spark.get("/q_new.html", new NewQuestionHandler(), freeMarker);
 		Spark.get("/q.html", new SubmittedQuestion(), freeMarker);
-		// Spark.post("/submitQuestion", new SubmitQuestionHandler());
 	}
 
 	private class FrontHandler implements TemplateViewRoute {
@@ -191,16 +197,56 @@ public class Main {
 			return GSON.toJson(status);
 		}
 	}
+	/**
+   * Handler for handling signups.
+   * @author Jared
+   *
+   */
+   private static class signupHandler implements Route {
+      @Override
+      public Object handle(Request req, Response res) {
+        QueryParamsMap qm = req.queryMap();
+        String userName = qm.value("username");
+        String password = qm.value("password");
+        String first = qm.value("first_name");
+        String last = qm.value("last_name");
+        String email = qm.value("email");
+        String phone = qm.value("phone");
 
+        userName = userName.substring(1, userName.length() - 1);
+        password = password.substring(1, password.length() - 1);
+        first = first.substring(1, first.length() - 1);
+        last = last.substring(1, last.length() - 1);
+        email = email.substring(1, email.length() - 1);
+        phone = phone.substring(1, phone.length() - 1);
+        UUID newID = UUID.randomUUID();
+        Boolean status = false;
+        try {
+        dbQuery.insertNewUser(newID.toString(), first, last, email, phone,
+            userName, password);
+          status = true;
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
+
+        return GSON.toJson(status);
+      }
+    }
 	private static class SubmitQuestionHandler implements Route {
 		@Override
 		public Object handle(Request req, Response res) {
 			QueryParamsMap qm = req.queryMap();
 			String title = qm.value("title");
 			String rawTags = qm.value("tags");
+			String body = qm.value("message");
 			List<String> tags = Arrays.asList(rawTags.split("\\s*,\\s*"));
 			String message = qm.value("message");
-
+			String reqid = UUID.randomUUID().toString();
+			try {
+        dbQuery.insertNewRequest(reqid, userID, "", "", tags, title, body, "", "", "", "", "");
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
 			// CHANGE THIS
 			return GSON.toJson(message);
 		}
