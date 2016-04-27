@@ -24,17 +24,64 @@
 	<div id='login-container'>
 		<center><img src='images/logo.png' id='helpme'></center>
 		<div id='login'>
+			<center><div id='error' style='font-size: 24px; padding: 10px;'><b></b></div></center>
 			<input type='text' name='username' placeholder='Username' accept-charset="UTF-8" id='login-form'>
 			<input type='text' name='first_name' placeholder='First Name' accept-charset="UTF-8" id='login-form'>
 			<input type='text' name='last_name' placeholder='Last Name' accept-charset="UTF-8" id='login-form'>
 			<input type='text' name='email' placeholder='Email' accept-charset="UTF-8" id='login-form'>
 			<input type='text' name='phone' placeholder='Phone Number' accept-charset="UTF-8" id='login-form'>
-			<input type='password' name='password' placeholder='Password' accept-charset="UTF-8" id='login-form'>
-			<input type='password' name='password' placeholder='Confirm Password' accept-charset="UTF-8" id='login-form' autocomplete='false'>
+			<input type='password' name='password' placeholder='Password' accept-charset="UTF-8" id='login-form' id='password1'>
+			<input type='password' name='password' placeholder='Confirm Password' accept-charset="UTF-8" id='login-form' autocomplete='false' id='password2'>
 			<input type='text' name='topics' placeholder='Topics you have experience in' accept-charset="UTF-8" id='login-form' autocomplete='false'>
-			<center><a href="/home" class="button" style='height: 40px; padding-top: 7px; margin-top: -5px;'>Sign up</a></center></center>
+			<center><center style='margin-top: 20px'><a href="#" id='login-submit' class="button" style='height: 40px; padding-top: 7px; margin-top: -5px;'>Sign up</a></center>
 		</div>
 	</div>
+	<script>
+	$("#login-submit").click(function() {
+		if (/^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i.test($("input[name='email']").val())) {
+			if (valid_phone($("input[name='phone']").val())) {
+				if ($("#password1").val() == $("password2").val()) {
+					console.log("SUCCESS");
+					addUser()
+				} else {
+					console.log("bad pw");
+					$("b").html("ERROR: Passwords don't match");
+				}
+			} else {
+				console.log("bad phone");
+				console.log($("input[name='phone'").val());
+				$("b").html("ERROR: Not a valid phone number");
+			}
+		} else {
+			console.log("bad email");
+			$("b").html("ERROR: Not a valid email address");
+		}
+	});
+	function valid_phone(phone_num) {
+	  var regexp = /^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/;
+	  var digits = phone_num.replace(/\D/g, "");
+	  return (digits.match(regexp) !== null);
+	}
+	function addUser() {
+		var username = $("input[name='username']").val();
+		var first_name = $("input[name='first_name']").val();
+		var last_name = $("input[name='last_name']").val();
+		var email = $("input[name='email']").val();
+		var phone_number = $("input[name='phone']").val();
+		var password = $("input[name='password']").val();
+		var topics = $("input[name='topics']").val();
+		var usernameJSON = JSON.stringify(username);
+		var first_nameJSON = JSON.stringify(first_name);
+		var last_nameJSON = JSON.stringify(last_name);
+		var email_JSON = JSON.stringify(email);
+		var phone_numberJSON = JSON.stringify(phone_number);
+		var passwordJSON = JSON.stringify(password);
+		var topicsJSON = JSON.stringify(topics);
+		var userInput = {username: usernameJSON, first_name: first_nameJSON, last_name: last_nameJSON, email: email_JSON, phone_number: phone_numberJSON, password: passwordJSON, topics: topicsJSON};
+		$.post("/newUser", userInput, function(response) {
 
+		});
+	}
+	</script>
 	</body>
 </html>

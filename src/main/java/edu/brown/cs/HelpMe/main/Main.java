@@ -103,19 +103,15 @@ public class Main {
 
 		// Setup Spark Routes
 		Spark.get("/", new FrontHandler(), freeMarker);
+		Spark.get("/home", new HomeHandler(), freeMarker);
+		Spark.get("/leaderboard", new LeaderboardHandler(), freeMarker);
 		// SPARK REQUESTS I WROTE --JARED
 		Spark.post("/login", new LoginHandler());
 		Spark.post("/suggest", new SuggestHandler());
-    //Spark.post("/submitQuestion", new SubmitQuestionHandler());
-    Spark.post("/newUser", new signupHandler());
-
-
-		Spark.get("/signup.html", new SignupDropdownHandler(), freeMarker);
-		Spark.get("/home.html", new HomeHandler(), freeMarker);
-		Spark.get("/leaderboard", new LeaderboardHandler(), freeMarker);
-		Spark.get("/q_new.html", new NewQuestionHandler(), freeMarker);
-		Spark.get("/q.html", new SubmittedQuestion(), freeMarker);
-	}
+		Spark.get("/signup", new SignupDropdownHandler(), freeMarker);
+		Spark.get("/q_new", new NewQuestionHandler(), freeMarker);
+		Spark.get("/q", new SubmittedQuestion(), freeMarker);
+}
 
 	private class FrontHandler implements TemplateViewRoute {
 		@Override
@@ -125,7 +121,7 @@ public class Main {
 			return new ModelAndView(variables, "index.html");
 		}
 	}
-
+	
 	private class HomeHandler implements TemplateViewRoute {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
@@ -134,7 +130,7 @@ public class Main {
 			return new ModelAndView(variables, "home.html");
 		}
 	}
-
+	
 	private class LeaderboardHandler implements TemplateViewRoute {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
