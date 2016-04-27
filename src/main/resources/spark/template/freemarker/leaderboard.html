@@ -2,9 +2,6 @@
 <html>
 	<head>
 		<title>Help Me</title>
-<!-- 		<audio autoplay loop>
-     		<source src="Mortal Kombat.mp3">
-		</audio> -->
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="description" content="" />
 		<meta name="keywords" content="" />
@@ -29,9 +26,8 @@
 
 				<!-- Header -->
 					<div id="header" class="skel-panels-fixed">
-						<div id="logo">
-							<input type='text' id='search-bar' placeholder='Search'></textarea>
-							<div id='radio'>
+					<a href='home.html'><div id='small-logo'></div></a>
+						<div id="logo">							<div id='radio'>
 								<input type="radio" name="radio" id="radio1" class="radio"/>
 								<label for="radio1">Radius Sort</label>
 							</div>
@@ -54,35 +50,70 @@
 						</nav>
 					</div>
 
-					<center><h2 style='font-size: 48px; margin: 20px'>Submit your own question!</h2>
-					<span class="byline" style='font-size: 36px; margin: 10px'>Please remember to add tags!</span>
-					<form method="post" action="q.html" style='margin-top: 50px'>
-						<div class="row half">
-							<div class="12u">
-								<input class="text" type="text" name="name" id="login-form" placeholder="Question Title" style='width: 850px'/>
-							</div>
-						</div>
-						<div class="row half">
-							<div class="12u">
-								<input class="text" type="text" name="email" id="login-form" placeholder="Tags" style='width: 850px' />
-							</div>
-						</div>
-						<div class="row half">
-							<div class="12u">
-								<textarea name="message" id="login-form" placeholder="Question" style='width: 850px'></textarea>
-							</div>
-						</div>
-						<div class="row half">
-							<div class="12u">
-								<ul class="actions">
-									<li>
-										<input type="submit" value="Submit question!" class="button alt" />
-									</li>
-								</ul>
+					<center><img src='images/fightme.png'><br>
+					<span class="byline" style='font-size: 36px; margin: 10px; font-weight: bold'>Leaderboards</span><br><br>
 
+					Filter by topic: <input type='text' name='topic' style='border: 1px black solid; width: 200px; height: 20px'><br><br>
+
+					<div id='fightme'>
+						<div class='fightme' style='border: 1px black solid'>
+							<span id='rank'>Rank</span>
+							<span id='name'>Name</span>
+							<span id='kills'>Kills</span>
+							<span id='rating'>KDR</span>
+							<span id='fav'>Best Subject</span>
+						</div>
+						<div class='fightme'>
+							<span id='rank'>1</span>
+							<span id='name'>John Jannotti</span>
+							<span id='kills'>53</span>
+							<span id='rating'>4.7</span>
+							<span id='fav'>Computer Science</span>
+						</div>
+						<div class='fightme'>
+							<span id='rank'>2</span>
+							<span id='name'>Felege Gebru</span>
+							<span id='kills'>47</span>
+							<span id='rating'>4.6</span>
+							<span id='fav'>Computer Science</spam>
+						</div>
+						<div class='fightme'>
+							<span id='rank'>3</span>
+							<span id='name'>Andrew Jones</span>
+							<span id='kills'>45</span>
+							<span id='rating'>4.6</span>
+							<span id='fav'>Neuroscience</span>
+						</div>
+						<div class='fightme'>
+							<span id='rank'>4</span>
+							<span id='name'>Jared Lee</span>
+							<span id='kills'>40</span>
+							<span id='rating'>4.7</span>
+							<span id='fav'>Economics</span>
+						</div>
+						<div class='fightme'>
+							<span id='rank'>5</span>
+							<span id='name'>Brandon Lê</span>
+							<span id='kills'>38</span>
+							<span id='rating'>4.4</span>
+							<span id='fav'>Biology</span>
+						</div>
+						<div class='fightme'>
+							<span id='rank'>6</span>
+							<span id='name'>Thao Nguyen</span>
+							<span id='kills'>7</span>
+							<span id='rating'>4.1</span>
+							<span id='fav'>Physical Education</span>
+						</div>
+						<div class='fightme'>
+							<span id='rank'>7</span>
+							<span id='name'>Russell Carey</span>
+							<span id='kills'>2</span>
+							<span id='rating'>3.1</span>
+							<span id='fav'>Snow Days</span>
 						</div>
 					</div>
-					</form></center>
+					</center>
 
 			</div>
 		</div>
