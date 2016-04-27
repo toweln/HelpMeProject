@@ -34,7 +34,7 @@ public class SQLQueries {
   public SQLQueries(String db) throws ClassNotFoundException, SQLException {
     Class.forName("org.sqlite.JDBC");
     conn = DriverManager.getConnection("jdbc:sqlite:" + db);
-    conn.setAutoCommit(false);
+    //conn.setAutoCommit(false);
     conn.createStatement();
     mathDisc = new ArrayList<String>();
     sciDisc = new ArrayList<String>();
@@ -179,14 +179,26 @@ public class SQLQueries {
       String email, String phoneNumber, String userName, String pw) throws SQLException {
     String query = "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?)";
     PreparedStatement stat = conn.prepareStatement(query);
+    List<String> toprint = new ArrayList<String>();
+    toprint.add(userName);
+    toprint.add(pw);
+    toprint.add(first);
+    toprint.add(last);
+    toprint.add(email);
+    toprint.add(phoneNumber);
+    for(int i = 0; i < toprint.size(); i++){
+      System.out.println(toprint.get(i));
+    }
     stat.setString(1, userid);
     stat.setString(2, first);
     stat.setString(3, last);
     stat.setString(4, email);
     stat.setString(5, phoneNumber);
     stat.setString(6, userName);
-    stat.setString(6, pw);
-    stat.executeQuery();
+    stat.setString(7, pw);
+   int test =  stat.executeUpdate();
+   //conn.commit();
+   System.out.println(test);
   }
 
   public void insertNewRequest(String reqid, String tuteeid, String tutorid, String disc,
@@ -208,7 +220,7 @@ public class SQLQueries {
     stat.setString(10, timePosted);
     stat.setString(11, timeResponded);
     stat.setString(12, rating);
-    stat.executeQuery();
+    stat.executeUpdate();
   }
 
   public void updateRequestBody(String reqid, String body) throws SQLException {

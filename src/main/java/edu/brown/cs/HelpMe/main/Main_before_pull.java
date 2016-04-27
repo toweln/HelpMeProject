@@ -31,9 +31,9 @@ import edu.brown.cs.HelpMe.autocorrect.CommandParser;
 import edu.brown.cs.HelpMe.autocorrect.SuggestionGenerator;
 import freemarker.template.Configuration;
 
-public class Main {
+public class Main_before_pull {
 	public static void main(String[] args) {
-		new Main(args).run();
+		new Main_before_pull(args).run();
 	}
 
 	private String[] args;
@@ -44,13 +44,13 @@ public class Main {
 	private User currentUser;
 	private static String userID;
 
-	private Main(String[] args) {
+	private Main_before_pull(String[] args) {
 		this.args = args;
 	}
 
 	private void run() {
 		OptionParser parser = new OptionParser();
-		String database = "smallDb.sqlite3";
+		String database = "smallDb.db";
 		try {
 			dbQuery = new SQLQueries(database);
 		} catch (ClassNotFoundException e) {
@@ -103,20 +103,19 @@ public class Main {
 
 		// Setup Spark Routes
 		Spark.get("/", new FrontHandler(), freeMarker);
-		Spark.get("/home", new HomeHandler(), freeMarker);
-		Spark.get("/leaderboard", new LeaderboardHandler(), freeMarker);
 		// SPARK REQUESTS I WROTE --JARED
-
-		//Post request for signup
-		Spark.post("/newUser", new signupHandler());
-
-
 		Spark.post("/login", new LoginHandler());
 		Spark.post("/suggest", new SuggestHandler());
-		Spark.get("/signup", new SignupDropdownHandler(), freeMarker);
-		Spark.get("/q_new", new NewQuestionHandler(), freeMarker);
-		Spark.get("/q", new SubmittedQuestion(), freeMarker);
-}
+    //Spark.post("/submitQuestion", new SubmitQuestionHandler());
+    Spark.post("/newUser", new signupHandler());
+
+
+		Spark.get("/signup.html", new SignupDropdownHandler(), freeMarker);
+		Spark.get("/home.html", new HomeHandler(), freeMarker);
+		Spark.get("/leaderboard", new LeaderboardHandler(), freeMarker);
+		Spark.get("/q_new.html", new NewQuestionHandler(), freeMarker);
+		Spark.get("/q.html", new SubmittedQuestion(), freeMarker);
+	}
 
 	private class FrontHandler implements TemplateViewRoute {
 		@Override
@@ -148,7 +147,6 @@ public class Main {
 	private class SignupDropdownHandler implements TemplateViewRoute {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
-		  System.out.println("dropdownhandle");
 			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!");
 			return new ModelAndView(variables, "signup.html");
 		}
@@ -207,8 +205,7 @@ public class Main {
         String first = qm.value("first_name");
         String last = qm.value("last_name");
         String email = qm.value("email");
-        String phone = qm.value("phone_number");
-
+        String phone = qm.value("phone");
 
         userName = userName.substring(1, userName.length() - 1);
         password = password.substring(1, password.length() - 1);
@@ -216,20 +213,6 @@ public class Main {
         last = last.substring(1, last.length() - 1);
         email = email.substring(1, email.length() - 1);
         phone = phone.substring(1, phone.length() - 1);
-
-        System.out.println("Hello");
-        List<String> toprint = new ArrayList<String>();
-        toprint.add(userName);
-        toprint.add(password);
-        toprint.add(first);
-        toprint.add(last);
-        toprint.add(email);
-        toprint.add(phone);
-        for(int i = 0; i < toprint.size(); i++){
-          System.out.println(toprint.get(i));
-        }
-        System.out.println("after");
-
         UUID newID = UUID.randomUUID();
         Boolean status = false;
         try {
