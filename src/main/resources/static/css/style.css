@@ -162,6 +162,13 @@
 		min-height: 14em;
 	}
 
+	select {
+		margin-top: 2mm;
+		width: 500px;
+		height: 30px;
+		position: relative;
+	}
+
 	input[type="text"],
 	input[type="password"],
 	input[type="email"],

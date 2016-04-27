@@ -1,15 +1,23 @@
-package edu.brown.cs.acj.helpme;
+package edu.brown.cs.HelpMe.main;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TagDatabaseTaxonomy {
+/**
+ * the high-level database of tags.
+ * @author andrewjones
+ *
+ */
+public class TagDatabase {
 
 	public static List<Discipline> tagTaxonomy;
 
-	public TagDatabaseTaxonomy() {
-		TagDatabaseTaxonomy.tagTaxonomy = new ArrayList<>();
+	/**
+	 * initliaze a database.
+	 */
+	public TagDatabase() {
+		TagDatabase.tagTaxonomy = new ArrayList<>();
 
 		// languages
 		Discipline languages = new Discipline(new Tag("Languages"));
@@ -98,6 +106,10 @@ public class TagDatabaseTaxonomy {
 		tagTaxonomy.add(history);
 	}
 
+	/**
+	 * get the taxonomy of tags.
+	 * @return list of disciplines which have subdisciplines.
+	 */
 	public List<Discipline> getTaxonomy() {
 		return tagTaxonomy;
 	}
