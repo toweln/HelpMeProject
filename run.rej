@@ -1,0 +1,19 @@
+***************
+*** 30,37 ****
+  # package name from the current directory, instead of hard coding.
+  # But this relies on some conventions in naming.  You'll have to call
+  # your class "Main" and use our recommended package structure.
+- 
+- PROJECT=$(basename $(pwd))
+  
+  # The funny symbol: "$@" passes the command-line arguments on from
+  # this script to your Java program.
+--- 30,37 ----
+  # package name from the current directory, instead of hard coding.
+  # But this relies on some conventions in naming.  You'll have to call
+  # your class "Main" and use our recommended package structure.
++ CWD=`pwd`
++ PROJECT=${CWD##*/}
+  
+  # The funny symbol: "$@" passes the command-line arguments on from
+  # this script to your Java program.

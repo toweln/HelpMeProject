@@ -7,13 +7,14 @@
 		<meta name="keywords" content="" />
 		<script src="js/jquery.min.js"></script>
 		<script src="js/jquery.dropotron.min.js"></script>
+		<script src="js/autocorrect.js"></script>
 		<script src="js/skel.min.js"></script>
 		<script src="js/skel-layers.min.js"></script>
 		<script src="js/init.js"></script>
 		<script type="text/javascript" src="js/jquery.event.drag-2.0.js"></script>
-		<script src="http://localhost:4000/socket.io/socket.io.js"></script>
+		<!-- <script src="http://localhost:4000/socket.io/socket.io.js"></script> -->
 		<link rel="icon" type="image/x-icon" href="favicon.ico">
-		<script type="text/javascript" src="scripts.js"></script>
+		<!-- <script type="text/javascript" src="scripts.js"></script> -->
 		<noscript>
 			<link rel="stylesheet" href="css/skel.css" />
 			<link rel="stylesheet" href="css/style.css" />
@@ -56,14 +57,24 @@
 					<form method="post" action="q.html" style='margin-top: 50px'>
 						<div class="row half">
 							<div class="12u">
-								<input class="text" type="text" name="name" id="login-form" placeholder="Question Title" style='width: 850px'/>
+								<input class="text" type="text" name="title" id="login-form" placeholder="Question Title" style='width: 850px'/>
 							</div>
 						</div>
 						<div class="row half">
 							<div class="12u">
-								<input class="text" type="text" name="email" id="login-form" placeholder="Tags" style='width: 850px' />
+								<input class="text" type="text" name="tags" id="login-form" placeholder="Tags" style='width: 850px' />
+								<div class="dropdown">
+								<select name="userinput" <ul class="dropdown-menu">
+						  		<option id="1"></option>
+						  		<option id="2"></option>
+						  		<option id="3"></option>
+						  		<option id="4"></option>
+						  		<option id="5"></option>
+							  	</ul>
+							  	</select>
 							</div>
 						</div>
+					  </div>
 						<div class="row half">
 							<div class="12u">
 								<textarea name="message" id="login-form" placeholder="Question" style='width: 850px'></textarea>
@@ -85,7 +96,38 @@
 		</div>
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 		<script type="text/javascript" src="js/jquery.event.drag-2.0.js"></script>
-		<script src="http://localhost:4000/socket.io/socket.io.js"></script>
-		<script type="text/javascript" src="scripts.js"></script>
+		<!-- <script src="http://localhost:4000/socket.io/socket.io.js"></script> -->
+		<!-- <script type="text/javascript" src="scripts.js"></script> -->
+		<script>
+		$("input[name='tags']").keyup(function(event) {
+	    	// console.log($("input[name='name']").val())
+
+
+	    	// Parameters we will need to calculate our suggestions.
+		    var postParameters = {input: $("input[name='tags']").val()};
+		    // console.log(postParameters)
+		    // console.log(document.getElementById('searchbar_donor').value)
+
+
+		    // POST requenst for suggestion words.
+		    $.post("/suggest", postParameters, function(responseJSON){
+
+		        var suggestions = [];
+		        responseObject = JSON.parse(responseJSON);
+		        suggestions = responseObject.suggestions;
+		        // console.log(suggestions);
+
+		        // fill the dropdown box.
+		        for (var i = 1; i < 6; i++) {
+		            var istring = "#" + i.toString();
+		            if (typeof suggestions[i - 1] === 'undefined') {
+		                $(istring).text("");
+		            }
+		            $(istring).text(suggestions[i - 1])
+		        };
+
+		    });
+		});
+		</script>
 	</body>
 </html>
