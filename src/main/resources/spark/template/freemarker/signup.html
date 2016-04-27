@@ -24,6 +24,7 @@
 	<div id='login-container'>
 		<center><img src='images/logo.png' id='helpme'></center>
 		<div id='login'>
+		<form method="post" action="/home.html" style='margin-top: 50px'>
 			<center><div id='error' style='font-size: 24px; padding: 10px;'><b></b></div></center>
 			<input type='text' name='username' placeholder='Username' accept-charset="UTF-8" id='login-form'>
 			<input type='text' name='first_name' placeholder='First Name' accept-charset="UTF-8" id='login-form'>
@@ -34,6 +35,7 @@
 			<input type='password' name='password' placeholder='Confirm Password' accept-charset="UTF-8" id='login-form' autocomplete='false' id='password2'>
 			<input type='text' name='topics' placeholder='Topics you have experience in' accept-charset="UTF-8" id='login-form' autocomplete='false'>
 			<center><center style='margin-top: 20px'><a href="#" id='login-submit' class="button" style='height: 40px; padding-top: 7px; margin-top: -5px;'>Sign up</a></center>
+		</form>
 		</div>
 	</div>
 	<script>
@@ -79,7 +81,9 @@
 		var topicsJSON = JSON.stringify(topics);
 		var userInput = {username: usernameJSON, first_name: first_nameJSON, last_name: last_nameJSON, email: email_JSON, phone_number: phone_numberJSON, password: passwordJSON, topics: topicsJSON};
 		$.post("/newUser", userInput, function(response) {
-
+			responseObject = JSON.parse(responseJSON);
+			console.log(responseObject)
+			console.log(userInput.username);
 		});
 	}
 	</script>

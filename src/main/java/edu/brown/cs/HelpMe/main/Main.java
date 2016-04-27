@@ -102,16 +102,19 @@ public class Main {
 		FreeMarkerEngine freeMarker = createEngine();
 
 		// Setup Spark Routes
-		Spark.get("/", new FrontHandler(), freeMarker);
-		Spark.get("/home", new HomeHandler(), freeMarker);
-		Spark.get("/leaderboard", new LeaderboardHandler(), freeMarker);
+		Spark.get("/index.html", new FrontHandler(), freeMarker);
+		Spark.get("/home.html", new HomeHandler(), freeMarker);
+		Spark.get("/leaderboard.html", new LeaderboardHandler(), freeMarker);
 		// SPARK REQUESTS I WROTE --JARED
 		Spark.post("/login", new LoginHandler());
 		Spark.post("/suggest", new SuggestHandler());
-		Spark.get("/signup", new SignupDropdownHandler(), freeMarker);
+		Spark.get("/signup.html", new SignupDropdownHandler(), freeMarker);
 		Spark.get("/q_new", new NewQuestionHandler(), freeMarker);
 		Spark.get("/q", new SubmittedQuestion(), freeMarker);
-}
+		Spark.get("/profile.html", new ProfileHandler(), freeMarker);
+		Spark.get("/settings.html", new SettingsHandler(), freeMarker);
+		Spark.post("/newUser", new signupHandler());
+	}
 
 	private class FrontHandler implements TemplateViewRoute {
 		@Override
@@ -121,7 +124,7 @@ public class Main {
 			return new ModelAndView(variables, "index.html");
 		}
 	}
-	
+
 	private class HomeHandler implements TemplateViewRoute {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
@@ -130,13 +133,22 @@ public class Main {
 			return new ModelAndView(variables, "home.html");
 		}
 	}
-	
+
 	private class LeaderboardHandler implements TemplateViewRoute {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
 
 			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!");
 			return new ModelAndView(variables, "leaderboard.html");
+		}
+	}
+
+	private class SettingsHandler implements TemplateViewRoute {
+		@Override
+		public ModelAndView handle(Request req, Response res) {
+
+			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!");
+			return new ModelAndView(variables, "settings.html");
 		}
 	}
 
@@ -151,10 +163,17 @@ public class Main {
 	private class NewQuestionHandler implements TemplateViewRoute {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
-			System.out.println("GOT HEREEEEE");
 
 			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!");
 			return new ModelAndView(variables, "q_new.html");
+		}
+	}
+
+	private class ProfileHandler implements TemplateViewRoute {
+		@Override
+		public ModelAndView handle(Request req, Response res) {
+			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!");
+			return new ModelAndView(variables, "profile.html");
 		}
 	}
 
@@ -164,10 +183,11 @@ public class Main {
 			QueryParamsMap qm = req.queryMap();
 			String questionTitle = qm.value("title");
 			String questionMessage = qm.value("message");
-//			System.out.println(questionTitle);
+			// System.out.println(questionTitle);
 
 			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!",
-					"questionTitle", questionTitle, "questionMessage", questionMessage);
+					"questionTitle", questionTitle, "questionMessage",
+					questionMessage);
 			return new ModelAndView(variables, "q.html");
 		}
 	}
@@ -193,41 +213,47 @@ public class Main {
 			return GSON.toJson(status);
 		}
 	}
+
 	/**
-   * Handler for handling signups.
-   * @author Jared
-   *
-   */
-   private static class signupHandler implements Route {
-      @Override
-      public Object handle(Request req, Response res) {
-        QueryParamsMap qm = req.queryMap();
-        String userName = qm.value("username");
-        String password = qm.value("password");
-        String first = qm.value("first_name");
-        String last = qm.value("last_name");
-        String email = qm.value("email");
-        String phone = qm.value("phone");
+	 * Handler for handling signups.
+	 * 
+	 * @author Jared
+	 *
+	 */
+	private static class signupHandler implements Route {
+		@Override
+		public Object handle(Request req, Response res) {
+			QueryParamsMap qm = req.queryMap();
+			String userName = qm.value("username");
+			String password = qm.value("password");
+			String first = qm.value("first_name");
+			String last = qm.value("last_name");
+			String email = qm.value("email");
+			String phone = qm.value("phone");
 
-        userName = userName.substring(1, userName.length() - 1);
-        password = password.substring(1, password.length() - 1);
-        first = first.substring(1, first.length() - 1);
-        last = last.substring(1, last.length() - 1);
-        email = email.substring(1, email.length() - 1);
-        phone = phone.substring(1, phone.length() - 1);
-        UUID newID = UUID.randomUUID();
-        Boolean status = false;
-        try {
-        dbQuery.insertNewUser(newID.toString(), first, last, email, phone,
-            userName, password);
-          status = true;
-        } catch (SQLException e) {
-          e.printStackTrace();
-        }
+			userName = userName.substring(1, userName.length() - 1);
+			password = password.substring(1, password.length() - 1);
+			first = first.substring(1, first.length() - 1);
+			last = last.substring(1, last.length() - 1);
+			email = email.substring(1, email.length() - 1);
+			phone = phone.substring(1, phone.length() - 1);
+			UUID newID = UUID.randomUUID();
+			Boolean status = false;
+			try {
+				System.out.println("USERNAME: " + userName);
+				System.out.println("FIRST NAME: " + first);
+				dbQuery.insertNewUser(newID.toString(), first, last, email,
+						phone, userName, password);
+				status = true;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 
-        return GSON.toJson(status);
-      }
-    }
+			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!");
+			return GSON.toJson(variables);
+		}
+	}
+
 	private static class SubmitQuestionHandler implements Route {
 		@Override
 		public Object handle(Request req, Response res) {
@@ -239,10 +265,11 @@ public class Main {
 			String message = qm.value("message");
 			String reqid = UUID.randomUUID().toString();
 			try {
-        dbQuery.insertNewRequest(reqid, userID, "", "", tags, title, body, "", "", "", "", "");
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
+				dbQuery.insertNewRequest(reqid, userID, "", "", tags, title,
+						body, "", "", "", "", "");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 			// CHANGE THIS
 			return GSON.toJson(message);
 		}
