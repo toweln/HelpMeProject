@@ -17,8 +17,9 @@
 		</noscript>
 		<style>
       		#map {
-        		width: 500px;
-        		height: 400px;}
+        		width: 90%;
+        		height: 400px;
+        		margin: 0 auto;}
     	</style>
 	</head>
 	<body onload="init()">
@@ -79,6 +80,12 @@
 							center: {lat: lat, lng: lng},
 							zoom: 18
 				        });
+
+				        var currLoc = new google.maps.Marker({
+						    position: {lat: lat, lng: lng},
+						    map: map,
+						    title: 'Your current location!'
+						});
 					}
 					</script>
 					
