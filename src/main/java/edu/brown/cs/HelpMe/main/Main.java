@@ -107,15 +107,14 @@ public class Main {
 		Spark.get("/leaderboard.html", new LeaderboardHandler(), freeMarker);
 		// SPARK REQUESTS I WROTE --JARED
 
-		//Post request for signup
+		// Post request for signup
 		Spark.post("/newUser", new signupHandler());
-
 
 		Spark.post("/login", new LoginHandler());
 		Spark.post("/suggest", new SuggestHandler());
 		Spark.get("/signup.html", new SignupDropdownHandler(), freeMarker);
-		Spark.get("/q_new", new NewQuestionHandler(), freeMarker);
-		Spark.get("/q", new SubmittedQuestion(), freeMarker);
+		Spark.get("/q_new.html", new NewQuestionHandler(), freeMarker);
+		Spark.get("/q.html", new SubmittedQuestion(), freeMarker);
 		Spark.get("/profile.html", new ProfileHandler(), freeMarker);
 		Spark.get("/settings.html", new SettingsHandler(), freeMarker);
 		Spark.post("/newUser", new signupHandler());
@@ -160,7 +159,7 @@ public class Main {
 	private class SignupDropdownHandler implements TemplateViewRoute {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
-		  System.out.println("dropdownhandle");
+			System.out.println("dropdownhandle");
 			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!");
 			return new ModelAndView(variables, "signup.html");
 		}
@@ -220,55 +219,56 @@ public class Main {
 		}
 	}
 
-   * Handler for handling signups.
-   * @author Jared
-   *
-   */
-   private static class signupHandler implements Route {
-      @Override
-      public Object handle(Request req, Response res) {
-        QueryParamsMap qm = req.queryMap();
-        String userName = qm.value("username");
-        String password = qm.value("password");
-        String first = qm.value("first_name");
-        String last = qm.value("last_name");
-        String email = qm.value("email");
-        String phone = qm.value("phone_number");
+	/**
+	 * Handler for handling signups.
+	 * 
+	 * @author Jared
+	 *
+	 */
+	private static class signupHandler implements Route {
+		@Override
+		public Object handle(Request req, Response res) {
+			QueryParamsMap qm = req.queryMap();
+			String userName = qm.value("username");
+			String password = qm.value("password");
+			String first = qm.value("first_name");
+			String last = qm.value("last_name");
+			String email = qm.value("email");
+			String phone = qm.value("phone_number");
 
+			userName = userName.substring(1, userName.length() - 1);
+			password = password.substring(1, password.length() - 1);
+			first = first.substring(1, first.length() - 1);
+			last = last.substring(1, last.length() - 1);
+			email = email.substring(1, email.length() - 1);
+			phone = phone.substring(1, phone.length() - 1);
 
-        userName = userName.substring(1, userName.length() - 1);
-        password = password.substring(1, password.length() - 1);
-        first = first.substring(1, first.length() - 1);
-        last = last.substring(1, last.length() - 1);
-        email = email.substring(1, email.length() - 1);
-        phone = phone.substring(1, phone.length() - 1);
+			System.out.println("Hello");
+			List<String> toprint = new ArrayList<String>();
+			toprint.add(userName);
+			toprint.add(password);
+			toprint.add(first);
+			toprint.add(last);
+			toprint.add(email);
+			toprint.add(phone);
+			for (int i = 0; i < toprint.size(); i++) {
+				System.out.println(toprint.get(i));
+			}
+			System.out.println("after");
 
-        System.out.println("Hello");
-        List<String> toprint = new ArrayList<String>();
-        toprint.add(userName);
-        toprint.add(password);
-        toprint.add(first);
-        toprint.add(last);
-        toprint.add(email);
-        toprint.add(phone);
-        for(int i = 0; i < toprint.size(); i++){
-          System.out.println(toprint.get(i));
-        }
-        System.out.println("after");
+			UUID newID = UUID.randomUUID();
+			Boolean status = false;
+			try {
+				dbQuery.insertNewUser(newID.toString(), first, last, email,
+						phone, userName, password);
+				status = true;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 
-        UUID newID = UUID.randomUUID();
-        Boolean status = false;
-        try {
-        dbQuery.insertNewUser(newID.toString(), first, last, email, phone,
-            userName, password);
-          status = true;
-        } catch (SQLException e) {
-          e.printStackTrace();
-        }
-
-        return GSON.toJson(status);
-      }
-    }
+			return GSON.toJson(status);
+		}
+	}
 
 	private static class SubmitQuestionHandler implements Route {
 		@Override
