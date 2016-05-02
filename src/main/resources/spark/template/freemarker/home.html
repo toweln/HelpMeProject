@@ -17,8 +17,14 @@
 			<link rel="stylesheet" href="css/skel.css" />
 			<link rel="stylesheet" href="css/style.css" />
 		</noscript>
+		<style>
+      		#map {
+        		width: 90%;
+        		height: 400px;
+        		margin: 0 auto;}
+    	</style>
 	</head>
-	<body>
+	<body onload="init()">
 
 		<!-- Wrapper -->
 			<div class="wrapper style1">
@@ -49,7 +55,42 @@
 							</ul>
 						</nav>
 					</div>
+					
+					<!-- Geolocation and Map-->
+					<div id="map"></div>
+					<p id="error"></p>
+					
+					
+					<script>
+					var map;
+					var x = document.getElementById("error");
+					
+					function init() {
+					    if (navigator.geolocation) {
+					        var geo = navigator.geolocation.getCurrentPosition(showPosition);
+					    } else { 
+					        x.innerHTML = "Geolocation is not supported by this browser.";
+					    }
+					}
 
+					function showPosition(position) {
+						var lat = position.coords.latitude;
+						var lng = position.coords.longitude;
+					    x.innerHTML = "Latitude: " + lat + "<br>Longitude: " + lng;
+
+					    map = new google.maps.Map(document.getElementById('map'), {
+							center: {lat: lat, lng: lng},
+							zoom: 18
+				        });
+
+				        var currLoc = new google.maps.Marker({
+						    position: {lat: lat, lng: lng},
+						    map: map,
+						    title: 'Your current location!'
+						});
+					}
+					</script>
+					
 					<div id="banner" class="container">
 						<section>
 							<a href='/q_new'><div id='footer' class='wrapper style2'>Ask a new question!</div></a>
@@ -105,6 +146,6 @@
 					</div>
 		
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-		<script type="text/javascript" src="scripts.js"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRI318_aOYM3i8I7gogIvnbaB-el_S0Xo&callback=init" async defer></script>
 	</body>
 </html>

@@ -219,6 +219,7 @@ public class Main {
 		}
 	}
 
+<<<<<<< HEAD
 	/**
 	 * Handler for handling signups.
 	 * 
@@ -269,6 +270,57 @@ public class Main {
 			return GSON.toJson(status);
 		}
 	}
+=======
+   /** Handler for handling signups.
+   	* @author Jared
+   	*
+   	*/
+   private static class signupHandler implements Route {
+      @Override
+      public Object handle(Request req, Response res) {
+        QueryParamsMap qm = req.queryMap();
+        String userName = qm.value("username");
+        String password = qm.value("password");
+        String first = qm.value("first_name");
+        String last = qm.value("last_name");
+        String email = qm.value("email");
+        String phone = qm.value("phone_number");
+
+
+        userName = userName.substring(1, userName.length() - 1);
+        password = password.substring(1, password.length() - 1);
+        first = first.substring(1, first.length() - 1);
+        last = last.substring(1, last.length() - 1);
+        email = email.substring(1, email.length() - 1);
+        phone = phone.substring(1, phone.length() - 1);
+
+        System.out.println("Hello");
+        List<String> toprint = new ArrayList<String>();
+        toprint.add(userName);
+        toprint.add(password);
+        toprint.add(first);
+        toprint.add(last);
+        toprint.add(email);
+        toprint.add(phone);
+        for(int i = 0; i < toprint.size(); i++){
+          System.out.println(toprint.get(i));
+        }
+        System.out.println("after");
+
+        UUID newID = UUID.randomUUID();
+        Boolean status = false;
+        try {
+        dbQuery.insertNewUser(newID.toString(), first, last, email, phone,
+            userName, password);
+          status = true;
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
+
+        return GSON.toJson(status);
+      }
+    }
+>>>>>>> 42f5802963d302b6056cd386ccb6b886360fb492
 
 	private static class SubmitQuestionHandler implements Route {
 		@Override
