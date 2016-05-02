@@ -41,7 +41,7 @@
 		$.post("/login", login_object, function(response) {
 			login_valid = JSON.parse(response);
 			if (login_valid == true) {
-				window.location.href = "/home";
+				window.location.href = "/home.html";
 			} else {
 				$("#error").removeClass("hidden");
 			}
