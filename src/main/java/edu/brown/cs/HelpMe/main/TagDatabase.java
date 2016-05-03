@@ -6,6 +6,7 @@ import java.util.List;
 
 /**
  * the high-level database of tags.
+ * 
  * @author andrewjones
  *
  */
@@ -14,7 +15,7 @@ public class TagDatabase {
 	public static List<Discipline> tagTaxonomy;
 
 	/**
-	 * initliaze a database.
+	 * initialize a database.
 	 */
 	public TagDatabase() {
 		TagDatabase.tagTaxonomy = new ArrayList<>();
@@ -108,6 +109,7 @@ public class TagDatabase {
 
 	/**
 	 * get the taxonomy of tags.
+	 * 
 	 * @return list of disciplines which have subdisciplines.
 	 */
 	public List<Discipline> getTaxonomy() {

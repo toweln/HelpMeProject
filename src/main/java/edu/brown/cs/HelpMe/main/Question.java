@@ -50,6 +50,26 @@ public class Question {
 			}
 		}
 	}
+	
+	public Question(String title, String message, TagRating rating,
+			TagDatabase td) {
+		this.title = title;
+		this.message = message;
+		this.ID = UUID.randomUUID();
+		this.rating = rating;
+		this.wc = new WordCount(message);
+		this.td = td;
+
+		for (Discipline d : td.getTaxonomy()) {
+			if (rating.getRating().containsKey(d)) {
+				for (Tag t : d.getSubdisciplines()) {
+					if (rating.getRating().get(d).containsKey(t)) {
+						t.updateWordCount(message);
+					}
+				}
+			}
+		}
+	}
 
 	/**
 	 * get the question's title.

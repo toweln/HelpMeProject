@@ -81,9 +81,9 @@
 		var topicsJSON = JSON.stringify(topics);
 		var userInput = {username: usernameJSON, first_name: first_nameJSON, last_name: last_nameJSON, email: email_JSON, phone_number: phone_numberJSON, password: passwordJSON, topics: topicsJSON};
 		$.post("/newUser", userInput, function(response) {
-			responseObject = JSON.parse(responseJSON);
-			console.log(responseObject)
-			console.log(userInput.username);
+			// responseObject = JSON.parse(responseJSON);
+			// console.log(responseObject)
+			// console.log(userInput.username);
 		});
 		window.location.href = 'home.html';
 	}
