@@ -22,8 +22,8 @@
 	<div id='login-background'></div>
 	<div id='login-border'></div>
 	<div id='login-container'>
-		<center><img src='images/logo.png' id='helpme'></center>
-		<div id='login'>
+		<center><img src='images/logo.png' id='helpme' style='margin-top: -150px'></center>
+		<div id='login' style='margin-left: -100px'>
 		<form method="post" action="/home.html" style='margin-top: 50px'>
 			<center><div id='error' style='font-size: 24px; padding: 10px;'><b></b></div></center>
 			<input type='text' name='username' placeholder='Username' accept-charset="UTF-8" id='login-form'>
@@ -33,12 +33,132 @@
 			<input type='text' name='phone' placeholder='Phone Number' accept-charset="UTF-8" id='login-form'>
 			<input type='password' name='password' placeholder='Password' accept-charset="UTF-8" id='login-form' id='password1'>
 			<input type='password' name='password' placeholder='Confirm Password' accept-charset="UTF-8" id='login-form' autocomplete='false' id='password2'>
-			<input type='text' name='topics' placeholder='Topics you have experience in' accept-charset="UTF-8" id='login-form' autocomplete='false'>
+			<div id="tabs-container">
+			<center><p style='color: white; font-size: 24px; width: 500px; margin-top: 30px'>What areas do you have experience in?</p></center>
+		    <ul class="tabs-menu">
+		        <li class="current"><a href="#tab-1">Math</a></li>
+		        <li><a href="#tab-2">Science</a></li>
+		        <li><a href="#tab-3">Humanities</a></li>
+		        <li><a href="#tab-4">CS</a></li>
+		        <li><a href="#tab-5">History</a></li>
+		        <li><a href="#tab-6">Languages</a></li>
+		    </ul>
+		    <div class="tab">
+		        <div id="tab-1" class="tab-content">
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='algebra'>Algebra<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='calculus'>Calculus<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='de'>Differential Equations<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='discrete'>Discrete Math<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='geometry'>Geometry<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='linear'>Linear Algebra<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='probability'>Probability<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='multivar'>Multivariable Calculus<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='number'>Number Theory<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='set'>Set Theory<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='statistics'>Statistics<br>
+		        </div>
+		        <div id="tab-2" class="tab-content">
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='biochem'>Biochemistry<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='bio'>Biology<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='chem'>Chemistry<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='geo'>Geology<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='inorganic'>Inorganic Chemistry<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='materials'>Materials Science<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='microbio'>Microbiology<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='nutrition'>Nutrition<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='orgo'>Organic Chemistry<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='physics'>Physics<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='physiology'>Physiology<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='plant'>Plant Biology<br>
+		        </div>
+		        <div id="tab-3" class="tab-content">
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='art'>Art<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='art_history'>Art History<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='comm'>Communication<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='dance'>Dance<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='edu'>Education<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='english'>English<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='ethnic'>Ethnic Studies<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='film'>Film/Theater<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='gender'>Gender Studies<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='graphic'>Graphic Design<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='linguistics'>Linguistics<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='music'>Music<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='music_theory'>Music Theory<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='philosophy'>Philosophy<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='religious'>Religious Studies<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='writing'>Writing<br>
+		        </div>
+		        <div id="tab-4" class="tab-content">
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='arduino'>Arduino<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='ai'>Artificial Intelligence<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='c'>C<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='cpp'>C++<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='c_sharp'>C#<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='css'>CSS<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='graphics'>Computer Graphics<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='html'>HTML<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='java'>Java<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='js'>Javascript<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='jquery'>jQuery<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='lisp'>Lisp<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='ml'>Machine Learning<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='matlab'>MATLAB<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='perl'>Perl<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='php'>PHP<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='python'>Python<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='r'>R<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='ruby'>Ruby<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='sas'>SAS<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='scala'>Scala<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='sql'>SQL<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='stata'>Stata<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='vb'>Visual Basic<br>
+		        </div>
+		        <div id="tab-5" class="tab-content">
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='african'>African History<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='east_asian'>East Asian History<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='european'>European History<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='social'>Social History<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='us'>US History<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='world'>World History<br>
+		        </div>
+		        <div id="tab-6" class="tab-content">
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='asl'>American Sign Language<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='arabic'>Arabic<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='cantonese'>Cantonese<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='dutch'>Dutch<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='french'>French<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='german'>German<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='hebrew'>Hebrew<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='hindi'>Hindi<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='italian'>Italian<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='japanese'>Japanese<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='korean'>Korean<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='latin'>Latin<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='mandarin'>Mandarin<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='portugese'>Portugese<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='russian'>Russian<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='spanish'>Spanish<br>
+		            <input type='checkbox' name='topics' class='tag-checkbox' value='swahili'>Swahili<br>
+		        </div>
+		    </div>
+		</div>
 			<center><center style='margin-top: 20px'><a href="#" id='login-submit' class="button" style='height: 40px; padding-top: 7px; margin-top: -5px;'>Sign up</a></center>
 		</form>
 		</div>
 	</div>
 	<script>
+	$(document).ready(function() {
+	    $(".tabs-menu a").click(function(event) {
+	        event.preventDefault();
+	        $(this).parent().addClass("current");
+	        $(this).parent().siblings().removeClass("current");
+	        var tab = $(this).attr("href");
+	        $(".tab-content").not(tab).css("display", "none");
+	        $(tab).fadeIn();
+	    });
+	});
 	$("#login-submit").click(function() {
 		if (/^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i.test($("input[name='email']").val())) {
 			if (valid_phone($("input[name='phone']").val())) {

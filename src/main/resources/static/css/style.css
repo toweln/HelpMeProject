@@ -162,13 +162,6 @@
 		min-height: 14em;
 	}
 
-	select {
-		margin-top: 2mm;
-		width: 500px;
-		height: 30px;
-		position: relative;
-	}
-
 	input[type="text"],
 	input[type="password"],
 	input[type="email"],
@@ -906,4 +899,61 @@
 
 	.hidden {
 		display: none;
+	}
+
+	.tabs-menu {
+    height: 30px;
+    float: left;
+    clear: both;
+    width: 500px;
+    margin-top: -20px;
+}
+
+	.tabs-menu li {
+	    height: 30px;
+	    line-height: 30px;
+	    float: left;
+	    margin-right: 3px;
+	    background-color: #600;
+	    border-top: 1px solid #d4d4d1;
+	    border-right: 1px solid #d4d4d1;
+	    border-left: 1px solid #d4d4d1;
+	}
+
+	.tabs-menu li.current {
+	    position: relative;
+	    background-color: #fff;
+	    border-bottom: 1px solid #fff;
+	    z-index: 5;
+	}
+
+	.tabs-menu li a {
+	    padding: 10px;
+	    color: #fff;
+	    text-decoration: none; 
+	    font-size: 16px;
+	}
+
+	.tabs-menu .current a {
+	    color: #700;
+	}
+
+	.tab {
+	    border: 1px solid #d4d4d1;
+	    background-color: #fff;
+	    float: left;
+	    margin-bottom: 30px;
+	    width: 500px;
+	    margin-top: -33px;
+	    font-size: 18px;
+	}
+
+	.tab-content {
+	    width:500px;
+	    padding: 20px;
+	    display: none;
+	}
+
+	#tab-1 {
+	 display: block;   
 	}
