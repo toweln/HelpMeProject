@@ -415,6 +415,24 @@ public class SQLQueries {
 		return leaders;
 	}
 
+	/**
+	 * get all ids of all current questions in the db.
+	 * 
+	 * @return list of strings for all ids of questions.
+	 * @throws SQLException
+	 *             if the database doesn't exist.
+	 */
+	public List<String> getAllQIDs() throws SQLException {
+		String query = "select request_id from requests;";
+		PreparedStatement stat = conn.prepareStatement(query);
+		ResultSet rs = stat.executeQuery();
+		List<String> qIDs = new ArrayList<>();
+		while (rs.next()) {
+			qIDs.add(rs.getString(1));
+		}
+		return qIDs;
+	}
+
 	public void updateRequestBody(String reqid, String body)
 			throws SQLException {
 		String query = "UPDATE requests SET body=? WHERE request_id=?";

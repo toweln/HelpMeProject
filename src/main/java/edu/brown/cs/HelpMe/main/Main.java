@@ -121,6 +121,7 @@ public class Main {
 		Spark.get("/q.html", new SubmittedQuestion(), freeMarker);
 		Spark.get("/profile.html", new ProfileHandler(), freeMarker);
 		Spark.get("/settings.html", new SettingsHandler(), freeMarker);
+		Spark.post("/sortedQs", new SortedQuestionHandler());
 		// Spark.post("/newUser", new signupHandler());
 	}
 
@@ -251,6 +252,23 @@ public class Main {
 			}
 
 			return GSON.toJson(status);
+		}
+	}
+
+	private static class SortedQuestionHandler implements Route {
+		@Override
+		public Object handle(Request req, Response res) {
+			QueryParamsMap qm = req.queryMap();
+			TagDatabase td = new TagDatabase();
+			TutorCompatibility tc = new TutorCompatibility(td);
+			List<Question> sortedQuestions = new ArrayList<>();
+			try {
+				sortedQuestions = tc.getSortedQuestions(userID);
+			} catch (SQLException e) {
+				System.out.println("ERROR: Database does not exist");
+			}
+
+			return GSON.toJson(sortedQuestions);
 		}
 	}
 

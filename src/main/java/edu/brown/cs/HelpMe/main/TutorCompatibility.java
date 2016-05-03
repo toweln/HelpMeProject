@@ -276,8 +276,10 @@ public class TutorCompatibility {
 		return sortedCompats;
 	}
 
-	public List<Question> getSortedQuestions(String userID, List<String> qIDs) throws SQLException {
+	public List<Question> getSortedQuestions(String userID)
+			throws SQLException {
 		Map<Question, Double> unsortedCompats = new HashMap<>();
+		List<String> qIDs = dbQuery.getAllQIDs();
 		for (String qID : qIDs) {
 			Question q = dbQuery.makeQuestion(qID);
 			double currCompat = getOverallCompatibility(userID, qID);
