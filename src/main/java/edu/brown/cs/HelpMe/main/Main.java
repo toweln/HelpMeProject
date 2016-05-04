@@ -49,7 +49,7 @@ public class Main {
 	}
 
 	private void run() throws SQLException {
-	  userID = "";
+		userID = "";
 		OptionParser parser = new OptionParser();
 		String database = "smallDb.sqlite3";
 		try {
@@ -218,62 +218,64 @@ public class Main {
 	}
 
 	private class SubmittedQuestion implements TemplateViewRoute {
-    @Override
-    public ModelAndView handle(Request req, Response res) {
-      QueryParamsMap qm = req.queryMap();
-      String questionTitle = qm.value("title");
-      String questionMessage = qm.value("message");
-      //String tags = qm.value("tags");
+		@Override
+		public ModelAndView handle(Request req, Response res) {
+			QueryParamsMap qm = req.queryMap();
+			String questionTitle = qm.value("title");
+			String questionMessage = qm.value("message");
+			// String tags = qm.value("tags");
 
-     // List<String> lTags = Arrays.asList(tags.split("\\s*,\\s*"));
-      System.out.println(questionTitle);
+			// List<String> lTags = Arrays.asList(tags.split("\\s*,\\s*"));
+			System.out.println(questionTitle);
 
-      String reqid = UUID.randomUUID().toString();
-      System.out.println(userID);
-      try {
-        dbQuery.insertNewRequest(reqid, userID, "", "", null, questionTitle,
-            questionMessage, "", "", "", "", "");
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
+			String reqid = UUID.randomUUID().toString();
+			System.out.println(userID);
+			try {
+				dbQuery.insertNewRequest(reqid, userID, "", "", null,
+						questionTitle, questionMessage, "", "", "", "", "");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 
-      Map<String, String> variables = ImmutableMap.of("title", "HelpMe!",
-          "questionTitle", questionTitle, "questionMessage", questionMessage);
-      return new ModelAndView(variables, "q.html");
-    }
-  }
+			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!",
+					"questionTitle", questionTitle, "questionMessage",
+					questionMessage);
+			return new ModelAndView(variables, "q.html");
+		}
+	}
 
-  /**
-   * Handler to login in users. Checks if the supplied information corresponds
-   * to an actual user.
-   * @author Jared
-   */
-  private static class LoginHandler implements Route {
-    @Override
-    public Object handle(Request req, Response res) {
-      QueryParamsMap qm = req.queryMap();
-      String userName = qm.value("username");
-      String password = qm.value("password");
-      userName = userName.substring(1, userName.length() - 1);
-      password = password.substring(1, password.length() - 1);
-      System.out.println(userName);
-      System.out.println(password);
-      String status = "";
-      Boolean ret = true;
-      try {
-        status = dbQuery.certifyLogin(userName, password);
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
-      if (status.equals("")) {
-        ret = false;
-        System.out.println("false");
-      } else {
-        userID = status;
-      }
-      return GSON.toJson(ret);
-    }
-  }
+	/**
+	 * Handler to login in users. Checks if the supplied information corresponds
+	 * to an actual user.
+	 * 
+	 * @author Jared
+	 */
+	private static class LoginHandler implements Route {
+		@Override
+		public Object handle(Request req, Response res) {
+			QueryParamsMap qm = req.queryMap();
+			String userName = qm.value("username");
+			String password = qm.value("password");
+			userName = userName.substring(1, userName.length() - 1);
+			password = password.substring(1, password.length() - 1);
+			System.out.println(userName);
+			System.out.println(password);
+			String status = "";
+			Boolean ret = true;
+			try {
+				status = dbQuery.certifyLogin(userName, password);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			if (status.equals("")) {
+				ret = false;
+				System.out.println("false");
+			} else {
+				userID = status;
+			}
+			return GSON.toJson(ret);
+		}
+	}
 
 	private static class SortedQuestionHandler implements Route {
 		@Override
@@ -292,53 +294,54 @@ public class Main {
 		}
 	}
 
-   * Handler for handling signups. Returns true if signup was successful, false
-   * otherwise.
-   * @author Jared
-   *
-   */
-  private static class signupHandler implements Route {
-    @Override
-    public Object handle(Request req, Response res) {
-      QueryParamsMap qm = req.queryMap();
-      String userName = qm.value("username");
-      String password = qm.value("password");
-      String first = qm.value("first_name");
-      String last = qm.value("last_name");
-      String email = qm.value("email");
-      String phone = qm.value("phone_number");
-      String topics = qm.value("topics");
+	/**
+	 * Handler forhandling signups.Returns true if signup was
+	 * successful,false*otherwise.
+	 * 
+	 * @author Jared
+	 *
+	 */
+	private static class signupHandler implements Route {
+		@Override
+		public Object handle(Request req, Response res) {
+			QueryParamsMap qm = req.queryMap();
+			String userName = qm.value("username");
+			String password = qm.value("password");
+			String first = qm.value("first_name");
+			String last = qm.value("last_name");
+			String email = qm.value("email");
+			String phone = qm.value("phone_number");
+			String topics = qm.value("topics");
 			List<String> topicsList = Arrays.asList(topics
 					.substring(1, topics.length() - 1).split("\\s*,\\s*"));
 
-      userName = userName.substring(1, userName.length() - 1);
-      password = password.substring(1, password.length() - 1);
-      first = first.substring(1, first.length() - 1);
-      last = last.substring(1, last.length() - 1);
-      email = email.substring(1, email.length() - 1);
-      phone = phone.substring(1, phone.length() - 1);
-      topics = topics.substring(1, topics.length() - 1);
+			userName = userName.substring(1, userName.length() - 1);
+			password = password.substring(1, password.length() - 1);
+			first = first.substring(1, first.length() - 1);
+			last = last.substring(1, last.length() - 1);
+			email = email.substring(1, email.length() - 1);
+			phone = phone.substring(1, phone.length() - 1);
+			topics = topics.substring(1, topics.length() - 1);
 
-      UUID newID = UUID.randomUUID();
-      Boolean status = false;
-      try {
-        status = dbQuery.insertNewUser(newID.toString(), first, last, email,
-            phone, userName, password);
-        dbQuery.insertUserExpertise(topicsList, newID.toString());
-        if (status) {
-          userID = newID.toString();
-          System.out.println("new user success");
-        } else {
-          System.out.println("user fail");
-        }
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
+			UUID newID = UUID.randomUUID();
+			Boolean status = false;
+			try {
+				status = dbQuery.insertNewUser(newID.toString(), first, last,
+						email, phone, userName, password);
+				dbQuery.insertUserExpertise(topicsList, newID.toString());
+				if (status) {
+					userID = newID.toString();
+					System.out.println("new user success");
+				} else {
+					System.out.println("user fail");
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 
-      return GSON.toJson(status);
-    }
-  }
->>>>>>> cf50f79b62121516d17ea6458f0c06bff0e652e0
+			return GSON.toJson(status);
+		}
+	}
 
 	private static class SubmitQuestionHandler implements Route {
 		@Override
@@ -392,21 +395,22 @@ public class Main {
 	}
 
 	/**
-   * Handler for checking if a user is logged in. Returns true if a user is
-   * logged in, false otherwise.
-   * @author Jared
-   *
-   */
-  private static class checkLoginHandler implements Route {
-    @Override
-    public Object handle(Request req, Response res) {
-      boolean logged = false;
-      if (userID.length() >= 1) {
-        logged = true;
-      }
-      return GSON.toJson(logged);
-    }
-  }
+	 * Handler for checking if a user is logged in. Returns true if a user is
+	 * logged in, false otherwise.
+	 * 
+	 * @author Jared
+	 *
+	 */
+	private static class checkLoginHandler implements Route {
+		@Override
+		public Object handle(Request req, Response res) {
+			boolean logged = false;
+			if (userID.length() >= 1) {
+				logged = true;
+			}
+			return GSON.toJson(logged);
+		}
+	}
 
 	private static class ExceptionPrinter implements ExceptionHandler {
 		@Override
