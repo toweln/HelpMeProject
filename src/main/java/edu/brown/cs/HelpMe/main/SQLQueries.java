@@ -10,12 +10,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * SQLQueries class. Handles calling queries which are used in other areas of
  * helpMe.
- * 
+ *
  * @author jplee
  */
 public class SQLQueries {
@@ -34,7 +33,7 @@ public class SQLQueries {
 	/**
 	 * SQLQueries constructor that handles setting up the connection to the
 	 * database. Gets data from the db which is used by the other classes.
-	 * 
+	 *
 	 * @param db
 	 *            Path to database file.
 	 * @throws ClassNotFoundException
@@ -153,7 +152,7 @@ public class SQLQueries {
 	/**
 	 * Given an String representation of a req's tags, return the list of
 	 * strings which are the actual tags in words.
-	 * 
+	 *
 	 * @param discipline
 	 *            Whichever discipline the request belongs to.
 	 * @param tagInfo
@@ -170,7 +169,7 @@ public class SQLQueries {
 
 	/**
 	 * Helper method for getTagsFromString.
-	 * 
+	 *
 	 * @param disc
 	 *            Discipline the request belongs to
 	 * @param tags
@@ -204,7 +203,7 @@ public class SQLQueries {
 
 	/**
 	 * Converts a list of tags into a string of taginfo.
-	 * 
+	 *
 	 * @param disc
 	 *            the discipline the request falls under
 	 * @param tags
@@ -230,32 +229,67 @@ public class SQLQueries {
 		return Double.toString(ret);
 	}
 
-	public void insertNewUser(String userid, String first, String last,
-			String email, String phoneNumber, String userName, String pw)
-			throws SQLException {
-		String query = "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?)";
-		PreparedStatement stat = conn.prepareStatement(query);
-		List<String> toprint = new ArrayList<String>();
-		toprint.add(userName);
-		toprint.add(pw);
-		toprint.add(first);
-		toprint.add(last);
-		toprint.add(email);
-		toprint.add(phoneNumber);
-		for (int i = 0; i < toprint.size(); i++) {
-			System.out.println(toprint.get(i));
-		}
-		stat.setString(1, userid);
-		stat.setString(2, first);
-		stat.setString(3, last);
-		stat.setString(4, email);
-		stat.setString(5, phoneNumber);
-		stat.setString(6, userName);
-		stat.setString(7, pw);
-		int test = stat.executeUpdate();
-		// conn.commit();
-		System.out.println(test);
-	}
+	public Boolean emailUnique(String email) throws SQLException{
+    String query = "SELECT COUNT(*) FROM users WHERE users.email_address = ?";
+    PreparedStatement stat = conn.prepareStatement(query);
+    stat.setString(1, email);
+    ResultSet results = stat.executeQuery();
+    int ret = results.getInt(1);
+    System.out.println("ret");
+    System.out.println(ret);
+    if(ret != 0){
+      return false;
+    }
+    return true;
+  }
+
+  public Boolean userUnique(String user) throws SQLException{
+    String query = "SELECT COUNT(*) FROM users WHERE users.username = ?";
+    PreparedStatement stat = conn.prepareStatement(query);
+    stat.setString(1, user);
+    ResultSet results = stat.executeQuery();
+    int ret = results.getInt(1);
+    System.out.println("ret");
+    System.out.println(ret);
+    if(ret != 0){
+      return false;
+    }
+    return true;
+  }
+
+
+  public Boolean insertNewUser(String userid, String first, String last,
+      String email, String phoneNumber, String userName, String pw) throws SQLException {
+    if(!emailUnique(email)){
+      return false;
+    }
+    if(!userUnique(userName)){
+      return false;
+    }
+    String query = "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?)";
+    PreparedStatement stat = conn.prepareStatement(query);
+    List<String> toprint = new ArrayList<String>();
+    toprint.add(userName);
+    toprint.add(pw);
+    toprint.add(first);
+    toprint.add(last);
+    toprint.add(email);
+    toprint.add(phoneNumber);
+    for(int i = 0; i < toprint.size(); i++){
+      System.out.println(toprint.get(i));
+    }
+    stat.setString(1, userid);
+    stat.setString(2, first);
+    stat.setString(3, last);
+    stat.setString(4, email);
+    stat.setString(5, phoneNumber);
+    stat.setString(6, userName);
+    stat.setString(7, pw);
+   int test =  stat.executeUpdate();
+   //conn.commit();
+   System.out.println(test);
+   return true;
+  }
 
 	public void insertUserExpertise(List<String> topics, String userID)
 			throws SQLException {
@@ -291,7 +325,7 @@ public class SQLQueries {
 
 	/**
 	 * form a question object from the request's id.
-	 * 
+	 *
 	 * @param qID
 	 *            the request id.
 	 * @return the question object.
@@ -417,7 +451,7 @@ public class SQLQueries {
 
 	/**
 	 * get all ids of all current questions in the db.
-	 * 
+	 *
 	 * @return list of strings for all ids of questions.
 	 * @throws SQLException
 	 *             if the database doesn't exist.
@@ -486,32 +520,47 @@ public class SQLQueries {
 		return ret;
 	}
 
+	public String getIdFromUserName(String user) throws SQLException {
+    String query = "SELECT user_id FROM users WHERE username=?";
+    PreparedStatement stat = conn.prepareStatement(query);
+    stat.setString(1, user);
+    ResultSet results = stat.executeQuery();
+    String ret = results.getString(1);
+    return ret;
+  }
+
 	public String getPasswordFromUserName(String user) throws SQLException {
-		String query = "SELECT password FROM users WHERE username=?";
-		PreparedStatement stat = conn.prepareStatement(query);
-		stat.setString(1, user);
-		ResultSet results = stat.executeQuery();
-		String ret = results.getString(1);
-		return ret;
-	}
+    String query = "SELECT password FROM users WHERE username=?";
+    PreparedStatement stat = conn.prepareStatement(query);
+    stat.setString(1, user);
+    ResultSet results = stat.executeQuery();
+    String ret = results.getString(1);
+    return ret;
+  }
 
-	public boolean certifyLogin(String userName, String pw)
-			throws SQLException {
-		String password = "";
-		if (userName.contains("@")) {
-			password = getPasswordFromEmail(userName);
-		} else {
-			password = getPasswordFromUserName(userName);
-		}
-		if (password.equals(pw)) {
-			return true;
-		}
-		return false;
-	}
+	public String certifyLogin(String userName, String pw) throws SQLException {
+    System.out.println(userName);
+    System.out.println(pw);
 
+	  String password = "";
+    String id = "";
+    if (userName.contains("@")) {
+      password = getPasswordFromEmail(userName);
+      id = getIdFromEmail(userName);
+    } else {
+      password = getPasswordFromUserName(userName);
+      id = getIdFromUserName(userName);
+    }
+    System.out.println(pw);
+    System.out.println(password);
+    if (password.equals(pw)) {
+      return id;
+    }
+    return "";
+  }
 	/**
 	 * function that closes the connection.
-	 * 
+	 *
 	 * @throws SQLException
 	 *             SQL error.
 	 */
@@ -521,7 +570,7 @@ public class SQLQueries {
 
 	/*  *//**
 			 * Gets all actors from the database.
-			 * 
+			 *
 			 * @return List of all actor names.
 			 * @throws SQLException
 			 *             SQL error.
@@ -535,7 +584,7 @@ public class SQLQueries {
 	 * return toReturn; }
 	 *//**
 		 * Given an actor's name, get their ID.
-		 * 
+		 *
 		 * @param name
 		 *            The name of an actor.
 		 * @return The actor's ID.
@@ -551,7 +600,7 @@ public class SQLQueries {
 	 * results.getString(1); } stat.close(); results.close(); return toReturn; }
 	 *//**
 		 * Given an actor's ID, get their name.
-		 * 
+		 *
 		 * @param id
 		 *            The name of an actor.
 		 * @return The actor's ID.
@@ -567,7 +616,7 @@ public class SQLQueries {
 	 * results.getString(1); } stat.close(); results.close(); return toReturn; }
 	 *//**
 		 * Query that given an film's id, returns the film's name.
-		 * 
+		 *
 		 * @param id
 		 *            The id of an actor.
 		 * @return The actor's ID.
@@ -583,7 +632,7 @@ public class SQLQueries {
 	 * stat.close(); results.close(); return toReturn; }
 	 *//**
 		 * Given a film's name, return the id.
-		 * 
+		 *
 		 * @param name
 		 *            The id of an actor.
 		 * @return The actor's ID.
@@ -600,7 +649,7 @@ public class SQLQueries {
 	 *//**
 		 * Given an aactorID, returns the filmID's of the films the actor has
 		 * been in.
-		 * 
+		 *
 		 * @param actorID
 		 *            actor's ID
 		 * @return A List of filmIDs that the actor has been in.
@@ -619,7 +668,7 @@ public class SQLQueries {
 	 * return toReturn; }
 	 *//**
 		 * Given a film's ID, return the list of actor id in the film.
-		 * 
+		 *
 		 * @param filmID
 		 *            A film's ID.
 		 * @return A List of actors that are in a film.
@@ -637,7 +686,7 @@ public class SQLQueries {
 	 *//**
 		 * Given a film id, and a letter to match to, return the actor ID from
 		 * the film who fulfill the caveat.
-		 * 
+		 *
 		 * @param firstChar
 		 *            A character for caveat.
 		 * @param filmID
@@ -658,7 +707,7 @@ public class SQLQueries {
 	 * toReturn.add(results.getString(1)); } return toReturn; }
 	 *//**
 		 * Given an actorID and actorName, insert into the actor table
-		 * 
+		 *
 		 * @param actorID
 		 *            actor id
 		 * @param actorName
@@ -676,7 +725,7 @@ public class SQLQueries {
 	 * stat2.executeQuery(); }
 	 *//**
 		 * Given an actorID and actorName, insert into the actor table
-		 * 
+		 *
 		 * @param actorID
 		 *            actor id
 		 * @param actorName
@@ -694,7 +743,7 @@ public class SQLQueries {
 	 * stat2.executeQuery(); }
 	 *//**
 		 * Given a movie and a film, remove the link between the two.
-		 * 
+		 *
 		 * @param movieName
 		 *            The name of the movie
 		 * @param actorName
@@ -710,7 +759,7 @@ public class SQLQueries {
 	 * getActorIDFromNameQuery(actorName)); stat.executeQuery(); }
 	 *//**
 		 * Given an actor and a film, insert a link between the two.
-		 * 
+		 *
 		 * @param actorName
 		 *            The name of the actor
 		 * @param filmName
@@ -727,7 +776,7 @@ public class SQLQueries {
 	 *//**
 		 * query that counts the number of actors starring in a given film (used
 		 * to calculate weight of a movie edge).
-		 * 
+		 *
 		 * @param filmID
 		 *            ID of a film.
 		 * @return toReturn int count of the number of actors in the film.
