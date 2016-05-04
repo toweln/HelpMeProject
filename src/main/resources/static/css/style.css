@@ -658,8 +658,8 @@
 		padding: 3em 2em;
 		background: #FFF;
 		text-align: center;
-		border-radius: 0px 0px 6px 6px;
-		border-width: 0 1px 1px 1px;
+		border-radius: 6px 0px 6px 6px;
+		border-width: 1px 1px 1px 1px;
 		border-style: solid;
 		border-color: black;
 	}
@@ -687,6 +687,10 @@
 	.tag:hover {
 		background: #1A7ACF;
 		color: white;
+	}
+
+	.4u {
+		clear: left;
 	}
 	
 	#nextpage {
