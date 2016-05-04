@@ -421,8 +421,11 @@ public class SQLQueries {
 		stat.setString(1, reqid);
 		stat.setString(2, tuteeid);
 		stat.setString(3, tutorid);
+
 		stat.setString(4, disc);
-		String nTags = this.tagsToString(disc, tags);
+		//Still need to figure out what's going on with tags and stuff
+		//String nTags = this.tagsToString(disc, tags);
+		String nTags = "";
 		stat.setString(5, nTags);
 		stat.setString(6, summary);
 		stat.setString(7, body);

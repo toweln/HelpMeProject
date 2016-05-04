@@ -223,15 +223,15 @@ public class Main {
       QueryParamsMap qm = req.queryMap();
       String questionTitle = qm.value("title");
       String questionMessage = qm.value("message");
-      String tags = qm.value("tags");
+      //String tags = qm.value("tags");
 
-      List<String> lTags = Arrays.asList(tags.split("\\s*,\\s*"));
+     // List<String> lTags = Arrays.asList(tags.split("\\s*,\\s*"));
       System.out.println(questionTitle);
 
       String reqid = UUID.randomUUID().toString();
       System.out.println(userID);
       try {
-        dbQuery.insertNewRequest(reqid, userID, "", "", lTags, questionTitle,
+        dbQuery.insertNewRequest(reqid, userID, "", "", null, questionTitle,
             questionMessage, "", "", "", "", "");
       } catch (SQLException e) {
         e.printStackTrace();
