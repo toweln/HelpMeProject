@@ -292,7 +292,7 @@ public class Main {
 			String topics = qm.value("topics");
 			List<String> topicsList = Arrays.asList(topics.split(","));
 
-			// System.out.println("Middle");
+			System.out.println("TOPICS: " + topics);
 
 			userName = userName.substring(1, userName.length() - 1);
 			// System.out.println("After username");
