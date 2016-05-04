@@ -267,7 +267,7 @@ public class SQLQueries {
 		sbTags.append("(user_id, ");
 		sbRatings.append("('" + userID + "',");
 		for (String t : topics) {
-			sbTags.append(t.replaceAll("^\"|\"$", ""));
+			sbTags.append(t);
 			sbTags.append(",");
 			sbRatings.append("1");
 			sbRatings.append(",");
@@ -281,12 +281,9 @@ public class SQLQueries {
 		ratingsList += ")";
 
 		query += (tagList + " VALUES " + ratingsList);
-		// System.out.println(query);
+		System.out.println(query);
 		PreparedStatement stat = conn.prepareStatement(query);
-		int test = stat.executeUpdate();
-
-		// stat.setString(1, tagList);
-		// stat.setString(2, ratingsList);
+		stat.executeUpdate();
 	}
 
 	/**

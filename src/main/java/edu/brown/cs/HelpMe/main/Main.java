@@ -281,7 +281,6 @@ public class Main {
 	private static class signupHandler implements Route {
 		@Override
 		public Object handle(Request req, Response res) {
-			// System.out.println("SIGNUP HANDLER");
 			QueryParamsMap qm = req.queryMap();
 			String userName = qm.value("username");
 			String password = qm.value("password");
@@ -290,26 +289,17 @@ public class Main {
 			String email = qm.value("email");
 			String phone = qm.value("phone_number");
 			String topics = qm.value("topics");
-			List<String> topicsList = Arrays.asList(topics.split(","));
-
-			System.out.println("TOPICS: " + topics);
+			List<String> topicsList = Arrays.asList(topics
+					.substring(1, topics.length() - 1).split("\\s*,\\s*"));
 
 			userName = userName.substring(1, userName.length() - 1);
-			// System.out.println("After username");
 			password = password.substring(1, password.length() - 1);
-			// System.out.println("After pwd");
 			first = first.substring(1, first.length() - 1);
-			// System.out.println("After first");
 			last = last.substring(1, last.length() - 1);
-			// System.out.println("After last");
 			email = email.substring(1, email.length() - 1);
-			// System.out.println("After email");
 			phone = phone.substring(1, phone.length() - 1);
-			// System.out.println("After phone");
 			topics = topics.substring(1, topics.length() - 1);
-			// System.out.println("After topics");
 
-			// System.out.println("Hello");
 			List<String> toprint = new ArrayList<String>();
 			toprint.add(userName);
 			toprint.add(password);
@@ -317,11 +307,9 @@ public class Main {
 			toprint.add(last);
 			toprint.add(email);
 			toprint.add(phone);
-			// System.out.println("SIZE: " + toprint.size());
 			for (int i = 0; i < toprint.size(); i++) {
 				System.out.println(toprint.get(i));
 			}
-			// System.out.println("after");
 
 			UUID newID = UUID.randomUUID();
 			Boolean status = false;
