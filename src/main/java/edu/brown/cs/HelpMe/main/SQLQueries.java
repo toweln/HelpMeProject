@@ -29,6 +29,7 @@ public class SQLQueries {
 	private List<String> histDisc;
 	private Map<String, String> discMap;
 	private List<String> allDisc;
+	private Map<String, Map<String, Integer>> existingCounts;
 
 	/**
 	 * SQLQueries constructor that handles setting up the connection to the
@@ -45,6 +46,7 @@ public class SQLQueries {
 		Class.forName("org.sqlite.JDBC");
 		conn = DriverManager.getConnection("jdbc:sqlite:" + db);
 		// conn.setAutoCommit(false);
+		existingCounts = new HashMap<>();
 		conn.createStatement();
 		mathDisc = new ArrayList<String>();
 		sciDisc = new ArrayList<String>();
@@ -98,6 +100,7 @@ public class SQLQueries {
 		humDisc.add("Linguistics");
 		humDisc.add("Music");
 		humDisc.add("Philosophy");
+		humDisc.add("Art");
 		humDisc.add("Art History");
 		humDisc.add("English");
 		humDisc.add("Ethnic Studies");
@@ -229,67 +232,67 @@ public class SQLQueries {
 		return Double.toString(ret);
 	}
 
-	public Boolean emailUnique(String email) throws SQLException{
-    String query = "SELECT COUNT(*) FROM users WHERE users.email_address = ?";
-    PreparedStatement stat = conn.prepareStatement(query);
-    stat.setString(1, email);
-    ResultSet results = stat.executeQuery();
-    int ret = results.getInt(1);
-    System.out.println("ret");
-    System.out.println(ret);
-    if(ret != 0){
-      return false;
-    }
-    return true;
-  }
+	public Boolean emailUnique(String email) throws SQLException {
+		String query = "SELECT COUNT(*) FROM users WHERE users.email_address = ?";
+		PreparedStatement stat = conn.prepareStatement(query);
+		stat.setString(1, email);
+		ResultSet results = stat.executeQuery();
+		int ret = results.getInt(1);
+		System.out.println("ret");
+		System.out.println(ret);
+		if (ret != 0) {
+			return false;
+		}
+		return true;
+	}
 
-  public Boolean userUnique(String user) throws SQLException{
-    String query = "SELECT COUNT(*) FROM users WHERE users.username = ?";
-    PreparedStatement stat = conn.prepareStatement(query);
-    stat.setString(1, user);
-    ResultSet results = stat.executeQuery();
-    int ret = results.getInt(1);
-    System.out.println("ret");
-    System.out.println(ret);
-    if(ret != 0){
-      return false;
-    }
-    return true;
-  }
+	public Boolean userUnique(String user) throws SQLException {
+		String query = "SELECT COUNT(*) FROM users WHERE users.username = ?";
+		PreparedStatement stat = conn.prepareStatement(query);
+		stat.setString(1, user);
+		ResultSet results = stat.executeQuery();
+		int ret = results.getInt(1);
+		System.out.println("ret");
+		System.out.println(ret);
+		if (ret != 0) {
+			return false;
+		}
+		return true;
+	}
 
-
-  public Boolean insertNewUser(String userid, String first, String last,
-      String email, String phoneNumber, String userName, String pw) throws SQLException {
-    if(!emailUnique(email)){
-      return false;
-    }
-    if(!userUnique(userName)){
-      return false;
-    }
-    String query = "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?)";
-    PreparedStatement stat = conn.prepareStatement(query);
-    List<String> toprint = new ArrayList<String>();
-    toprint.add(userName);
-    toprint.add(pw);
-    toprint.add(first);
-    toprint.add(last);
-    toprint.add(email);
-    toprint.add(phoneNumber);
-    for(int i = 0; i < toprint.size(); i++){
-      System.out.println(toprint.get(i));
-    }
-    stat.setString(1, userid);
-    stat.setString(2, first);
-    stat.setString(3, last);
-    stat.setString(4, email);
-    stat.setString(5, phoneNumber);
-    stat.setString(6, userName);
-    stat.setString(7, pw);
-   int test =  stat.executeUpdate();
-   //conn.commit();
-   System.out.println(test);
-   return true;
-  }
+	public Boolean insertNewUser(String userid, String first, String last,
+			String email, String phoneNumber, String userName, String pw)
+			throws SQLException {
+		if (!emailUnique(email)) {
+			return false;
+		}
+		if (!userUnique(userName)) {
+			return false;
+		}
+		String query = "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?)";
+		PreparedStatement stat = conn.prepareStatement(query);
+		List<String> toprint = new ArrayList<String>();
+		toprint.add(userName);
+		toprint.add(pw);
+		toprint.add(first);
+		toprint.add(last);
+		toprint.add(email);
+		toprint.add(phoneNumber);
+		for (int i = 0; i < toprint.size(); i++) {
+			System.out.println(toprint.get(i));
+		}
+		stat.setString(1, userid);
+		stat.setString(2, first);
+		stat.setString(3, last);
+		stat.setString(4, email);
+		stat.setString(5, phoneNumber);
+		stat.setString(6, userName);
+		stat.setString(7, pw);
+		int test = stat.executeUpdate();
+		// conn.commit();
+		System.out.println(test);
+		return true;
+	}
 
 	public void insertUserExpertise(List<String> topics, String userID)
 			throws SQLException {
@@ -330,22 +333,39 @@ public class SQLQueries {
 	 *             if the databse doesn't exist.
 	 */
 	public Question makeQuestion(String qID) throws SQLException {
-		String query = "SELECT body, rating FROM requests WHERE request_id = ?;";
+		String query = "SELECT body, tags FROM requests WHERE request_id = ?;";
 		PreparedStatement stat = conn.prepareStatement(query);
 		stat.setString(1, qID);
+		// System.out.println("ID: " + qID);
 		ResultSet rs = stat.executeQuery();
 		String body = "";
-		String rating = "";
+		String tags = "";
 		while (rs.next()) {
 			body = rs.getString(1);
-			rating = rs.getString(2);
+			tags = rs.getString(2);
+			// System.out.println("TAGS: " + tags);
+			// System.out.println("BODY: " + body);
 		}
-		System.out.println("RATING: " + rating);
+
 		rs.close();
 		// List<String> qBodyWords = Arrays.asList(body.split("\\s+"));
-		List<String> qTags = Arrays.asList(rating.split("\\s+"));
+		List<String> qTags = Arrays.asList(tags.split("\\s*,\\s*"));
 		Map<String, Map<String, Double>> qoverallRating = new HashMap<>();
 		for (String tag : qTags) {
+			if (tag.equals("")) {
+				continue;
+			}
+			tag = tag.replaceAll("^\"|\"$", "");
+			String[] splitStr = tag.split("_");
+			StringBuilder sb = new StringBuilder();
+			for (String s : splitStr) {
+				// System.out.println(s);
+				sb.append(s.substring(0, 1).toUpperCase() + s.substring(1));
+				sb.append(" ");
+			}
+			String finalTag = sb.toString();
+			tag = finalTag.substring(0, finalTag.length() - 1);
+			// System.out.println(tag);
 			String currDisc = discMap.get(tag);
 			if (qoverallRating.containsKey(currDisc)) {
 				qoverallRating.get(currDisc).put(tag, 1.0);
@@ -355,11 +375,177 @@ public class SQLQueries {
 				qoverallRating.get(currDisc).put(tag, 1.0);
 			}
 		}
-		System.out.println(qoverallRating);
+		// System.out.println(qoverallRating);
 		TagDatabase td = new TagDatabase();
 		TagRating trq = new TagRating(qoverallRating, td);
 		Question q = new Question("", body, trq, td);
 		return q;
+	}
+
+	public void setExistingWC(Map<String, Map<String, Integer>> ex) {
+		this.existingCounts = ex;
+	}
+
+	// public void updateExistingWC(String word) {
+	// int currCount = 0;
+	// if (existingCounts.containsKey(word)) {
+	// currCount = existingCounts.get(word);
+	// }
+	// existingCounts.put(word, currCount + 1);
+	// }
+
+	public void updateWordCount(List<String> tags, String body)
+			throws SQLException {
+		String[] words = body.split("\\s+");
+		Map<String, Map<String, Integer>> updateCounts = new HashMap<>();
+		Map<String, Map<String, Integer>> newCounts = new HashMap<>();
+		for (String t : tags) {
+			Map<String, Integer> currUpdateMap = new HashMap<>();
+			Map<String, Integer> currNewMap = new HashMap<>();
+			updateCounts.put(t, currUpdateMap);
+			updateCounts.put(t, currNewMap);
+			for (String w : words) {
+				if (existingCounts.get(t).containsKey(w)) {
+					int currCount = 0;
+					if (updateCounts.get(t).containsKey(w)) {
+						currCount = updateCounts.get(t).get(w);
+					}
+					updateCounts.get(t).put(w, currCount + 1);
+				} else {
+					int currCount = 0;
+					if (newCounts.get(t).containsKey(w)) {
+						currCount = newCounts.get(t).get(w);
+					}
+					newCounts.get(t).put(w, currCount + 1);
+				}
+			}
+		}
+
+		String updateQuery = "UPDATE tag_wordcounts SET count = ? where (tag = ? and word = ?);";
+		PreparedStatement stat1 = conn.prepareStatement(updateQuery);
+		for (String t : updateCounts.keySet()) {
+			for (String w : updateCounts.get(t).keySet()) {
+				stat1.setInt(1, updateCounts.get(t).get(w));
+				stat1.setString(2, t);
+				stat1.setString(3, w);
+				stat1.executeUpdate();
+			}
+		}
+
+		String insertQuery = "INSERT into tag_wordcounts (tag, word, count) VALUES (?, ?, ?);";
+		PreparedStatement stat2 = conn.prepareStatement(insertQuery);
+		for (String t : newCounts.keySet()) {
+			for (String w : newCounts.get(t).keySet()) {
+				stat2.setString(1, t);
+				stat2.setString(2, w);
+				stat2.setInt(3, newCounts.get(t).get(w));
+				stat2.executeUpdate();
+			}
+		}
+	}
+
+	public void initializeExistingCounts() throws SQLException {
+
+		String query = "SELECT body, tags FROM requests;";
+		PreparedStatement stat = conn.prepareStatement(query);
+		ResultSet rs = stat.executeQuery();
+		Map<String, Map<String, Integer>> updateWC = new HashMap<>();
+		for (String disc : allDisc) {
+			Map<String, Integer> currMap = new HashMap<>();
+			updateWC.put(disc, currMap);
+		}
+
+		while (rs.next()) {
+			String message = rs.getString(1);
+			if (rs.getString(2) == null) {
+				continue;
+			}
+			String[] tags = rs.getString(2).split("\\s*,\\s*");
+			// System.out.println(tags);
+			if (tags[0].equals("")) {
+				continue;
+			}
+
+			String[] words = message.split("\\s+");
+			for (String t : tags) {
+				// System.out.println(t);
+				// t.substring(0, 1).toUpperCase() + t.substring(1));
+				t = t.replace("\"", "");
+				String[] splitStr = t.split("_");
+				StringBuilder sb = new StringBuilder();
+				for (String s : splitStr) {
+					// System.out.println(s);
+					sb.append(s.substring(0, 1).toUpperCase() + s.substring(1));
+					sb.append(" ");
+				}
+				String finalTag = sb.toString();
+				t = finalTag.substring(0, finalTag.length() - 1);
+
+//				System.out.println(t);
+				for (String w : words) {
+					int currCount = 0;
+					if (updateWC.get(t).containsKey(w)) {
+						currCount = updateWC.get(t).get(w);
+					}
+					updateWC.get(t).put(w, currCount + 1);
+				}
+			}
+		}
+		// System.out.println(updateWC);
+		setExistingWC(updateWC);
+	}
+
+	public void initializeWordcountDB() throws SQLException {
+
+		String query = "SELECT body, tags FROM requests;";
+		PreparedStatement stat = conn.prepareStatement(query);
+		ResultSet rs = stat.executeQuery();
+		Map<String, Map<String, Integer>> updateWC = new HashMap<>();
+		for (String disc : allDisc) {
+			Map<String, Integer> currMap = new HashMap<>();
+			updateWC.put(disc, currMap);
+		}
+
+		while (rs.next()) {
+			String message = rs.getString(1);
+			if (rs.getString(2) == null) {
+				continue;
+			}
+			String[] tags = rs.getString(2).split("\\s*,\\s*");
+			if (tags[0].equals("")) {
+				continue;
+			}
+
+			String[] words = message.split("\\s+");
+			for (String t : tags) {
+				// System.out.println(
+				// t.substring(0, 1).toUpperCase() + t.substring(1));
+				t = t.substring(0, 1).toUpperCase() + t.substring(1);
+				for (String w : words) {
+					int currCount = 0;
+					if (updateWC.get(t).containsKey(w)) {
+						currCount = updateWC.get(t).get(w);
+					}
+					updateWC.get(t).put(w, currCount + 1);
+				}
+			}
+		}
+		// System.out.println(updateWC);
+
+		String updateWCquery = "INSERT into tag_wordcounts (tag, word, count) VALUES (?, ?, ?);";
+		PreparedStatement statUpdate = conn.prepareStatement(updateWCquery);
+		for (String t : updateWC.keySet()) {
+			for (String w : updateWC.get(t).keySet()) {
+				statUpdate.setString(1, t);
+				statUpdate.setString(2, w);
+				statUpdate.setInt(3, updateWC.get(t).get(w));
+				statUpdate.executeUpdate();
+			}
+
+		}
+		setExistingWC(updateWC);
+		// System.out.println(existingCounts);
+
 	}
 
 	public User makeUser(String userID) throws SQLException {
@@ -387,7 +573,7 @@ public class SQLQueries {
 				}
 			}
 		}
-		System.out.println(ratingMap);
+		// System.out.println(ratingMap);
 		TagDatabase td = new TagDatabase();
 		TagRating tru = new TagRating(ratingMap, td);
 		User u = new User("", tru);
@@ -420,10 +606,16 @@ public class SQLQueries {
 		stat.setString(3, tutorid);
 
 		stat.setString(4, disc);
-		//Still need to figure out what's going on with tags and stuff
-		//String nTags = this.tagsToString(disc, tags);
-		String nTags = "";
-		stat.setString(5, nTags);
+		// Still need to figure out what's going on with tags and stuff
+		// String nTags = this.tagsToString(disc, tags);
+		StringBuilder sb = new StringBuilder();
+		for (String t : tags) {
+			sb.append(t + ",");
+		}
+		String tagsCommaList = sb.toString();
+		tagsCommaList = tagsCommaList.substring(0, tagsCommaList.length() - 1);
+		System.out.println("TAGS COMMA LIST: " + tagsCommaList);
+		stat.setString(5, tagsCommaList);
 		stat.setString(6, summary);
 		stat.setString(7, body);
 		stat.setString(8, postLat);
@@ -521,43 +713,44 @@ public class SQLQueries {
 	}
 
 	public String getIdFromUserName(String user) throws SQLException {
-    String query = "SELECT user_id FROM users WHERE username=?";
-    PreparedStatement stat = conn.prepareStatement(query);
-    stat.setString(1, user);
-    ResultSet results = stat.executeQuery();
-    String ret = results.getString(1);
-    return ret;
-  }
+		String query = "SELECT user_id FROM users WHERE username=?";
+		PreparedStatement stat = conn.prepareStatement(query);
+		stat.setString(1, user);
+		ResultSet results = stat.executeQuery();
+		String ret = results.getString(1);
+		return ret;
+	}
 
 	public String getPasswordFromUserName(String user) throws SQLException {
-    String query = "SELECT password FROM users WHERE username=?";
-    PreparedStatement stat = conn.prepareStatement(query);
-    stat.setString(1, user);
-    ResultSet results = stat.executeQuery();
-    String ret = results.getString(1);
-    return ret;
-  }
+		String query = "SELECT password FROM users WHERE username=?";
+		PreparedStatement stat = conn.prepareStatement(query);
+		stat.setString(1, user);
+		ResultSet results = stat.executeQuery();
+		String ret = results.getString(1);
+		return ret;
+	}
 
 	public String certifyLogin(String userName, String pw) throws SQLException {
-    System.out.println(userName);
-    System.out.println(pw);
+		System.out.println(userName);
+		System.out.println(pw);
 
-	  String password = "";
-    String id = "";
-    if (userName.contains("@")) {
-      password = getPasswordFromEmail(userName);
-      id = getIdFromEmail(userName);
-    } else {
-      password = getPasswordFromUserName(userName);
-      id = getIdFromUserName(userName);
-    }
-    System.out.println(pw);
-    System.out.println(password);
-    if (password.equals(pw)) {
-      return id;
-    }
-    return "";
-  }
+		String password = "";
+		String id = "";
+		if (userName.contains("@")) {
+			password = getPasswordFromEmail(userName);
+			id = getIdFromEmail(userName);
+		} else {
+			password = getPasswordFromUserName(userName);
+			id = getIdFromUserName(userName);
+		}
+		System.out.println(pw);
+		System.out.println(password);
+		if (password.equals(pw)) {
+			return id;
+		}
+		return "";
+	}
+
 	/**
 	 * function that closes the connection.
 	 *
