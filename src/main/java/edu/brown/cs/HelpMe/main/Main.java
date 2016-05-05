@@ -51,7 +51,7 @@ public class Main {
 	private void run() throws SQLException {
 		userID = "";
 		OptionParser parser = new OptionParser();
-		String database = "smallDb.sqlite3";
+		String database = "smallDb.db";
 		try {
 			dbQuery = new SQLQueries(database);
 		} catch (ClassNotFoundException e) {
@@ -76,10 +76,24 @@ public class Main {
 		} catch (ClassNotFoundException e) {
 			System.out.println("ERROR: Cannot find table");
 		}
-		// List<String> tagList = Arrays.asList("Lisp");
-		dbQuery.getUserWordCount("888");
-		// Question q = dbQuery.makeQuestion("666");
-		runSparkServer();
+
+		TagDatabase td = new TagDatabase();
+		TutorCompatibility tc = new TutorCompatibility(td);
+		List<Question> sortedQuestions = new ArrayList<>();
+		// try {
+		// sortedQuestions = tc
+		// .getSortedQuestions("ca26094c-9b25-4727-90aa-e0a49bbafad4");
+		// for (Question q : sortedQuestions) {
+		// // System.out.println(q.getID());
+		// System.out.println(q.getMessage());
+		// // System.out.println(q.getRating().getRating());
+		// }
+		// } catch (SQLException e) {
+		// System.out.println("ERROR: Database does not exist");
+		// }
+
+		dbQuery.initializeExistingCounts();
+//		runSparkServer();
 		// } else {
 		// Process commands
 		// }
@@ -117,11 +131,12 @@ public class Main {
 		Spark.post("/login", new LoginHandler());
 		Spark.post("/suggest", new SuggestHandler());
 		Spark.get("/signup.html", new SignupDropdownHandler(), freeMarker);
-		Spark.get("/q_new", new NewQuestionHandler(), freeMarker);
+		Spark.get("/q_new.html", new NewQuestionHandler(), freeMarker);
 		Spark.get("/q.html", new SubmittedQuestion(), freeMarker);
 		Spark.get("/profile.html", new ProfileHandler(), freeMarker);
 		Spark.get("/settings.html", new SettingsHandler(), freeMarker);
 		Spark.post("/sortedQs", new SortedQuestionHandler());
+		Spark.post("/insertQ", new InsertQuestionHandler());
 	}
 
 	private class FrontHandler implements TemplateViewRoute {
@@ -204,6 +219,23 @@ public class Main {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
 
+			// QueryParamsMap qm = req.queryMap();
+			// String questionTitle = qm.value("title");
+			// String questionMessage = qm.value("message");
+			// // String tags = qm.value("tags");
+			//
+			// // List<String> lTags = Arrays.asList(tags.split("\\s*,\\s*"));
+			// System.out.println(questionTitle);
+			//
+			// String reqid = UUID.randomUUID().toString();
+			//
+			// try {
+			// dbQuery.insertNewRequest(reqid, userID, "", "", null,
+			// questionTitle, questionMessage, "", "", "", "", "");
+			// } catch (SQLException e) {
+			// e.printStackTrace();
+			// }
+
 			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!");
 			return new ModelAndView(variables, "q_new.html");
 		}
@@ -224,18 +256,18 @@ public class Main {
 			String questionTitle = qm.value("title");
 			String questionMessage = qm.value("message");
 			// String tags = qm.value("tags");
-
+			// System.out.println(tags);
 			// List<String> lTags = Arrays.asList(tags.split("\\s*,\\s*"));
-			System.out.println(questionTitle);
-
-			String reqid = UUID.randomUUID().toString();
-			System.out.println(userID);
-			try {
-				dbQuery.insertNewRequest(reqid, userID, "", "", null,
-						questionTitle, questionMessage, "", "", "", "", "");
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			// System.out.println(lTags);
+			//
+			// String reqid = UUID.randomUUID().toString();
+			// System.out.println(userID);
+			// try {
+			// dbQuery.insertNewRequest(reqid, userID, "", "", null,
+			// questionTitle, questionMessage, "", "", "", "", "");
+			// } catch (SQLException e) {
+			// e.printStackTrace();
+			// }
 
 			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!",
 					"questionTitle", questionTitle, "questionMessage",
@@ -273,6 +305,34 @@ public class Main {
 			} else {
 				userID = status;
 			}
+			return GSON.toJson(ret);
+		}
+	}
+
+	private static class InsertQuestionHandler implements Route {
+		@Override
+		public Object handle(Request req, Response res) {
+			System.out.println("INSERT HANDLER");
+			QueryParamsMap qm = req.queryMap();
+			String title = qm.value("title");
+			String body = qm.value("message");
+			String topics = qm.value("topics");
+			List<String> topicsList = Arrays.asList(topics
+					.substring(1, topics.length() - 1).split("\\s*,\\s*"));
+			System.out.println("BODY " + body);
+			String reqid = UUID.randomUUID().toString();
+			try {
+				dbQuery.insertNewRequest(reqid, userID, "", "", topicsList,
+						title, body, "", "", "", "", "");
+				dbQuery.updateWordCount(topicsList, body);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			boolean ret = true;
+			// System.out.println("false");
+			// } else {
+			// userID = status;
+			// }
 			return GSON.toJson(ret);
 		}
 	}
@@ -343,26 +403,27 @@ public class Main {
 		}
 	}
 
-	private static class SubmitQuestionHandler implements Route {
-		@Override
-		public Object handle(Request req, Response res) {
-			QueryParamsMap qm = req.queryMap();
-			String title = qm.value("title");
-			String rawTags = qm.value("tags");
-			String body = qm.value("message");
-			List<String> tags = Arrays.asList(rawTags.split("\\s*,\\s*"));
-			String message = qm.value("message");
-			String reqid = UUID.randomUUID().toString();
-			try {
-				dbQuery.insertNewRequest(reqid, userID, "", "", tags, title,
-						body, "", "", "", "", "");
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			// CHANGE THIS
-			return GSON.toJson(message);
-		}
-	}
+	// private static class SubmitQuestionHandler implements Route {
+	// @Override
+	// public Object handle(Request req, Response res) {
+	// QueryParamsMap qm = req.queryMap();
+	// String title = qm.value("title");
+	// String rawTags = qm.value("tags");
+	// String body = qm.value("message");
+	// List<String> tags = Arrays.asList(rawTags.split("\\s*,\\s*"));
+	// String message = qm.value("message");
+	// String reqid = UUID.randomUUID().toString();
+	// try {
+	// dbQuery.insertNewRequest(reqid, userID, "", "", tags, title,
+	// body, "", "", "", "", "");
+	// dbQuery.updateWordCount(tags, body);
+	// } catch (SQLException e) {
+	// e.printStackTrace();
+	// }
+	// // CHANGE THIS
+	// return GSON.toJson(message);
+	// }
+	// }
 
 	private static class SuggestHandler implements Route {
 		@Override
@@ -425,5 +486,4 @@ public class Main {
 			res.body(stacktrace.toString());
 		}
 	}
-
 }

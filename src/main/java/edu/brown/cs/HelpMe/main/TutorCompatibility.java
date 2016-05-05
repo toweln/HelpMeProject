@@ -97,6 +97,7 @@ public class TutorCompatibility {
 
 	public double tutorQuestionCompatibility(String userID, String qID)
 			throws SQLException {
+		// System.out.println(qID);
 		double dotProd = 0;
 		double userLength = 0;
 		double questionLength = 0;
@@ -125,6 +126,7 @@ public class TutorCompatibility {
 						.getRating().getRating().get(top).get(sub) == null)) {
 					questionRating = q.getRating().getRating().get(top)
 							.get(sub);
+					// System.out.println(" " + sub.getName());
 				}
 
 				// increment dot product and lengths
@@ -137,6 +139,8 @@ public class TutorCompatibility {
 		// find distance between vectors and find similarity
 		double vectorDist = Math.pow(userLength, 0.5)
 				* Math.pow(questionLength, 0.5);
+		// System.out.println(" DOT PROD: " + dotProd);
+		// System.out.println(" DIST: " + vectorDist);
 		return Math.round((dotProd / vectorDist) * 1000.0) / 1000.0;
 	}
 
@@ -177,6 +181,7 @@ public class TutorCompatibility {
 			throws SQLException {
 		Question q = dbQuery.makeQuestion(qID);
 		User u = dbQuery.makeUser(userID);
+		// System.out.println(u.getName());
 		WordCount wc = dbQuery.getUserWordCount(userID);
 		u.setWordCount(wc);
 		Map<String, Integer> questionCount = q.getWordCount()
@@ -218,8 +223,15 @@ public class TutorCompatibility {
 
 	public double getOverallCompatibility(String userID, String qID)
 			throws SQLException {
+		// System.out.println(qID);
+		// System.out.println(" TQ: " + tutorQuestionCompatibility(userID,
+		// qID));
+		// System.out.println(
+		// " CPQ: " + currentPastQuestionCompatibility(userID, qID));
 		double compat = tutorQuestionCompatibility(userID, qID)
 				+ currentPastQuestionCompatibility(userID, qID);
+//		System.out.println(" OVERALL: " + compat);
+
 		return Math.round(compat * 1000.0) / 1000.0;
 	}
 
@@ -241,7 +253,10 @@ public class TutorCompatibility {
 		Collections.sort(list, new Comparator<Map.Entry<Question, Double>>() {
 			public int compare(Map.Entry<Question, Double> o1,
 					Map.Entry<Question, Double> o2) {
-				return (o1.getValue()).compareTo(o2.getValue());
+//				System.out.println(o2.getKey().getMessage());
+//				System.out.println(o2.getValue());
+//				System.out.println(o1.getValue());
+				return (o2.getValue()).compareTo(o1.getValue());
 			}
 		});
 
@@ -280,6 +295,7 @@ public class TutorCompatibility {
 			throws SQLException {
 		Map<Question, Double> unsortedCompats = new HashMap<>();
 		List<String> qIDs = dbQuery.getAllQIDs();
+		// System.out.println(qIDs);
 		for (String qID : qIDs) {
 			Question q = dbQuery.makeQuestion(qID);
 			double currCompat = getOverallCompatibility(userID, qID);
