@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.brown.cs.HelpMe.email.UserData;
+
 /**
  * SQLQueries class. Handles calling queries which are used in other areas of
  * helpMe.
@@ -396,6 +398,40 @@ public class SQLQueries {
 	// existingCounts.put(word, currCount + 1);
 	// }
 
+
+	public String getTuteeFromReqId(String reqid) throws SQLException{
+    String query = "SELECT tutee_id FROM requests WHERE request_id=?";
+    PreparedStatement stat = conn.prepareStatement(query);
+    stat.setString(1, reqid);
+    ResultSet results = stat.executeQuery();
+    String ret = results.getString(1);
+    return ret;
+  }
+  public String getTutorFromReqId(String reqid) throws SQLException{
+    String query = "SELECT tutor_id FROM requests WHERE request_id=?";
+    PreparedStatement stat = conn.prepareStatement(query);
+    stat.setString(1, reqid);
+    ResultSet results = stat.executeQuery();
+    String ret = results.getString(1);
+    return ret;
+  }
+
+  public UserData getUserDataFromId(String userId) throws SQLException{
+    String query = "SELECT * FROM users WHERE user_id=?";
+    PreparedStatement stat = conn.prepareStatement(query);
+    stat.setString(1, userId);
+    ResultSet results = stat.executeQuery();
+    UserData user = new UserData(results.getString(1), results.getString(2), results.getString(3), results.getString(4), results.getString(5), results.getString(6));
+    return user;
+  }
+  public String getRequestSummary(String reqid) throws SQLException{
+    String query = "SELECT summary FROM requests WHERE request_id=?";
+    PreparedStatement stat = conn.prepareStatement(query);
+    stat.setString(1, reqid);
+    ResultSet results = stat.executeQuery();
+    String summary = results.getString(1);
+    return summary;
+  }
 	public void updateWordCount(List<String> tags, String body)
 			throws SQLException {
 		String[] words = body.split("\\s+");

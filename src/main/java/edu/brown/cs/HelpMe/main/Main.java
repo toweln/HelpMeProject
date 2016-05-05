@@ -6,11 +6,16 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import javax.mail.MessagingException;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -29,6 +34,8 @@ import com.google.gson.Gson;
 
 import edu.brown.cs.HelpMe.autocorrect.CommandParser;
 import edu.brown.cs.HelpMe.autocorrect.SuggestionGenerator;
+import edu.brown.cs.HelpMe.email.EmailSending;
+import edu.brown.cs.HelpMe.email.UserData;
 import freemarker.template.Configuration;
 
 public class Main {
@@ -42,6 +49,7 @@ public class Main {
 	private CommandParser cp;
 	private static SuggestionGenerator sg;
 	private User currentUser;
+	private static EmailSending emailSender;
 	private static String userID;
 
 	private Main(String[] args) {
@@ -50,6 +58,7 @@ public class Main {
 
 	private void run() throws SQLException {
 		userID = "";
+		emailSender = new EmailSending();
 		OptionParser parser = new OptionParser();
 		String database = "smallDb.db";
 		try {
@@ -279,7 +288,7 @@ public class Main {
 	/**
 	 * Handler to login in users. Checks if the supplied information corresponds
 	 * to an actual user.
-	 * 
+	 *
 	 * @author Jared
 	 */
 	private static class LoginHandler implements Route {
@@ -309,6 +318,37 @@ public class Main {
 		}
 	}
 
+	/**
+   * Class for handling responding to a question and closing it.
+   * @author Jared
+   */
+  private static class closeQuestionhandler implements Route {
+    @Override
+    public Object handle(Request req, Response res) {
+      QueryParamsMap qm = req.queryMap();
+      String request = qm.value("reqid");
+      request = request.substring(1, request.length() - 1);
+      Boolean status = false;
+      DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+      Date date = new Date();
+      String dateString = dateFormat.format(date);
+      try {
+        dbQuery.updateRequestTutor(request, userID);
+        dbQuery.updateTimeResponded(dateString, request);
+        String tuteeId = dbQuery.getTuteeFromReqId(request);
+        UserData tuteeUser = dbQuery.getUserDataFromId(tuteeId);
+        UserData tutorUser = dbQuery.getUserDataFromId(userID);
+        String summary = dbQuery.getRequestSummary(request);
+        emailSender.sendTutorEmail(tutorUser.getEmail(), summary, tuteeUser.getFirstName(), "CHAT LINK GOES HERE");
+        emailSender.sendTuteeEmail(tuteeUser.getEmail(), summary, tutorUser.getFirstName(), "CHAT LINK GOES HERE");
+      } catch (SQLException | MessagingException e) {
+        e.printStackTrace();
+      }
+
+      return GSON.toJson(status);
+    }
+  }
+
 	private static class InsertQuestionHandler implements Route {
 		@Override
 		public Object handle(Request req, Response res) {
@@ -321,9 +361,12 @@ public class Main {
 					.substring(1, topics.length() - 1).split("\\s*,\\s*"));
 			System.out.println("BODY " + body);
 			String reqid = UUID.randomUUID().toString();
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			Date date = new Date();
+			String dateString = dateFormat.format(date);
 			try {
 				dbQuery.insertNewRequest(reqid, userID, "", "", topicsList,
-						title, body, "", "", "", "", "");
+						title, body, "", "", dateString, "", "");
 				dbQuery.updateWordCount(topicsList, body);
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -357,7 +400,7 @@ public class Main {
 	/**
 	 * Handler forhandling signups.Returns true if signup was
 	 * successful,false*otherwise.
-	 * 
+	 *
 	 * @author Jared
 	 *
 	 */
@@ -391,11 +434,12 @@ public class Main {
 				dbQuery.insertUserExpertise(topicsList, newID.toString());
 				if (status) {
 					userID = newID.toString();
+					emailSender.sendWelcomeEmail(email);
 					System.out.println("new user success");
 				} else {
 					System.out.println("user fail");
 				}
-			} catch (SQLException e) {
+			} catch (SQLException | MessagingException e) {
 				e.printStackTrace();
 			}
 
@@ -458,7 +502,7 @@ public class Main {
 	/**
 	 * Handler for checking if a user is logged in. Returns true if a user is
 	 * logged in, false otherwise.
-	 * 
+	 *
 	 * @author Jared
 	 *
 	 */
