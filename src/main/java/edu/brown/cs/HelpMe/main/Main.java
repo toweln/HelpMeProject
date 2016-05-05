@@ -85,7 +85,7 @@ public class Main {
 		// .getSortedQuestions("ca26094c-9b25-4727-90aa-e0a49bbafad4");
 		// for (Question q : sortedQuestions) {
 		// // System.out.println(q.getID());
-		// System.out.println(q.getMessage());
+		// System.out.println(q.getTitle());
 		// // System.out.println(q.getRating().getRating());
 		// }
 		// } catch (SQLException e) {
@@ -93,7 +93,7 @@ public class Main {
 		// }
 
 		dbQuery.initializeExistingCounts();
-//		runSparkServer();
+		// runSparkServer();
 		// } else {
 		// Process commands
 		// }
