@@ -12,11 +12,9 @@
 		<script src="js/init.js"></script>
 		<script src="js/autocorrect.js"></script>
 		<script type="text/javascript" src="js/jquery.event.drag-2.0.js"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 		<link rel="icon" type="image/x-icon" href="favicon.ico">
-		<noscript>
-			<link rel="stylesheet" href="css/skel.css" />
-			<link rel="stylesheet" href="css/style.css" />
-		</noscript>
+		<link rel="stylesheet" href="css/style.css" />
 	</head>
 	<body style='background: #000 url(http://wallpapercave.com/wp/FyXmsXt.png) no-repeat fixed center center;'>
 	<div id='login-background'></div>
@@ -27,8 +25,8 @@
 			<center><div id='error' style='font-size: 24px; padding: 10px;' class='hidden'><b>ERROR: Invalid username and password combination.</b></div></center>
 			<input type='text' name='username' placeholder='Email' accept-charset="UTF-8" id='login-form' style='width: 500px'>
 			<input type='password' name='password' placeholder='Password' accept-charset="UTF-8" id='login-form' style='width: 500px'>
-			<center style='margin-top: 20px'><a href="#" id='login-submit' class="button" style='height: 40px; padding-top: 7px; margin-top: -5px;'>Log in</a>
-			<a href="/signup.html" class="button" style='height: 40px; padding-top: 7px; margin-top: -5px;'>Sign up</a></center>
+			<center style='margin-top: 20px'><a href="#" id='login-submit' class="button" style='height: 20px; padding-top: 7px; margin-top: -5px;'>Log in</a>
+			<a href="/signup.html" class="button" style='height: 20px; padding-top: 7px; margin-top: -5px;'>Sign up</a></center>
 		</div>
 	</div>
 	<script>
@@ -41,6 +39,7 @@
 		$.post("/login", login_object, function(response) {
 			login_valid = JSON.parse(response);
 			if (login_valid == true) {
+				document.cookie= 'username=' + $("input[name='username']").val();
 				window.location.href = "/home.html";
 			} else {
 				$("#error").removeClass("hidden");

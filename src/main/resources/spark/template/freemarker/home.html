@@ -5,23 +5,19 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="description" content="" />
 		<meta name="keywords" content="" />
-		<script src="js/jquery.min.js"></script>
-		<script src="js/jquery.dropotron.min.js"></script>
 		<script src="js/autocorrect.js"></script>
-		<script src="js/skel.min.js"></script>
-		<script src="js/skel-layers.min.js"></script>
-		<script src="js/init.js"></script>
 		<script src="js/autocorrect.js"></script>
 		<link rel="icon" type="image/x-icon" href="favicon.ico">
-		<noscript>
-			<link rel="stylesheet" href="css/skel.css" />
-			<link rel="stylesheet" href="css/style.css" />
-		</noscript>
+		<link rel="stylesheet" href="css/style.css" />
 		<style>
       		#map {
-        		width: 90%;
-        		height: 400px;
-        		margin: 0 auto;}
+        		width: 400px;
+        		right: 10%;
+        		height: 90%;
+        		margin: 0 auto;
+        		position: absolute;
+        		-webkit-transform: translate3d(0, 0, 0);
+        	}
     	</style>
 	</head>
 	<body onload="init()">
@@ -30,7 +26,7 @@
 			<div class="wrapper style1">
 
 				<!-- Header -->
-					<div id="header" class="skel-panels-fixed">
+					<div id="header" class="skel-panels-fixed" style='-webkit-transform: translate3d(0, 0, 0) !important; position: fixed !important; -webkit-backface-visibility: hidden;'>
 					<a href='home.html'><div id='small-logo'></div></a>
 						<div id="logo">
 						</div>
@@ -45,8 +41,9 @@
 					</div>
 					
 					<!-- Geolocation and Map-->
+					<div style='position: fixed; -webkit-transform: translate3d(0, 0, 0); width: 30%; right: 0; height: 750px'>
 					<div id="map"></div>
-					<p id="error"></p>
+					<p id="error"></p></div>
 					
 					
 					<script>
@@ -81,13 +78,13 @@
 					
 					<div id="banner" class="container">
 						<section>
-							<a href='/q_new'><div id='footer' class='wrapper style2' style='margin-top: 0'>Ask a new question!</div></a>
+							<a href='/q_new'><div id='footer' class='wrapper style2' style='margin-top: 0; height: 25px;'>Ask a new question!</div></a>
 						</section>
 					</div>
 
 				<!-- Extra -->
 					<div id="extra">
-						<div class="container">
+						<div class="container" style='width: 75%; position: static'>
 							<div class="row no-collapse-1">
 								<section class="4u"> 
 									<div class="box">
@@ -199,7 +196,13 @@
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRI318_aOYM3i8I7gogIvnbaB-el_S0Xo&callback=init" async defer></script>
 		<script>
-
+		$(document).ready(function() {
+			console.log(document.cookie);
+			$.post("/sortedQs", JSON.stringify({}), function(response) {
+				var qs = JSON.parse(response);
+				console.log(qs);
+			});
+		});
 		</script>
 	</body>
 </html>
