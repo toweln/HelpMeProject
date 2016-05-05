@@ -44,7 +44,7 @@
 					  
 						<div class="row half">
 							<div class="12u">
-								<input name="message" id="login-form" placeholder="Question" style='width: 850px'></textarea>
+								<textarea name="message" id="login-form" placeholder="Question" style='width: 850px'></textarea>
 							</div>
 						</div><br><br>
 						<center><ul class="tabs-menu" style='margin-left: 150px'>
@@ -111,7 +111,7 @@
 					            <input type='checkbox' name='topics' class='tag-checkbox' value='graphics'>Computer Graphics<br>
 					            <input type='checkbox' name='topics' class='tag-checkbox' value='html'>HTML<br>
 					            <input type='checkbox' name='topics' class='tag-checkbox' value='java'>Java<br>
-					            <input type='checkbox' name='topics' class='tag-checkbox' value='js'>Javascript<br>
+					            <input type='checkbox' name='topics' class='tag-checkbox' value='javascript'>Javascript<br>
 					            <input type='checkbox' name='topics' class='tag-checkbox' value='jquery'>jQuery<br>
 					            <input type='checkbox' name='topics' class='tag-checkbox' value='lisp'>Lisp<br>
 					            <input type='checkbox' name='topics' class='tag-checkbox' value='machine_learning'>Machine Learning<br>
@@ -125,18 +125,18 @@
 					            <input type='checkbox' name='topics' class='tag-checkbox' value='scala'>Scala<br>
 					            <input type='checkbox' name='topics' class='tag-checkbox' value='sql'>SQL<br>
 					            <input type='checkbox' name='topics' class='tag-checkbox' value='stata'>Stata<br>
-					            <input type='checkbox' name='topics' class='tag-checkbox' value='vb'>Visual Basic<br>
+					            <input type='checkbox' name='topics' class='tag-checkbox' value='visual_basic'>Visual Basic<br>
 					        </div>
 					        <div id="tab-5" class="tab-content">
-					            <input type='checkbox' name='topics' class='tag-checkbox' value='african'>African History<br>
-					            <input type='checkbox' name='topics' class='tag-checkbox' value='east_asian'>East Asian History<br>
-					            <input type='checkbox' name='topics' class='tag-checkbox' value='european'>European History<br>
-					            <input type='checkbox' name='topics' class='tag-checkbox' value='social'>Social History<br>
-					            <input type='checkbox' name='topics' class='tag-checkbox' value='us'>US History<br>
-					            <input type='checkbox' name='topics' class='tag-checkbox' value='world'>World History<br>
+					            <input type='checkbox' name='topics' class='tag-checkbox' value='african_history'>African History<br>
+					            <input type='checkbox' name='topics' class='tag-checkbox' value='east_asian_history'>East Asian History<br>
+					            <input type='checkbox' name='topics' class='tag-checkbox' value='european_history'>European History<br>
+					            <input type='checkbox' name='topics' class='tag-checkbox' value='social_history'>Social History<br>
+					            <input type='checkbox' name='topics' class='tag-checkbox' value='us_history'>US History<br>
+					            <input type='checkbox' name='topics' class='tag-checkbox' value='world_history'>World History<br>
 					        </div>
 					        <div id="tab-6" class="tab-content">
-					            <input type='checkbox' name='topics' class='tag-checkbox' value='asl'>American Sign Language<br>
+					            <input type='checkbox' name='topics' class='tag-checkbox' value='american_sign_language'>American Sign Language<br>
 					            <input type='checkbox' name='topics' class='tag-checkbox' value='arabic'>Arabic<br>
 					            <input type='checkbox' name='topics' class='tag-checkbox' value='cantonese'>Cantonese<br>
 					            <input type='checkbox' name='topics' class='tag-checkbox' value='dutch'>Dutch<br>
@@ -191,7 +191,7 @@
 			});
 			console.log(favorite)
 			var title = $("input[name='title']").val();
-			var message = $("input[name='message']").val();
+			var message = $("textarea[name='message']").val();
 			var titleJSON = JSON.stringify(title);
 			var messageJSON = JSON.stringify(message);
 			var topicsJSON = JSON.stringify(favorite);

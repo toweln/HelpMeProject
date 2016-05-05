@@ -80,20 +80,20 @@ public class Main {
 		TagDatabase td = new TagDatabase();
 		TutorCompatibility tc = new TutorCompatibility(td);
 		List<Question> sortedQuestions = new ArrayList<>();
-		// try {
-		// sortedQuestions = tc
-		// .getSortedQuestions("ca26094c-9b25-4727-90aa-e0a49bbafad4");
-		// for (Question q : sortedQuestions) {
-		// // System.out.println(q.getID());
-		// System.out.println(q.getTitle());
-		// // System.out.println(q.getRating().getRating());
-		// }
-		// } catch (SQLException e) {
-		// System.out.println("ERROR: Database does not exist");
-		// }
+		try {
+			sortedQuestions = tc
+					.getSortedQuestions("f8560bf6-9701-496b-b48c-422178163867");
+			for (Question q : sortedQuestions) {
+				// System.out.println(q.getID());
+				System.out.println(q.getTitle());
+				// System.out.println(q.getRating().getRating());
+			}
+		} catch (SQLException e) {
+			System.out.println("ERROR: Database does not exist");
+		}
 
 		dbQuery.initializeExistingCounts();
-		// runSparkServer();
+//		runSparkServer();
 		// } else {
 		// Process commands
 		// }
