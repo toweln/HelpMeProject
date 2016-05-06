@@ -27,7 +27,7 @@
 					</div>
 
 					<center><h2 style='font-size: 48px; margin: 20px'>Submit your own question!</h2>
-					<form method="get" action="q.html" style='margin-top: 50px; width: 800px'>
+					
 						<div class="row half">
 							<div class="12u">
 								<input class="text" type="text" name="title" id="login-form" placeholder="Question Title" style='width: 850px'/>
@@ -39,6 +39,7 @@
 								<textarea name="message" id="login-form" placeholder="Question" style='width: 850px'></textarea>
 							</div>
 						</div><br><br>
+						<div style='width: 500px'>
 						<center><ul class="tabs-menu" style='margin-left: 150px'>
 					        <li class="current"><a href="#tab-1">Math</a></li>
 					        <li><a href="#tab-2">Science</a></li>
@@ -146,12 +147,12 @@
 					            <input type='checkbox' name='topics' class='tag-checkbox' value='spanish'>Spanish<br>
 					            <input type='checkbox' name='topics' class='tag-checkbox' value='swahili'>Swahili<br>
 					        </div>
-					    </div>
+					    </div></div><br>
 						<div class="row half">
 							<div class="12u">
 								<ul class="actions">
 									<li>
-										<input type="submit" id="q_new_submit" value="Submit question!" class="button alt" />
+										<center style='margin-top: 20px; margin-left: 100px'><a href="#" id='q_submit' class="button" style='height: 20px; padding-top: 7px; margin-top: -5px; margin-bottom: 50px;'>Submit question!</a></center>
 									</li>
 								</ul>
 
@@ -175,7 +176,7 @@
 					user = a[x].split("=")[1];
 				}
 			}
-		}
+		});
 		$(document).ready(function() {
 		    $(".tabs-menu a").click(function(event) {
 		        event.preventDefault();
@@ -186,7 +187,7 @@
 		        $(tab).fadeIn();
 		    });
 		});
-		$("#q_new_submit").click(function() {
+		$("#q_submit").click(function() {
 			var favorite = [];
 			$.each($("input[name='topics']:checked"), function(){
 				favorite.push($(this).val());
@@ -200,7 +201,9 @@
 			var userInput = {title: titleJSON, message: messageJSON, topics: topicsJSON, userid: JSON.stringify(user)};
 
 			$.post("/insertQ", userInput, function(response) {
+				console.log(user);
 				login_valid = JSON.parse(response);
+				window.location.href = '/home.html';
 				// if (login_valid == true) {
 				// 	// window.location.href = "/q.html";
 				// } else {
