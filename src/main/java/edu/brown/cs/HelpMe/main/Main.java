@@ -11,12 +11,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
-import java.util.Map.Entry;
 
 import javax.mail.MessagingException;
 
@@ -306,103 +303,109 @@ public class Main {
 	}
 
 	/**
-	 * Handler to login in users. Checks if the supplied information corresponds
-	 * to an actual user. Will return the userid if the user login was
-	 * successful.
-	 *
-	 * @author Jared
-	 */
-	private static class LoginHandler implements Route {
-		@Override
-		public Object handle(Request req, Response res) {
-			QueryParamsMap qm = req.queryMap();
-			String userName = qm.value("username");
-			String password = qm.value("password");
-			userName = userName.substring(1, userName.length() - 1);
-			password = password.substring(1, password.length() - 1);
-			System.out.println(userName);
-			System.out.println(password);
-			String status = "";
-			Boolean ret = true;
-			try {
-				status = dbQuery.certifyLogin(userName, password);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			if (status.equals("")) {
-				ret = false;
-				System.out.println("false");
-			} else {
-				userID = status;
-			}
-			return GSON.toJson(status);
-		}
-	}
+   * Handler to login in users. Checks if the supplied information corresponds
+   * to an actual user. Will return the userid if the user login was successful.
+   *
+   * @author Jared
+   */
+  private static class LoginHandler implements Route {
+    @Override
+    public Object handle(Request req, Response res) {
+      QueryParamsMap qm = req.queryMap();
+      String userName = qm.value("username");
+      String password = qm.value("password");
+      userName = userName.toLowerCase();
+      userName = userName.substring(1, userName.length() - 1);
+      password = password.substring(1, password.length() - 1);
+      System.out.println(userName);
+      System.out.println(password);
+      String status = "";
+      Boolean ret = true;
+      try {
+        status = dbQuery.certifyLogin(userName, password);
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+      if (status.equals("")) {
+        ret = false;
+        System.out.println("false");
+      } else {
+        userID = status;
+      }
+      return GSON.toJson(status);
+
+    }
+  }
 
 	/**
-	 * Class for handling responding to a question and closing it.
-	 * 
-	 * @author Jared
-	 */
-	private static class closeQuestionhandler implements Route {
-		@Override
-		public Object handle(Request req, Response res) {
-			QueryParamsMap qm = req.queryMap();
-			String request = qm.value("reqid");
-			request = request.substring(1, request.length() - 1);
-			Boolean status = false;
-			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-			Date date = new Date();
-			String dateString = dateFormat.format(date);
-			try {
-				dbQuery.updateRequestTutor(request, userID);
-				dbQuery.updateTimeResponded(dateString, request);
-				String tuteeId = dbQuery.getTuteeFromReqId(request);
-				UserData tuteeUser = dbQuery.getUserDataFromId(tuteeId);
-				UserData tutorUser = dbQuery.getUserDataFromId(userID);
-				String summary = dbQuery.getRequestSummary(request);
-				emailSender.sendTutorEmail(tutorUser.getEmail(), summary,
-						tuteeUser.getFirstName(), "CHAT LINK GOES HERE");
-				emailSender.sendTuteeEmail(tuteeUser.getEmail(), summary,
-						tutorUser.getFirstName(), "CHAT LINK GOES HERE");
-			} catch (SQLException | MessagingException e) {
-				e.printStackTrace();
-			}
+   * Class for handling responding to a question and closing it.
+   * @author Jared
+   */
+  private static class closeQuestionhandler implements Route {
+    @Override
+    public Object handle(Request req, Response res) {
+      QueryParamsMap qm = req.queryMap();
+      String request = qm.value("reqid");
+      String tutor = qm.value("userid");
+      request = request.substring(1, request.length() - 1);
+      Boolean status = false;
+      DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+      Date date = new Date();
+      String dateString = dateFormat.format(date);
+      try {
+        dbQuery.updateRequestTutor(request, userID);
+        dbQuery.updateTimeResponded(dateString, request);
+        String tuteeId = dbQuery.getTuteeFromReqId(request);
+        UserData tuteeUser = dbQuery.getUserDataFromId(tuteeId);
+        UserData tutorUser = dbQuery.getUserDataFromId(tutor);
+        String summary = dbQuery.getRequestSummary(request);
+        emailSender.sendTutorEmail(tutorUser.getEmail(), summary, tuteeUser.getFirstName(), "CHAT LINK GOES HERE");
+        emailSender.sendTuteeEmail(tuteeUser.getEmail(), summary, tutorUser.getFirstName(), "CHAT LINK GOES HERE");
+      } catch (SQLException | MessagingException e) {
+        e.printStackTrace();
+      }
 
-			return GSON.toJson(status);
-		}
-	}
+      return GSON.toJson(status);
+    }
+  }
 
 	private static class InsertQuestionHandler implements Route {
-		@Override
-		public Object handle(Request req, Response res) {
-			System.out.println("INSERT HANDLER");
-			QueryParamsMap qm = req.queryMap();
-			String title = qm.value("title");
-			String body = qm.value("message");
-			String topics = qm.value("topics");
-			List<String> topicsList = Arrays.asList(topics
-					.substring(1, topics.length() - 1).split("\\s*,\\s*"));
-			System.out.println("BODY " + body);
-			String reqid = UUID.randomUUID().toString();
-			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-			Date date = new Date();
-			String dateString = dateFormat.format(date);
-			try {
-				dbQuery.insertNewRequest(reqid, userID, "", "", topicsList,
-						title, body, "", "", dateString, "", "");
-				dbQuery.updateWordCount(topicsList, body);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			boolean ret = true;
-			// System.out.println("false");
-			// } else {
-			// userID = status;
-			// }
-			return GSON.toJson(ret);
-		}
-	}
+    @Override
+    public Object handle(Request req, Response res) {
+      System.out.println("INSERT HANDLER");
+      QueryParamsMap qm = req.queryMap();
+      //THIS SHOULD BE ADDED WHEN USERID COOKIES ARE IMPLEMENTED ON FRONTEND
+      String user = qm.value("userid");
+      //THIS SHOULD BE ADDED WHEN USERID COOKIES ARE IMPLEMENTED ON FRONTEND
+
+
+      String title = qm.value("title");
+      String body = qm.value("message");
+      String topics = qm.value("topics");
+      List<String> topicsList = Arrays.asList(topics
+          .substring(1, topics.length() - 1).split("\\s*,\\s*"));
+      System.out.println("BODY " + body);
+      String reqid = UUID.randomUUID().toString();
+      DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+      Date date = new Date();
+      String dateString = dateFormat.format(date);
+      try {
+        /*dbQuery.insertNewRequest(reqid, userid, "", "", topicsList,
+            title, body, "", "", dateString, "", "");*/
+        dbQuery.insertNewRequest(reqid, userID, "", "", topicsList,
+            title, body, "", "", dateString, "", "");
+        dbQuery.updateWordCount(topicsList, body);
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+      boolean ret = true;
+      // System.out.println("false");
+      // } else {
+      // userID = status;
+      // }
+      return GSON.toJson(ret);
+    }
+  }
 
 	private static class SortedQuestionHandler implements Route {
 		@Override
@@ -422,56 +425,59 @@ public class Main {
 	}
 
 	/**
-	 * Handler forhandling signups.Returns true if signup was
-	 * successful,false*otherwise. This will be changed to return the userid
-	 * string of the user that was just created.
-	 *
-	 * @author Jared
-	 *
-	 */
-	private static class signupHandler implements Route {
-		@Override
-		public Object handle(Request req, Response res) {
-			QueryParamsMap qm = req.queryMap();
-			String userName = qm.value("username");
-			String password = qm.value("password");
-			String first = qm.value("first_name");
-			String last = qm.value("last_name");
-			String email = qm.value("email");
-			String phone = qm.value("phone_number");
-			String topics = qm.value("topics");
-			List<String> topicsList = Arrays.asList(topics
-					.substring(1, topics.length() - 1).split("\\s*,\\s*"));
+   * Handler forhandling signups.Returns true if signup was
+   * successful,false*otherwise. This will be changed to return the userid
+   * string of the user that was just created.
+   *
+   * @author Jared
+   *
+   */
+  private static class signupHandler implements Route {
+    @Override
+    public Object handle(Request req, Response res) {
+      QueryParamsMap qm = req.queryMap();
+      String userName = qm.value("username");
+      String password = qm.value("password");
+      String first = qm.value("first_name");
+      String last = qm.value("last_name");
+      String email = qm.value("email");
+      String phone = qm.value("phone_number");
+      String topics = qm.value("topics");
+      userName = userName.toLowerCase();
+      email = email.toLowerCase();
+      List<String> topicsList = Arrays.asList(topics
+          .substring(1, topics.length() - 1).split("\\s*,\\s*"));
 
-			userName = userName.substring(1, userName.length() - 1);
-			password = password.substring(1, password.length() - 1);
-			first = first.substring(1, first.length() - 1);
-			last = last.substring(1, last.length() - 1);
-			email = email.substring(1, email.length() - 1);
-			phone = phone.substring(1, phone.length() - 1);
-			topics = topics.substring(1, topics.length() - 1);
+      userName = userName.substring(1, userName.length() - 1);
+      password = password.substring(1, password.length() - 1);
+      first = first.substring(1, first.length() - 1);
+      last = last.substring(1, last.length() - 1);
+      email = email.substring(1, email.length() - 1);
+      phone = phone.substring(1, phone.length() - 1);
+      topics = topics.substring(1, topics.length() - 1);
 
-			UUID newID = UUID.randomUUID();
-			Boolean status = false;
-			try {
-				status = dbQuery.insertNewUser(newID.toString(), first, last,
-						email, phone, userName, password);
-				dbQuery.insertUserExpertise(topicsList, newID.toString());
-				if (status) {
-					userID = newID.toString();
-					emailSender.sendWelcomeEmail(email);
-					System.out.println("new user success");
-				} else {
-					userID = "";
-					System.out.println("user fail");
-				}
-			} catch (SQLException | MessagingException e) {
-				e.printStackTrace();
-			}
+      UUID newID = UUID.randomUUID();
+      Boolean status = false;
+      userID = "";
+      try {
+        status = dbQuery.insertNewUser(newID.toString(), first, last,
+            email, phone, userName, password);
+        dbQuery.insertUserExpertise(topicsList, newID.toString());
+        if (status) {
+          userID = newID.toString();
+          emailSender.sendWelcomeEmail(email);
+          System.out.println("new user success");
+        } else {
+          userID = "";
+          System.out.println("user fail");
+        }
+      } catch (SQLException | MessagingException e) {
+        e.printStackTrace();
+      }
 
-			return GSON.toJson(userID);
-		}
-	}
+      return GSON.toJson(userID);
+    }
+  }
 
 	// private static class SubmitQuestionHandler implements Route {
 	// @Override
