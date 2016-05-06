@@ -651,13 +651,14 @@
 		margin: 30px;
 		font-weight: 500;
 		height: 300px;
+		overflow: hidden;
 	}
 
 /* Tags */
 	
 	.tag {
 		display: inline-block;
-		margin: 30px 8px 3px 8px;
+		margin: 10px 8px 3px 8px;
 		padding: 0px 8px 4px 8px;
 		background: white;
 		height: 25px;

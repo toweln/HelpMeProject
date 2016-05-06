@@ -177,14 +177,15 @@
 			console.log(document.cookie);
 			$.post("/sortedQs", JSON.stringify({}), function(response) {
 				var qs = JSON.parse(response);
-				for (i = 0; i < qs.length; i++) {
+				for (i = 0; i < Math.min(qs.length, 12); i++) {
 					console.log(qs[i]);
 					$("h2#title" + (i + 1)).html(qs[i]["title"].substring(1, qs[i]["title"].length - 1));
 					$("h2#title" + (i + 1)).attr("style", "margin-top: -20px; margin-bottom: 20px");
 					$("p#message" + (i + 1)).html(qs[i]["message"].substring(1, qs[i]["message"].length - 1));
 					$("a#button" + (i + 1)).attr("href", "/questions/" + qs[i]["ID"]);
+					$("a#button" + (i + 1)).attr("style", "margin-bottom: 20px");
 					var html_tag = ""
-					for (j = 0; j < qs[i]["frontEndTags"].length; j++) {
+					for (j = 0; j < Math.min(qs[i]["frontEndTags"].length, 4); j++) {
 						html_tag += "<span class='tag'>" + qs[i]["frontEndTags"][j] + "</span>";
 					}
 					$("span#tag" + (i + 1)).html(html_tag);
