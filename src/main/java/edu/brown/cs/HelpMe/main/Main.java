@@ -11,9 +11,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import javax.mail.MessagingException;
 
@@ -94,7 +97,7 @@ public class Main {
 					.getSortedQuestions("f8560bf6-9701-496b-b48c-422178163867");
 			for (Question q : sortedQuestions) {
 				// System.out.println(q.getID());
-				System.out.println(q.getTitle());
+				System.out.println(q.getFrontEndTags());
 				// System.out.println(q.getRating().getRating());
 			}
 		} catch (SQLException e) {
@@ -223,6 +226,42 @@ public class Main {
 			return new ModelAndView(variables, "signup.html");
 		}
 	}
+
+	// private static class QuestionPageHandler implements TemplateViewRoute {
+	// @Override
+	// public ModelAndView handle(Request req, Response res) {
+	// String actName = req.params(":actorName");
+	// actName = actName.replaceAll("_", " ");
+	// BaconQuery bq = null;
+	// Set<String> films = new HashSet<>();
+	// try {
+	// bq = new BaconQuery(db);
+	// films = bq.getActorsFilms(actName);
+	// } catch (SQLException e) {
+	// System.out.println("ERROR: Database does not exist");
+	// System.exit(1);
+	// } catch (ClassNotFoundException e) {
+	// e.printStackTrace();
+	// }
+	//
+	// // build the list of films with a stringbuilder.
+	// String htmlOutput = "";
+	// Map<String, String> filmURLs = getFilmURLs(films);
+	// StringBuilder sb = new StringBuilder("");
+	// for (Entry<String, String> film : filmURLs.entrySet()) {
+	// sb.append("<li><a href=" + film.getValue() + ">" + film.getKey()
+	// + "</li>");
+	// }
+	// htmlOutput = "<h1>Movies starring " + actName + ":" + "</h1>" + "<ul>"
+	// + sb.toString() + "</ul>";
+	// Map<String, Object> variables = new ImmutableMap.Builder<String,
+	// Object>()
+	// .put("title", "Bacon").put("shortestPath", htmlOutput)
+	// .put("actors", new ArrayList<>()).put("films", new ArrayList<>())
+	// .put("actorURLs", new ArrayList<>())
+	// .put("filmURLs", new ArrayList<>()).build();
+	// return new ModelAndView(variables, "main.ftl");
+	// }
 
 	private class NewQuestionHandler implements TemplateViewRoute {
 		@Override

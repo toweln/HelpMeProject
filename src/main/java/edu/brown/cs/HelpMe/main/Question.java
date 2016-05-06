@@ -138,4 +138,8 @@ public class Question {
 		this.wc = wc;
 	}
 
+	public List<String> getFrontEndTags() {
+		return frontEndTags;
+	}
+
 }
