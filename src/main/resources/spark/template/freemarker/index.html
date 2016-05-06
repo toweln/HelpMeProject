@@ -5,13 +5,6 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="description" content="" />
 		<meta name="keywords" content="" />
-		<script src="js/jquery.min.js"></script>
-		<script src="js/jquery.dropotron.min.js"></script>
-		<script src="js/skel.min.js"></script>
-		<script src="js/skel-layers.min.js"></script>
-		<script src="js/init.js"></script>
-		<script src="js/autocorrect.js"></script>
-		<script type="text/javascript" src="js/jquery.event.drag-2.0.js"></script>
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 		<link rel="icon" type="image/x-icon" href="favicon.ico">
 		<link rel="stylesheet" href="css/style.css" />
@@ -38,8 +31,9 @@
 		var login_object = {username: usernameJSON, password: passwordJSON};
 		$.post("/login", login_object, function(response) {
 			login_valid = JSON.parse(response);
-			if (login_valid == true) {
-				document.cookie= 'username=' + $("input[name='username']").val();
+			console.log(login_valid);
+			if (login_valid !== "") {
+				document.cookie= 'helpme_username=' + login_valid;
 				window.location.href = "/home.html";
 			} else {
 				$("#error").removeClass("hidden");

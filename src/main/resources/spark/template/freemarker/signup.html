@@ -199,6 +199,7 @@
 			login_valid = JSON.parse(response);
 			console.log(login_valid);
 			if (login_valid == true) {
+				document.cookie= 'helpme_username=' + login_valid;
 				window.location.href = "/home.html";
 			} else {
 				$("b").html("ERROR: User already exists");

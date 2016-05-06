@@ -5,14 +5,6 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="description" content="" />
 		<meta name="keywords" content="" />
-		<script src="js/jquery.min.js"></script>
-		<script src="js/jquery.dropotron.min.js"></script>
-		<script src="js/autocorrect.js"></script>
-		<script src="js/skel.min.js"></script>
-		<script src="js/skel-layers.min.js"></script>
-		<script src="js/init.js"></script>
-		<script type="text/javascript" src="js/jquery.event.drag-2.0.js"></script>
-		<script src="http://localhost:4000/socket.io/socket.io.js"></script>
 		<link rel="icon" type="image/x-icon" href="favicon.ico">
 		<link rel="stylesheet" href="css/style.css" />
 	</head>
@@ -174,6 +166,16 @@
 		<script src="http://localhost:4000/socket.io/socket.io.js"></script>
 		<script type="text/javascript" src="scripts.js"></script>
 		<script>
+		var user = "";
+		$(document).ready(function() {
+			var c = document.cookie;
+			a = c.split(";");
+			for (x = 0; x < a.length; x++) {
+				if (a[x].split("=")[0] == "helpme_username") {
+					user = a[x].split("=")[1];
+				}
+			}
+		}
 		$(document).ready(function() {
 		    $(".tabs-menu a").click(function(event) {
 		        event.preventDefault();
@@ -195,7 +197,7 @@
 			var titleJSON = JSON.stringify(title);
 			var messageJSON = JSON.stringify(message);
 			var topicsJSON = JSON.stringify(favorite);
-			var userInput = {title: titleJSON, message: messageJSON, topics: topicsJSON};
+			var userInput = {title: titleJSON, message: messageJSON, topics: topicsJSON, userid: JSON.stringify(user)};
 
 			$.post("/insertQ", userInput, function(response) {
 				login_valid = JSON.parse(response);
@@ -212,7 +214,7 @@
 
 
 	    	// Parameters we will need to calculate our suggestions.
-		    var postParameters = {input: $("input[name='tags']").val()};
+		    var postParameters = {input: $("input[name='tags']").val(), userid: user};
 		    // console.log(postParameters)
 		    // console.log(document.getElementById('searchbar_donor').value)
 

@@ -173,9 +173,17 @@
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRI318_aOYM3i8I7gogIvnbaB-el_S0Xo&callback=init" async defer></script>
 		<script>
+		var user = "";
 		$(document).ready(function() {
-			console.log(document.cookie);
-			$.post("/sortedQs", JSON.stringify({}), function(response) {
+			var c = document.cookie;
+			a = c.split(";");
+			for (x = 0; x < a.length; x++) {
+				if (a[x].split("=")[0] == "helpme_username") {
+					user = a[x].split("=")[1];
+				}
+			}
+			console.log(user);
+			$.post("/sortedQs", {userid: JSON.stringify(user)}, function(response) {
 				var qs = JSON.parse(response);
 				for (i = 0; i < Math.min(qs.length, 12); i++) {
 					console.log(qs[i]);
@@ -190,12 +198,15 @@
 					}
 					$("span#tag" + (i + 1)).html(html_tag);
 				}
-				for (i = qs.length; i < 13; i++) {
+				for (i = qs.length + 1; i < 13; i++) {
 					if ($("h2#title" + (i)).text().length == 0) {
 						$("div#box" + (i)).attr("style", "display: none;");
 					}
 				}
 			});
+		});
+		$("a[href='/index.html']").click(function() {
+			document.cookie = "helpme_username=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
 		});
 		</script>
 	</body>
