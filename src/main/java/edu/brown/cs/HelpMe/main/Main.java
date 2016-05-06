@@ -149,7 +149,8 @@ public class Main {
 		Spark.get("/settings.html", new SettingsHandler(), freeMarker);
 		Spark.post("/sortedQs", new SortedQuestionHandler());
 		Spark.post("/insertQ", new InsertQuestionHandler());
-		Spark.get("/questions/:questionID", new QuestionPageHandler(), freeMarker);
+		Spark.get("/questions/:questionID", new QuestionPageHandler(),
+				freeMarker);
 	}
 
 	private class FrontHandler implements TemplateViewRoute {
@@ -232,6 +233,7 @@ public class Main {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
 			String qID = req.params(":questionID");
+			System.out.println("ID: " + qID);
 			Question q = null;
 			try {
 				q = dbQuery.makeQuestion(qID);
@@ -241,6 +243,8 @@ public class Main {
 
 			String questionTitle = q.getTitle();
 			String questionMessage = q.getMessage();
+			System.out.println(questionTitle);
+			System.out.println(questionMessage);
 
 			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!",
 					"questionTitle", questionTitle, "questionMessage",

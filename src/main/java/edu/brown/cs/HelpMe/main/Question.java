@@ -13,7 +13,8 @@ public class Question {
 
 	private String title;
 	private String message;
-	private UUID ID;
+	private String ID;
+	private String stringID;
 	private User owner;
 	private WordCount wc;
 	private TagRating rating;
@@ -37,7 +38,7 @@ public class Question {
 		this.title = title;
 		this.message = message;
 		this.owner = owner;
-		this.ID = UUID.randomUUID();
+		this.ID = UUID.randomUUID().toString();
 		this.rating = rating;
 		this.wc = new WordCount(message);
 		this.td = td;
@@ -53,11 +54,11 @@ public class Question {
 		}
 	}
 
-	public Question(String title, String message, TagRating rating,
+	public Question(String ID, String title, String message, TagRating rating,
 			TagDatabase td, List<String> frontEndTags) {
 		this.title = title;
 		this.message = message;
-		this.ID = UUID.randomUUID();
+		this.ID = ID;
 		this.rating = rating;
 		this.wc = new WordCount(message);
 		this.td = td;
