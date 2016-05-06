@@ -149,7 +149,7 @@ public class Main {
 		Spark.get("/settings.html", new SettingsHandler(), freeMarker);
 		Spark.post("/sortedQs", new SortedQuestionHandler());
 		Spark.post("/insertQ", new InsertQuestionHandler());
-		Spark.get("/:questionID", new QuestionPageHandler(), freeMarker);
+		Spark.get("/questions/:questionID", new QuestionPageHandler(), freeMarker);
 	}
 
 	private class FrontHandler implements TemplateViewRoute {
