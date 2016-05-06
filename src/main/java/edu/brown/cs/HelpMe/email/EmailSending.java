@@ -52,7 +52,7 @@ public class EmailSending {
     // Step2
     getMailSession = Session.getDefaultInstance(mailServerProperties, null);
     generateMailMessage = new MimeMessage(getMailSession);
-    generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress("jared_lee@brown.edu"));
+    generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(address));
     generateMailMessage.setSubject(subject);
     generateMailMessage.setContent(body, "text/html");
 
