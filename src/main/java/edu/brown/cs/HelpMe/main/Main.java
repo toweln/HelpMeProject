@@ -264,19 +264,6 @@ public class Main {
 			QueryParamsMap qm = req.queryMap();
 			String questionTitle = qm.value("title");
 			String questionMessage = qm.value("message");
-			// String tags = qm.value("tags");
-			// System.out.println(tags);
-			// List<String> lTags = Arrays.asList(tags.split("\\s*,\\s*"));
-			// System.out.println(lTags);
-			//
-			// String reqid = UUID.randomUUID().toString();
-			// System.out.println(userID);
-			// try {
-			// dbQuery.insertNewRequest(reqid, userID, "", "", null,
-			// questionTitle, questionMessage, "", "", "", "", "");
-			// } catch (SQLException e) {
-			// e.printStackTrace();
-			// }
 
 			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!",
 					"questionTitle", questionTitle, "questionMessage",
@@ -287,7 +274,8 @@ public class Main {
 
 	/**
 	 * Handler to login in users. Checks if the supplied information corresponds
-	 * to an actual user. Will return the userid if the user login was successful.
+	 * to an actual user. Will return the userid if the user login was
+	 * successful.
 	 *
 	 * @author Jared
 	 */
@@ -319,35 +307,38 @@ public class Main {
 	}
 
 	/**
-   * Class for handling responding to a question and closing it.
-   * @author Jared
-   */
-  private static class closeQuestionhandler implements Route {
-    @Override
-    public Object handle(Request req, Response res) {
-      QueryParamsMap qm = req.queryMap();
-      String request = qm.value("reqid");
-      request = request.substring(1, request.length() - 1);
-      Boolean status = false;
-      DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-      Date date = new Date();
-      String dateString = dateFormat.format(date);
-      try {
-        dbQuery.updateRequestTutor(request, userID);
-        dbQuery.updateTimeResponded(dateString, request);
-        String tuteeId = dbQuery.getTuteeFromReqId(request);
-        UserData tuteeUser = dbQuery.getUserDataFromId(tuteeId);
-        UserData tutorUser = dbQuery.getUserDataFromId(userID);
-        String summary = dbQuery.getRequestSummary(request);
-        emailSender.sendTutorEmail(tutorUser.getEmail(), summary, tuteeUser.getFirstName(), "CHAT LINK GOES HERE");
-        emailSender.sendTuteeEmail(tuteeUser.getEmail(), summary, tutorUser.getFirstName(), "CHAT LINK GOES HERE");
-      } catch (SQLException | MessagingException e) {
-        e.printStackTrace();
-      }
+	 * Class for handling responding to a question and closing it.
+	 * 
+	 * @author Jared
+	 */
+	private static class closeQuestionhandler implements Route {
+		@Override
+		public Object handle(Request req, Response res) {
+			QueryParamsMap qm = req.queryMap();
+			String request = qm.value("reqid");
+			request = request.substring(1, request.length() - 1);
+			Boolean status = false;
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			Date date = new Date();
+			String dateString = dateFormat.format(date);
+			try {
+				dbQuery.updateRequestTutor(request, userID);
+				dbQuery.updateTimeResponded(dateString, request);
+				String tuteeId = dbQuery.getTuteeFromReqId(request);
+				UserData tuteeUser = dbQuery.getUserDataFromId(tuteeId);
+				UserData tutorUser = dbQuery.getUserDataFromId(userID);
+				String summary = dbQuery.getRequestSummary(request);
+				emailSender.sendTutorEmail(tutorUser.getEmail(), summary,
+						tuteeUser.getFirstName(), "CHAT LINK GOES HERE");
+				emailSender.sendTuteeEmail(tuteeUser.getEmail(), summary,
+						tutorUser.getFirstName(), "CHAT LINK GOES HERE");
+			} catch (SQLException | MessagingException e) {
+				e.printStackTrace();
+			}
 
-      return GSON.toJson(status);
-    }
-  }
+			return GSON.toJson(status);
+		}
+	}
 
 	private static class InsertQuestionHandler implements Route {
 		@Override
@@ -397,14 +388,14 @@ public class Main {
 		}
 	}
 
-  /**
-   * Handler forhandling signups.Returns true if signup was
-   * successful,false*otherwise. This will be changed to return the userid
-   * string of the user that was just created.
-   *
-   * @author Jared
-   *
-   */
+	/**
+	 * Handler forhandling signups.Returns true if signup was
+	 * successful,false*otherwise. This will be changed to return the userid
+	 * string of the user that was just created.
+	 *
+	 * @author Jared
+	 *
+	 */
 	private static class signupHandler implements Route {
 		@Override
 		public Object handle(Request req, Response res) {
@@ -438,7 +429,7 @@ public class Main {
 					emailSender.sendWelcomeEmail(email);
 					System.out.println("new user success");
 				} else {
-				  userID = "";
+					userID = "";
 					System.out.println("user fail");
 				}
 			} catch (SQLException | MessagingException e) {
@@ -501,13 +492,13 @@ public class Main {
 		}
 	}
 
-  /**
-   * Handler for checking if a user is logged in. Returns true if a user is
-   * logged in, false otherwise.
-   *
-   * @author Jared
-   *
-   */
+	/**
+	 * Handler for checking if a user is logged in. Returns true if a user is
+	 * logged in, false otherwise.
+	 *
+	 * @author Jared
+	 *
+	 */
 	private static class checkLoginHandler implements Route {
 		@Override
 		public Object handle(Request req, Response res) {
