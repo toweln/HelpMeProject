@@ -787,8 +787,7 @@ public class SQLQueries {
 			password = getPasswordFromUserName(userName);
 			id = getIdFromUserName(userName);
 		}
-		System.out.println(pw);
-		System.out.println(password);
+
 		if (password.equals(pw)) {
 			return id;
 		}

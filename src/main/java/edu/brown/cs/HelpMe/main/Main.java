@@ -287,7 +287,7 @@ public class Main {
 
 	/**
 	 * Handler to login in users. Checks if the supplied information corresponds
-	 * to an actual user.
+	 * to an actual user. Will return the userid if the user login was successful.
 	 *
 	 * @author Jared
 	 */
@@ -314,7 +314,7 @@ public class Main {
 			} else {
 				userID = status;
 			}
-			return GSON.toJson(ret);
+			return GSON.toJson(status);
 		}
 	}
 
@@ -397,13 +397,14 @@ public class Main {
 		}
 	}
 
-	/**
-	 * Handler forhandling signups.Returns true if signup was
-	 * successful,false*otherwise.
-	 *
-	 * @author Jared
-	 *
-	 */
+  /**
+   * Handler forhandling signups.Returns true if signup was
+   * successful,false*otherwise. This will be changed to return the userid
+   * string of the user that was just created.
+   *
+   * @author Jared
+   *
+   */
 	private static class signupHandler implements Route {
 		@Override
 		public Object handle(Request req, Response res) {
@@ -437,13 +438,14 @@ public class Main {
 					emailSender.sendWelcomeEmail(email);
 					System.out.println("new user success");
 				} else {
+				  userID = "";
 					System.out.println("user fail");
 				}
 			} catch (SQLException | MessagingException e) {
 				e.printStackTrace();
 			}
 
-			return GSON.toJson(status);
+			return GSON.toJson(userID);
 		}
 	}
 
@@ -499,13 +501,13 @@ public class Main {
 		}
 	}
 
-	/**
-	 * Handler for checking if a user is logged in. Returns true if a user is
-	 * logged in, false otherwise.
-	 *
-	 * @author Jared
-	 *
-	 */
+  /**
+   * Handler for checking if a user is logged in. Returns true if a user is
+   * logged in, false otherwise.
+   *
+   * @author Jared
+   *
+   */
 	private static class checkLoginHandler implements Route {
 		@Override
 		public Object handle(Request req, Response res) {
