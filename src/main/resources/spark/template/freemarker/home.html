@@ -182,7 +182,7 @@
 					$("h2#title" + (i + 1)).html(qs[i]["title"].substring(1, qs[i]["title"].length - 1));
 					$("h2#title" + (i + 1)).attr("style", "margin-top: -20px; margin-bottom: 20px");
 					$("p#message" + (i + 1)).html(qs[i]["message"].substring(1, qs[i]["message"].length - 1));
-					$("a#button" + (i + 1)).attr("href", "/questions/" + qs[i]["stringID"]);
+					$("a#button" + (i + 1)).attr("href", "/questions/" + qs[i]["ID"]);
 					var html_tag = ""
 					for (j = 0; j < qs[i]["frontEndTags"].length; j++) {
 						html_tag += "<span class='tag'>" + qs[i]["frontEndTags"][j] + "</span>";

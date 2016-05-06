@@ -245,6 +245,10 @@ public class Main {
 			String questionMessage = q.getMessage();
 			System.out.println(questionTitle);
 			System.out.println(questionMessage);
+			questionTitle = questionTitle.replaceAll("\"", "");
+			questionMessage = questionMessage.replaceAll("\"", "");
+			System.out.println(questionTitle);
+			System.out.println(questionMessage);
 
 			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!",
 					"questionTitle", questionTitle, "questionMessage",
