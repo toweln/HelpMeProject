@@ -136,6 +136,8 @@ public class Main {
 
 		// Post request for signup
 		Spark.post("/newUser", new signupHandler());
+    Spark.post("/closeQuestion", new closeQuestionhandler());
+
 
 		Spark.post("/login", new LoginHandler());
 		Spark.post("/suggest", new SuggestHandler());
@@ -390,9 +392,7 @@ public class Main {
       Date date = new Date();
       String dateString = dateFormat.format(date);
       try {
-        /*dbQuery.insertNewRequest(reqid, userid, "", "", topicsList,
-            title, body, "", "", dateString, "", "");*/
-        dbQuery.insertNewRequest(reqid, userID, "", "", topicsList,
+        dbQuery.insertNewRequest(reqid, user, "", "", topicsList,
             title, body, "", "", dateString, "", "");
         dbQuery.updateWordCount(topicsList, body);
       } catch (SQLException e) {
@@ -411,11 +411,12 @@ public class Main {
 		@Override
 		public Object handle(Request req, Response res) {
 			QueryParamsMap qm = req.queryMap();
+			String user = qm.value("userid");
 			TagDatabase td = new TagDatabase();
 			TutorCompatibility tc = new TutorCompatibility(td);
 			List<Question> sortedQuestions = new ArrayList<>();
 			try {
-				sortedQuestions = tc.getSortedQuestions(userID);
+				sortedQuestions = tc.getSortedQuestions(user);
 			} catch (SQLException e) {
 				System.out.println("ERROR: Database does not exist");
 			}

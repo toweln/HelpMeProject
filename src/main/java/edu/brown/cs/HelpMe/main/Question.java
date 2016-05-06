@@ -1,11 +1,10 @@
 package edu.brown.cs.HelpMe.main;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * a class for a question submitted on the site.
- * 
+ *
  * @author andrewjones
  *
  */
@@ -33,7 +32,7 @@ public class Question {
 	 * @param rating
 	 *            TagRating of question
 	 */
-	public Question(String title, String message, User owner, TagRating rating,
+	/*public Question(String title, String message, User owner, TagRating rating,
 			TagDatabase td) {
 		this.title = title;
 		this.message = message;
@@ -52,7 +51,7 @@ public class Question {
 				}
 			}
 		}
-	}
+	}*/
 
 	public Question(String ID, String title, String message, TagRating rating,
 			TagDatabase td, List<String> frontEndTags) {
