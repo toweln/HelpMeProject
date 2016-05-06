@@ -355,6 +355,7 @@ public class SQLQueries {
 		// List<String> qBodyWords = Arrays.asList(body.split("\\s+"));
 		List<String> qTags = Arrays.asList(tags.split("\\s*,\\s*"));
 		Map<String, Map<String, Double>> qoverallRating = new HashMap<>();
+		List<String> frontEndTags = new ArrayList<>();
 		for (String tag : qTags) {
 			if (tag.equals("")) {
 				continue;
@@ -378,11 +379,12 @@ public class SQLQueries {
 				qoverallRating.put(currDisc, newDiscMap);
 				qoverallRating.get(currDisc).put(tag, 1.0);
 			}
+			frontEndTags.add(tag);
 		}
 		// System.out.println(qoverallRating);
 		TagDatabase td = new TagDatabase();
 		TagRating trq = new TagRating(qoverallRating, td);
-		Question q = new Question(title, body, trq, td);
+		Question q = new Question(title, body, trq, td, frontEndTags);
 		return q;
 	}
 
@@ -398,40 +400,44 @@ public class SQLQueries {
 	// existingCounts.put(word, currCount + 1);
 	// }
 
+	public String getTuteeFromReqId(String reqid) throws SQLException {
+		String query = "SELECT tutee_id FROM requests WHERE request_id=?";
+		PreparedStatement stat = conn.prepareStatement(query);
+		stat.setString(1, reqid);
+		ResultSet results = stat.executeQuery();
+		String ret = results.getString(1);
+		return ret;
+	}
 
-	public String getTuteeFromReqId(String reqid) throws SQLException{
-    String query = "SELECT tutee_id FROM requests WHERE request_id=?";
-    PreparedStatement stat = conn.prepareStatement(query);
-    stat.setString(1, reqid);
-    ResultSet results = stat.executeQuery();
-    String ret = results.getString(1);
-    return ret;
-  }
-  public String getTutorFromReqId(String reqid) throws SQLException{
-    String query = "SELECT tutor_id FROM requests WHERE request_id=?";
-    PreparedStatement stat = conn.prepareStatement(query);
-    stat.setString(1, reqid);
-    ResultSet results = stat.executeQuery();
-    String ret = results.getString(1);
-    return ret;
-  }
+	public String getTutorFromReqId(String reqid) throws SQLException {
+		String query = "SELECT tutor_id FROM requests WHERE request_id=?";
+		PreparedStatement stat = conn.prepareStatement(query);
+		stat.setString(1, reqid);
+		ResultSet results = stat.executeQuery();
+		String ret = results.getString(1);
+		return ret;
+	}
 
-  public UserData getUserDataFromId(String userId) throws SQLException{
-    String query = "SELECT * FROM users WHERE user_id=?";
-    PreparedStatement stat = conn.prepareStatement(query);
-    stat.setString(1, userId);
-    ResultSet results = stat.executeQuery();
-    UserData user = new UserData(results.getString(1), results.getString(2), results.getString(3), results.getString(4), results.getString(5), results.getString(6));
-    return user;
-  }
-  public String getRequestSummary(String reqid) throws SQLException{
-    String query = "SELECT summary FROM requests WHERE request_id=?";
-    PreparedStatement stat = conn.prepareStatement(query);
-    stat.setString(1, reqid);
-    ResultSet results = stat.executeQuery();
-    String summary = results.getString(1);
-    return summary;
-  }
+	public UserData getUserDataFromId(String userId) throws SQLException {
+		String query = "SELECT * FROM users WHERE user_id=?";
+		PreparedStatement stat = conn.prepareStatement(query);
+		stat.setString(1, userId);
+		ResultSet results = stat.executeQuery();
+		UserData user = new UserData(results.getString(1), results.getString(2),
+				results.getString(3), results.getString(4),
+				results.getString(5), results.getString(6));
+		return user;
+	}
+
+	public String getRequestSummary(String reqid) throws SQLException {
+		String query = "SELECT summary FROM requests WHERE request_id=?";
+		PreparedStatement stat = conn.prepareStatement(query);
+		stat.setString(1, reqid);
+		ResultSet results = stat.executeQuery();
+		String summary = results.getString(1);
+		return summary;
+	}
+
 	public void updateWordCount(List<String> tags, String body)
 			throws SQLException {
 		String[] words = body.split("\\s+");

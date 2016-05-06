@@ -1,5 +1,6 @@
 package edu.brown.cs.HelpMe.main;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -17,6 +18,7 @@ public class Question {
 	private WordCount wc;
 	private TagRating rating;
 	private TagDatabase td;
+	private List<String> frontEndTags;
 
 	/**
 	 * create new question.
@@ -50,15 +52,16 @@ public class Question {
 			}
 		}
 	}
-	
+
 	public Question(String title, String message, TagRating rating,
-			TagDatabase td) {
+			TagDatabase td, List<String> frontEndTags) {
 		this.title = title;
 		this.message = message;
 		this.ID = UUID.randomUUID();
 		this.rating = rating;
 		this.wc = new WordCount(message);
 		this.td = td;
+		this.frontEndTags = frontEndTags;
 
 		for (Discipline d : td.getTaxonomy()) {
 			if (rating.getRating().containsKey(d)) {
