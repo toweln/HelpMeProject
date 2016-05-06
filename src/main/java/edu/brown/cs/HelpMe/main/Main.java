@@ -149,6 +149,7 @@ public class Main {
 		Spark.get("/settings.html", new SettingsHandler(), freeMarker);
 		Spark.post("/sortedQs", new SortedQuestionHandler());
 		Spark.post("/insertQ", new InsertQuestionHandler());
+		Spark.get("/questions/:questionID", new QuestionPageHandler(), freeMarker);
 	}
 
 	private class FrontHandler implements TemplateViewRoute {
@@ -227,41 +228,26 @@ public class Main {
 		}
 	}
 
-	// private static class QuestionPageHandler implements TemplateViewRoute {
-	// @Override
-	// public ModelAndView handle(Request req, Response res) {
-	// String actName = req.params(":actorName");
-	// actName = actName.replaceAll("_", " ");
-	// BaconQuery bq = null;
-	// Set<String> films = new HashSet<>();
-	// try {
-	// bq = new BaconQuery(db);
-	// films = bq.getActorsFilms(actName);
-	// } catch (SQLException e) {
-	// System.out.println("ERROR: Database does not exist");
-	// System.exit(1);
-	// } catch (ClassNotFoundException e) {
-	// e.printStackTrace();
-	// }
-	//
-	// // build the list of films with a stringbuilder.
-	// String htmlOutput = "";
-	// Map<String, String> filmURLs = getFilmURLs(films);
-	// StringBuilder sb = new StringBuilder("");
-	// for (Entry<String, String> film : filmURLs.entrySet()) {
-	// sb.append("<li><a href=" + film.getValue() + ">" + film.getKey()
-	// + "</li>");
-	// }
-	// htmlOutput = "<h1>Movies starring " + actName + ":" + "</h1>" + "<ul>"
-	// + sb.toString() + "</ul>";
-	// Map<String, Object> variables = new ImmutableMap.Builder<String,
-	// Object>()
-	// .put("title", "Bacon").put("shortestPath", htmlOutput)
-	// .put("actors", new ArrayList<>()).put("films", new ArrayList<>())
-	// .put("actorURLs", new ArrayList<>())
-	// .put("filmURLs", new ArrayList<>()).build();
-	// return new ModelAndView(variables, "main.ftl");
-	// }
+	private static class QuestionPageHandler implements TemplateViewRoute {
+		@Override
+		public ModelAndView handle(Request req, Response res) {
+			String qID = req.params(":questionID");
+			Question q = null;
+			try {
+				q = dbQuery.makeQuestion(qID);
+			} catch (SQLException e) {
+				System.out.println("ERROR: Database does not exist");
+			}
+
+			String questionTitle = q.getTitle();
+			String questionMessage = q.getMessage();
+
+			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!",
+					"questionTitle", questionTitle, "questionMessage",
+					questionMessage);
+			return new ModelAndView(variables, "q.html");
+		}
+	}
 
 	private class NewQuestionHandler implements TemplateViewRoute {
 		@Override
