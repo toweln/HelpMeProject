@@ -6,6 +6,7 @@ import java.util.UUID;
 
 /**
  * a user on the site.
+ * 
  * @author andrewjones
  *
  */
@@ -17,11 +18,17 @@ public class User {
 	private List<Question> answeredQuestions;
 	private TagRating expertise;
 	private WordCount wc;
+	private String frontEndTags;
+	private String username;
+	private String email;
 
 	/**
 	 * initialize a user.
-	 * @param name the user's name.
-	 * @param expertise the user's tagrating.
+	 * 
+	 * @param name
+	 *            the user's name.
+	 * @param expertise
+	 *            the user's tagrating.
 	 */
 	public User(String name, TagRating expertise) {
 		this.name = name;
@@ -29,6 +36,14 @@ public class User {
 		this.submittedQuestions = new ArrayList<>();
 		this.answeredQuestions = new ArrayList<>();
 		this.expertise = expertise;
+	}
+
+	public User(String name, String frontEndTags, String username,
+			String email) {
+		this.name = name;
+		this.frontEndTags = frontEndTags;
+		this.username = username;
+		this.email = email;
 	}
 
 	/**
@@ -78,7 +93,9 @@ public class User {
 
 	/**
 	 * add a question to the user's submitted question.
-	 * @param q the question.
+	 * 
+	 * @param q
+	 *            the question.
 	 */
 	public void addSubmittedQuestion(Question q) {
 		submittedQuestions.add(q);
@@ -86,7 +103,9 @@ public class User {
 
 	/**
 	 * add a question to the user's answered questions.
-	 * @param q the question.
+	 * 
+	 * @param q
+	 *            the question.
 	 */
 	public void addAnsweredQuestion(Question q) {
 		answeredQuestions.add(q);
@@ -94,6 +113,7 @@ public class User {
 
 	/**
 	 * get the user's wordcount.
+	 * 
 	 * @return
 	 */
 	public WordCount getWordCount() {
@@ -102,10 +122,24 @@ public class User {
 
 	/**
 	 * set the user's wordcount.
-	 * @param wc the new wordcount.
+	 * 
+	 * @param wc
+	 *            the new wordcount.
 	 */
 	public void setWordCount(WordCount wc) {
 		this.wc = wc;
+	}
+
+	public String getFrontEndTags() {
+		return frontEndTags;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public String getEmail() {
+		return email;
 	}
 
 }

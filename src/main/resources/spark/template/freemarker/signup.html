@@ -151,6 +151,7 @@
 	    });
 	});
 	$("#login-submit").click(function() {
+		$("b").html("");
 		if (/^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i.test($("input[name='email']").val())) {
 			if (valid_phone($("input[name='phone']").val())) {
 				if ($("#password1").val() == $("password2").val()) {
@@ -198,7 +199,7 @@
 		$.post("/newUser", userInput, function(response) {
 			login_valid = JSON.parse(response);
 			console.log(login_valid);
-			if (login_valid == true) {
+			if (login_valid != "") {
 				document.cookie= 'helpme_username=' + login_valid;
 				window.location.href = "/home.html";
 			} else {

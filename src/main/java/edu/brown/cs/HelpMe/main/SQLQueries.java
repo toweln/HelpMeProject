@@ -29,6 +29,7 @@ public class SQLQueries {
 	private List<String> humDisc;
 	private List<String> csDisc;
 	private List<String> histDisc;
+	private List<String> langDisc;
 	private Map<String, String> discMap;
 	private List<String> allDisc;
 	private Map<String, Map<String, Integer>> existingCounts;
@@ -55,6 +56,7 @@ public class SQLQueries {
 		humDisc = new ArrayList<String>();
 		csDisc = new ArrayList<String>();
 		histDisc = new ArrayList<String>();
+		langDisc = new ArrayList<String>();
 
 		discMap = new HashMap<>();
 		allDisc = new ArrayList<>();
@@ -135,6 +137,11 @@ public class SQLQueries {
 		csDisc.add("Lisp");
 		csDisc.add("Perl");
 		csDisc.add("Ruby");
+		csDisc.add("MATLAB");
+		csDisc.add("R");
+		csDisc.add("SAS");
+		csDisc.add("SQL");
+		csDisc.add("Stata");
 
 		for (String csTag : csDisc) {
 			discMap.put(csTag, "Computer Science and Technology");
@@ -151,6 +158,29 @@ public class SQLQueries {
 		for (String histTag : histDisc) {
 			discMap.put(histTag, "History");
 			allDisc.add(histTag);
+		}
+
+		langDisc.add("American Sign Language");
+		langDisc.add("Arabic");
+		langDisc.add("Cantonese");
+		langDisc.add("Dutch");
+		langDisc.add("French");
+		langDisc.add("German");
+		langDisc.add("Hebrew");
+		langDisc.add("Hindi");
+		langDisc.add("Italian");
+		langDisc.add("Japanese");
+		langDisc.add("Korean");
+		langDisc.add("Latin");
+		langDisc.add("Mandarin");
+		langDisc.add("Portuguese");
+		langDisc.add("Russian");
+		langDisc.add("Spanish");
+		langDisc.add("Swahili");
+
+		for (String langTag : langDisc) {
+			discMap.put(langTag, "Languages");
+			allDisc.add(langTag);
 		}
 	}
 
@@ -240,8 +270,8 @@ public class SQLQueries {
 		stat.setString(1, email);
 		ResultSet results = stat.executeQuery();
 		int ret = results.getInt(1);
-		System.out.println("ret");
-		System.out.println(ret);
+		// System.out.println("ret");
+		// System.out.println(ret);
 		if (ret != 0) {
 			return false;
 		}
@@ -254,8 +284,8 @@ public class SQLQueries {
 		stat.setString(1, user);
 		ResultSet results = stat.executeQuery();
 		int ret = results.getInt(1);
-		System.out.println("ret");
-		System.out.println(ret);
+		// System.out.println("ret");
+		// System.out.println(ret);
 		if (ret != 0) {
 			return false;
 		}
@@ -525,8 +555,33 @@ public class SQLQueries {
 				String finalTag = sb.toString();
 				t = finalTag.substring(0, finalTag.length() - 1);
 
-				// System.out.println(t);
+				if (t.equals("Html")) {
+					t = "HTML";
+				}
+				if (t.equals("Matlab")) {
+					t = "MATLAB";
+				}
+				if (t.equals("Sas")) {
+					t = "SAS";
+				}
+				if (t.equals("Css")) {
+					t = "CSS";
+				}
+				if (t.equals("Jquery")) {
+					t = "jQuery";
+				}
+				if (t.equals("Sql")) {
+					t = "SQL";
+				}
+				if (t.equals("Php")) {
+					t = "PHP";
+				}
+				if (t.equals("Us History")) {
+					t = "US History";
+				}
+//				System.out.println(t);
 				for (String w : words) {
+
 					int currCount = 0;
 					if (updateWC.get(t).containsKey(w)) {
 						currCount = updateWC.get(t).get(w);
@@ -621,6 +676,58 @@ public class SQLQueries {
 		TagDatabase td = new TagDatabase();
 		TagRating tru = new TagRating(ratingMap, td);
 		User u = new User("", tru);
+		return u;
+	}
+
+	public User makeUserProfile(String userID) throws SQLException {
+		String query1 = "SELECT * FROM tags WHERE user_id = ?;";
+		PreparedStatement stat1 = conn.prepareStatement(query1);
+		stat1.setString(1, userID);
+		ResultSet rs1 = stat1.executeQuery();
+		List<String> frontEndTags = new ArrayList<>();
+		// String body = "";
+		while (rs1.next()) {
+			for (int i = 0; i < allDisc.size() - 6; i++) {
+				String currTag = allDisc.get(i);
+				String currRating = rs1.getString(i + 2);
+				if (currRating != null) {
+					frontEndTags.add(currTag);
+				}
+			}
+		}
+		StringBuilder sb = new StringBuilder();
+		for (String t : frontEndTags) {
+			sb.append(t);
+			sb.append(", ");
+		}
+		String tagList = sb.toString();
+		tagList = tagList.substring(0, tagList.length() - 2);
+
+		String query2 = "SELECT first_name, last_name, email_address, username FROM users WHERE user_id = ?";
+		// System.out.println(query2);
+		PreparedStatement stat2 = conn.prepareStatement(query2);
+		stat2.setString(1, userID);
+		ResultSet rs2 = stat2.executeQuery();
+
+		String firstname = "";
+		String lastname = "";
+		String name = "";
+		String email_address = "";
+		String username = "";
+		while (rs2.next()) {
+			firstname = rs2.getString(1);
+			lastname = rs2.getString(2);
+			name = firstname + " " + lastname;
+			email_address = rs2.getString(3);
+			username = rs2.getString(4);
+		}
+
+		// System.out.println(name);
+		// System.out.println(email_address);
+		// System.out.println(username);
+		// System.out.println(tagList);
+
+		User u = new User(name, tagList, username, email_address);
 		return u;
 	}
 
@@ -803,7 +910,5 @@ public class SQLQueries {
 	public void closeConn() throws SQLException {
 		conn.close();
 	}
-
-
 
 }

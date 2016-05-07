@@ -86,20 +86,20 @@ public class Main {
 			System.out.println("ERROR: Cannot find table");
 		}
 
-		TagDatabase td = new TagDatabase();
-		TutorCompatibility tc = new TutorCompatibility(td);
-		List<Question> sortedQuestions = new ArrayList<>();
-		try {
-			sortedQuestions = tc
-					.getSortedQuestions("f8560bf6-9701-496b-b48c-422178163867");
-			for (Question q : sortedQuestions) {
-				// System.out.println(q.getID());
-				System.out.println(q.getFrontEndTags());
-				// System.out.println(q.getRating().getRating());
-			}
-		} catch (SQLException e) {
-			System.out.println("ERROR: Database does not exist");
-		}
+		// TagDatabase td = new TagDatabase();
+		// TutorCompatibility tc = new TutorCompatibility(td);
+		// List<Question> sortedQuestions = new ArrayList<>();
+		// try {
+		// sortedQuestions = tc
+		// .getSortedQuestions("d53438cf-aa97-49d6-a0a0-ff5db0728806");
+		// for (Question q : sortedQuestions) {
+		// // System.out.println(q.getID());
+		// System.out.println(q.getMessage());
+		// // System.out.println(q.getRating().getRating());
+		// }
+		// } catch (SQLException e) {
+		// System.out.println("ERROR: Database does not exist");
+		// }
 
 		dbQuery.initializeExistingCounts();
 		runSparkServer();
@@ -136,20 +136,20 @@ public class Main {
 
 		// Post request for signup
 		Spark.post("/newUser", new signupHandler());
-    Spark.post("/closeQuestion", new closeQuestionhandler());
-
+		Spark.post("/closeQuestion", new closeQuestionhandler());
 
 		Spark.post("/login", new LoginHandler());
 		Spark.post("/suggest", new SuggestHandler());
 		Spark.get("/signup.html", new SignupDropdownHandler(), freeMarker);
 		Spark.get("/q_new.html", new NewQuestionHandler(), freeMarker);
 		Spark.get("/q.html", new SubmittedQuestion(), freeMarker);
-		Spark.get("/profile.html", new ProfileHandler(), freeMarker);
+		// Spark.get("/profile.html", new ProfileHandler(), freeMarker);
 		Spark.get("/settings.html", new SettingsHandler(), freeMarker);
 		Spark.post("/sortedQs", new SortedQuestionHandler());
 		Spark.post("/insertQ", new InsertQuestionHandler());
 		Spark.get("/questions/:questionID", new QuestionPageHandler(),
 				freeMarker);
+		Spark.get("/profiles/:userID", new ProfileHandler(), freeMarker);
 	}
 
 	private class FrontHandler implements TemplateViewRoute {
@@ -210,6 +210,30 @@ public class Main {
 		}
 	}
 
+	private class ProfileHandler implements TemplateViewRoute {
+		@Override
+		public ModelAndView handle(Request req, Response res) {
+			String userID = req.params(":userID");
+			// System.out.println("ID: " + userID);
+			User u = null;
+			try {
+				u = dbQuery.makeUserProfile(userID);
+			} catch (SQLException e) {
+				System.out.println("ERROR: Database does not exist");
+			}
+
+			String name = u.getName();
+			String username = u.getUsername();
+			String email = u.getEmail();
+			String tags = u.getFrontEndTags();
+
+			Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+					.put("name", name).put("email", email)
+					.put("username", username).put("tags", tags).build();
+			return new ModelAndView(variables, "profile.html");
+		}
+	}
+
 	private class SettingsHandler implements TemplateViewRoute {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
@@ -222,7 +246,6 @@ public class Main {
 	private class SignupDropdownHandler implements TemplateViewRoute {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
-			System.out.println("dropdownhandle");
 			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!");
 			return new ModelAndView(variables, "signup.html");
 		}
@@ -282,13 +305,13 @@ public class Main {
 		}
 	}
 
-	private class ProfileHandler implements TemplateViewRoute {
-		@Override
-		public ModelAndView handle(Request req, Response res) {
-			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!");
-			return new ModelAndView(variables, "profile.html");
-		}
-	}
+	// private class ProfileHandler implements TemplateViewRoute {
+	// @Override
+	// public ModelAndView handle(Request req, Response res) {
+	// Map<String, String> variables = ImmutableMap.of("title", "HelpMe!");
+	// return new ModelAndView(variables, "profile.html");
+	// }
+	// }
 
 	private class SubmittedQuestion implements TemplateViewRoute {
 		@Override
@@ -305,107 +328,113 @@ public class Main {
 	}
 
 	/**
-   * Handler to login in users. Checks if the supplied information corresponds
-   * to an actual user. Will return the userid if the user login was successful.
-   *
-   * @author Jared
-   */
-  private static class LoginHandler implements Route {
-    @Override
-    public Object handle(Request req, Response res) {
-      QueryParamsMap qm = req.queryMap();
-      String userName = qm.value("username");
-      String password = qm.value("password");
-      userName = userName.toLowerCase();
-      userName = userName.substring(1, userName.length() - 1);
-      password = password.substring(1, password.length() - 1);
-      System.out.println(userName);
-      System.out.println(password);
-      String status = "";
-      Boolean ret = true;
-      try {
-        status = dbQuery.certifyLogin(userName, password);
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
-      if (status.equals("")) {
-        ret = false;
-        System.out.println("false");
-      } else {
-        userID = status;
-      }
-      return GSON.toJson(status);
+	 * Handler to login in users. Checks if the supplied information corresponds
+	 * to an actual user. Will return the userid if the user login was
+	 * successful.
+	 *
+	 * @author Jared
+	 */
+	private static class LoginHandler implements Route {
+		@Override
+		public Object handle(Request req, Response res) {
+			QueryParamsMap qm = req.queryMap();
+			String userName = qm.value("username");
+			String password = qm.value("password");
+			userName = userName.toLowerCase();
+			userName = userName.substring(1, userName.length() - 1);
+			password = password.substring(1, password.length() - 1);
+			System.out.println(userName);
+			System.out.println(password);
+			String status = "";
+			Boolean ret = true;
+			try {
+				status = dbQuery.certifyLogin(userName, password);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			if (status.equals("")) {
+				ret = false;
+				System.out.println("false");
+			} else {
+				userID = status;
+			}
+			return GSON.toJson(status);
 
-    }
-  }
+		}
+	}
 
 	/**
-   * Class for handling responding to a question and closing it.
-   * @author Jared
-   */
-  private static class closeQuestionhandler implements Route {
-    @Override
-    public Object handle(Request req, Response res) {
-      QueryParamsMap qm = req.queryMap();
-      String request = qm.value("reqid");
-      String tutor = qm.value("userid");
-      request = request.substring(1, request.length() - 1);
-      Boolean status = false;
-      DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-      Date date = new Date();
-      String dateString = dateFormat.format(date);
-      try {
-        dbQuery.updateRequestTutor(request, userID);
-        dbQuery.updateTimeResponded(dateString, request);
-        String tuteeId = dbQuery.getTuteeFromReqId(request);
-        UserData tuteeUser = dbQuery.getUserDataFromId(tuteeId);
-        UserData tutorUser = dbQuery.getUserDataFromId(tutor);
-        String summary = dbQuery.getRequestSummary(request);
-        emailSender.sendTutorEmail(tutorUser.getEmail(), summary, tuteeUser.getFirstName(), "CHAT LINK GOES HERE");
-        emailSender.sendTuteeEmail(tuteeUser.getEmail(), summary, tutorUser.getFirstName(), "CHAT LINK GOES HERE");
-      } catch (SQLException | MessagingException e) {
-        e.printStackTrace();
-      }
+	 * Class for handling responding to a question and closing it.
+	 * 
+	 * @author Jared
+	 */
+	private static class closeQuestionhandler implements Route {
+		@Override
+		public Object handle(Request req, Response res) {
+			QueryParamsMap qm = req.queryMap();
+			String request = qm.value("reqid");
+			System.out.println("REQ ID: " + request);
+			String tutor = qm.value("userid");
+			request = request.substring(1, request.length() - 1);
+			Boolean status = false;
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			Date date = new Date();
+			String dateString = dateFormat.format(date);
+			try {
+				dbQuery.updateRequestTutor(request, userID);
+				dbQuery.updateTimeResponded(dateString, request);
+				String tuteeId = dbQuery.getTuteeFromReqId(request);
+				UserData tuteeUser = dbQuery.getUserDataFromId(tuteeId);
+				UserData tutorUser = dbQuery.getUserDataFromId(tutor);
+				String summary = dbQuery.getRequestSummary(request);
+				emailSender.sendTutorEmail(tutorUser.getEmail(), summary,
+						tuteeUser.getFirstName(), "CHAT LINK GOES HERE");
+				emailSender.sendTuteeEmail(tuteeUser.getEmail(), summary,
+						tutorUser.getFirstName(), "CHAT LINK GOES HERE");
+			} catch (SQLException | MessagingException e) {
+				e.printStackTrace();
+			}
 
-      return GSON.toJson(status);
-    }
-  }
+			return GSON.toJson(status);
+		}
+	}
 
 	private static class InsertQuestionHandler implements Route {
-    @Override
-    public Object handle(Request req, Response res) {
-      System.out.println("INSERT HANDLER");
-      QueryParamsMap qm = req.queryMap();
-      //THIS SHOULD BE ADDED WHEN USERID COOKIES ARE IMPLEMENTED ON FRONTEND
-      String user = qm.value("userid");
-      //THIS SHOULD BE ADDED WHEN USERID COOKIES ARE IMPLEMENTED ON FRONTEND
+		@Override
+		public Object handle(Request req, Response res) {
+			System.out.println("INSERT HANDLER");
+			QueryParamsMap qm = req.queryMap();
+			// THIS SHOULD BE ADDED WHEN USERID COOKIES ARE IMPLEMENTED ON
+			// FRONTEND
+			String user = qm.value("userid");
+			// THIS SHOULD BE ADDED WHEN USERID COOKIES ARE IMPLEMENTED ON
+			// FRONTEND
 
-
-      String title = qm.value("title");
-      String body = qm.value("message");
-      String topics = qm.value("topics");
-      List<String> topicsList = Arrays.asList(topics
-          .substring(1, topics.length() - 1).split("\\s*,\\s*"));
-      System.out.println("BODY " + body);
-      String reqid = UUID.randomUUID().toString();
-      DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-      Date date = new Date();
-      String dateString = dateFormat.format(date);
-      try {
-        dbQuery.insertNewRequest(reqid, user, "", "", topicsList,
-            title, body, "", "", dateString, "", "");
-        dbQuery.updateWordCount(topicsList, body);
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
-      boolean ret = true;
-      // System.out.println("false");
-      // } else {
-      // userID = status;
-      // }
-      return GSON.toJson(ret);
-    }
-  }
+			String title = qm.value("title");
+			String body = qm.value("message");
+			String topics = qm.value("topics");
+			List<String> topicsList = Arrays.asList(topics
+					.substring(1, topics.length() - 1).split("\\s*,\\s*"));
+			System.out.println("BODY " + body);
+			String reqid = UUID.randomUUID().toString();
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			Date date = new Date();
+			String dateString = dateFormat.format(date);
+			try {
+				dbQuery.insertNewRequest(reqid, user, "", "", topicsList, title,
+						body, "", "", dateString, "", "");
+				dbQuery.updateWordCount(topicsList, body);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			boolean ret = true;
+			// System.out.println("false");
+			// } else {
+			// userID = status;
+			// }
+			return GSON.toJson(ret);
+		}
+	}
 
 	private static class SortedQuestionHandler implements Route {
 		@Override
@@ -426,59 +455,59 @@ public class Main {
 	}
 
 	/**
-   * Handler forhandling signups.Returns true if signup was
-   * successful,false*otherwise. This will be changed to return the userid
-   * string of the user that was just created.
-   *
-   * @author Jared
-   *
-   */
-  private static class signupHandler implements Route {
-    @Override
-    public Object handle(Request req, Response res) {
-      QueryParamsMap qm = req.queryMap();
-      String userName = qm.value("username");
-      String password = qm.value("password");
-      String first = qm.value("first_name");
-      String last = qm.value("last_name");
-      String email = qm.value("email");
-      String phone = qm.value("phone_number");
-      String topics = qm.value("topics");
-      userName = userName.toLowerCase();
-      email = email.toLowerCase();
-      List<String> topicsList = Arrays.asList(topics
-          .substring(1, topics.length() - 1).split("\\s*,\\s*"));
+	 * Handler forhandling signups.Returns true if signup was
+	 * successful,false*otherwise. This will be changed to return the userid
+	 * string of the user that was just created.
+	 *
+	 * @author Jared
+	 *
+	 */
+	private static class signupHandler implements Route {
+		@Override
+		public Object handle(Request req, Response res) {
+			QueryParamsMap qm = req.queryMap();
+			String userName = qm.value("username");
+			String password = qm.value("password");
+			String first = qm.value("first_name");
+			String last = qm.value("last_name");
+			String email = qm.value("email");
+			String phone = qm.value("phone_number");
+			String topics = qm.value("topics");
+			userName = userName.toLowerCase();
+			email = email.toLowerCase();
+			List<String> topicsList = Arrays.asList(topics
+					.substring(1, topics.length() - 1).split("\\s*,\\s*"));
 
-      userName = userName.substring(1, userName.length() - 1);
-      password = password.substring(1, password.length() - 1);
-      first = first.substring(1, first.length() - 1);
-      last = last.substring(1, last.length() - 1);
-      email = email.substring(1, email.length() - 1);
-      phone = phone.substring(1, phone.length() - 1);
-      topics = topics.substring(1, topics.length() - 1);
+			userName = userName.substring(1, userName.length() - 1);
+			password = password.substring(1, password.length() - 1);
+			first = first.substring(1, first.length() - 1);
+			last = last.substring(1, last.length() - 1);
+			email = email.substring(1, email.length() - 1);
+			phone = phone.substring(1, phone.length() - 1);
+			topics = topics.substring(1, topics.length() - 1);
 
-      UUID newID = UUID.randomUUID();
-      Boolean status = false;
-      userID = "";
-      try {
-        status = dbQuery.insertNewUser(newID.toString(), first, last,
-            email, phone, userName, password);
-        dbQuery.insertUserExpertise(topicsList, newID.toString());
-        if (status) {
-          userID = newID.toString();
-          emailSender.sendWelcomeEmail(email);
-          System.out.println("new user success");
-        } else {
-          userID = "";
-          System.out.println("user fail");
-        }
-      } catch (SQLException | MessagingException e) {
-        e.printStackTrace();
-      }
+			UUID newID = UUID.randomUUID();
+			Boolean status = false;
+			userID = "";
+			try {
+				status = dbQuery.insertNewUser(newID.toString(), first, last,
+						email, phone, userName, password);
+				dbQuery.insertUserExpertise(topicsList, newID.toString());
+				if (status) {
+					userID = newID.toString();
+					emailSender.sendWelcomeEmail(email);
+					System.out.println("new user success");
+				} else {
+					userID = "";
+					System.out.println("user fail");
+				}
+			} catch (SQLException | MessagingException e) {
+				e.printStackTrace();
+			}
 
-      return GSON.toJson(userID);
-    }
-  }
+			return GSON.toJson(userID);
+		}
+	}
 
 	// private static class SubmitQuestionHandler implements Route {
 	// @Override

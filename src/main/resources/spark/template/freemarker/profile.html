@@ -5,7 +5,8 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="description" content="" />
 		<meta name="keywords" content="" />
-		<link rel="stylesheet" href="css/style.css" />
+		<link rel="icon" type="image/x-icon" href="../favicon.ico">
+		<link rel="stylesheet" href="../css/style.css" />
 	</head>
 	<body>
 
@@ -17,7 +18,7 @@
 					<a href='home.html'><div id='small-logo'></div></a>
 						<nav id="nav">
 							<ul>
-								<li class="active"><a href="profile.html">Profile</a></li>
+								<li class="active"><a href="index.html">Profile</a></li>
 								<li><a href='settings.html'>Settings</a></li>
 								<li><a href='leaderboard.html'>Leaderboard</a></li>
 								<li><a href='index.html'>Log Out</a></li>
@@ -25,71 +26,33 @@
 						</nav>
 					</div>
 
-					<center><h2 style='font-size: 48px; margin: 20px'>Profile</h2>
-					<form method="post" action="q.html" style='margin-top: 50px'>
+					<center><img src='../images/logo.png'><br>
+					<span class="byline" style='font-size: 36px; margin: 10px; font-weight: bold'>User profile</span><br><br>
 
-						<div class="row half">
-							<div class="12u">
-								<input class="text" type="text" name="name" id="settings-form" placeholder="Name" style='width: 500px'/>
-							</div>
+					<div id='profile'>
+						<div class='profile' style='margin-bottom: 8px'>
+							<span style='padding: 5px 5px 5px 5px' id='name'><b>Name:</b></span>
+							<span style='padding: 5px 5px 5px 5px' id='name'>${name}</span>
 						</div>
-						<div class="row half">
-							<div class="12u">
-								<input class="text" type="text" name="username" id="settings-form" placeholder="Username" style='width: 500px'/>
-							</div>
+						<div class='profile' style='margin-bottom: 8px'>
+							<span style='padding: 5px 5px 5px 5px' id='email'><b>Email:</b></span>
+							<span style='padding: 5px 5px 5px 5px' id='email'>${email}</span>
 						</div>
-						<div class="row half">
-							<div class="12u">
-								<input class="text" type="password" name="password" id="settings-form" placeholder="Password" style='width: 500px' />
-							</div>
+						<div class='profile' style='margin-bottom: 8px'>
+							<span style='padding: 5px 5px 5px 5px' id='username'><b>Username:</b></span>
+							<span style='padding: 5px 5px 5px 5px' id='username'>${username}</span>
 						</div>
-						<div class="row half">
-							<div class="12u">
-								<input class="text" type="password" name="password" id="settings-form" placeholder="Confirm Password" style='width: 500px' />
-							</div>
-						</div>
-						<div class="row half">
-							<div class="12u">
-								<input class="text" type="text" name="phone" id="settings-form" placeholder="Phone number" style='width: 500px' />
-							</div>
-						</div>
-						<div class="row half">
-							<div class="12u">
-								<input class="text" type="text" name="topics" id="settings-form" placeholder="Topics you have experience in" style='width: 500px' />
-							</div>
-						</div>
-						<div class="row half">
-							<div class="12u">
-								<input class="text" type="text" name="classes" id="settings-form" placeholder="Classes you've taken" style='width: 500px' />
-							</div>
-						</div>
-						<div class="row half">
-							<div class="12u">
-								<ul class="actions">
-									<li>
-									<center><a href="signup.html" class="button wrapper style2" style='height: 40px; padding-top: 7px; margin-top: -5px; font-size: 20px; width: 400px; margin-left: -200px'>Upload a new profile picture!</a><br><br>
-										<input type="submit" value="Save changes!" class="button alt" /></center>
-									</li>
-								</ul>
-
+						<div class='profile' style='margin-bottom: 8px'>
+							<span style='padding: 5px 5px 5px 5px' id='tags'><b>Tags:</b></span>
+							<span style='padding: 5px 5px 5px 5px' id='tags'>${tags}</span>
 						</div>
 					</div>
-					</form></center>
+					</center>
 
 			</div>
 		</div>
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 		<script>
-		var user = "";
-		$(document).ready(function() {
-			var c = document.cookie;
-			a = c.split(";");
-			for (x = 0; x < a.length; x++) {
-				if (a[x].split("=")[0] == "helpme_username") {
-					user = a[x].split("=")[1];
-				}
-			}
-		}
 		$("a[href='/index.html']").click(function() {
 			document.cookie = "helpme_username=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
 		});

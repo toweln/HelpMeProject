@@ -13,7 +13,6 @@ public class Question {
 	private String title;
 	private String message;
 	private String ID;
-	private String stringID;
 	private User owner;
 	private WordCount wc;
 	private TagRating rating;
@@ -32,26 +31,17 @@ public class Question {
 	 * @param rating
 	 *            TagRating of question
 	 */
-	/*public Question(String title, String message, User owner, TagRating rating,
-			TagDatabase td) {
-		this.title = title;
-		this.message = message;
-		this.owner = owner;
-		this.ID = UUID.randomUUID().toString();
-		this.rating = rating;
-		this.wc = new WordCount(message);
-		this.td = td;
-
-		for (Discipline d : td.getTaxonomy()) {
-			if (rating.getRating().containsKey(d)) {
-				for (Tag t : d.getSubdisciplines()) {
-					if (rating.getRating().get(d).containsKey(t)) {
-						t.updateWordCount(message);
-					}
-				}
-			}
-		}
-	}*/
+	/*
+	 * public Question(String title, String message, User owner, TagRating
+	 * rating, TagDatabase td) { this.title = title; this.message = message;
+	 * this.owner = owner; this.ID = UUID.randomUUID().toString(); this.rating =
+	 * rating; this.wc = new WordCount(message); this.td = td;
+	 * 
+	 * for (Discipline d : td.getTaxonomy()) { if
+	 * (rating.getRating().containsKey(d)) { for (Tag t : d.getSubdisciplines())
+	 * { if (rating.getRating().get(d).containsKey(t)) {
+	 * t.updateWordCount(message); } } } } }
+	 */
 
 	public Question(String ID, String title, String message, TagRating rating,
 			TagDatabase td, List<String> frontEndTags) {
@@ -107,7 +97,7 @@ public class Question {
 	 * @return the id.
 	 */
 	public String getID() {
-		return ID.toString();
+		return ID;
 	}
 
 	/**
