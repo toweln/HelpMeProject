@@ -310,7 +310,7 @@ public class TutorCompatibility {
     }
 		List<Question> sortedQs = new ArrayList<>();
 		while(!questions.isEmpty()){
-		  sortedQs.add(questions.pollLast());
+		  sortedQs.add(questions.pollFirst());
 		}
 		return sortedQs;
 	}
@@ -322,7 +322,7 @@ public class TutorCompatibility {
   private class QuestionComparator implements Comparator<Question> {
     @Override
     public int compare(Question q1, Question q2) {
-      return unsortedCompats.get(q1).compareTo(unsortedCompats.get(q2));
+      return unsortedCompats.get(q2).compareTo(unsortedCompats.get(q1));
     }
   }
 }
