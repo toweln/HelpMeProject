@@ -79,6 +79,7 @@
 		</div>
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 		<script>
+		var user = "";
 		$(document).ready(function() {
 			var c = document.cookie;
 			a = c.split(";");
@@ -87,8 +88,9 @@
 					user = a[x].split("=")[1];
 				}
 			}
-		}
+		});
 		$("#profile").click(function() {
+			console.log("aaa");
 			window.location.href = "/profiles/" + user;
 		});
 		$("a[href='/index.html']").click(function() {
