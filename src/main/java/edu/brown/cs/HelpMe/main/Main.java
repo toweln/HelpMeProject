@@ -157,6 +157,8 @@ public class Main {
 				freeMarker);
 		Spark.get("/profiles/:userID", new ProfileHandler(), freeMarker);
 		Spark.get("/room/:roomID", new ChatroomHandler(), freeMarker);
+		Spark.get("/rating/:tutorID", new RatingHandler(), freeMarker);
+		Spark.post("/insertRating", new InsertRatingHandler());
 	}
 
 	private class FrontHandler implements TemplateViewRoute {
@@ -257,6 +259,17 @@ public class Main {
 					.put("name", name).put("email", email)
 					.put("username", username).put("tags", tags).build();
 			return new ModelAndView(variables, "profile.html");
+		}
+	}
+
+	private class RatingHandler implements TemplateViewRoute {
+		@Override
+		public ModelAndView handle(Request req, Response res) {
+			String userID = req.params(":tutor");
+
+			Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+					.build();
+			return new ModelAndView(variables, "rating.html");
 		}
 	}
 
@@ -464,6 +477,16 @@ public class Main {
 			// userID = status;
 			// }
 			return GSON.toJson(ret);
+		}
+	}
+
+	private static class InsertRatingHandler implements Route {
+		@Override
+		public Object handle(Request req, Response res) {
+			QueryParamsMap qm = req.queryMap();
+			String rating = qm.value("rate");
+			System.out.println(rating);
+			return GSON.toJson("Hey");
 		}
 	}
 
