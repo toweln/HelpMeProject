@@ -453,9 +453,13 @@ public class SQLQueries {
 		PreparedStatement stat = conn.prepareStatement(query);
 		stat.setString(1, userId);
 		ResultSet results = stat.executeQuery();
-		UserData user = new UserData(results.getString(1), results.getString(2),
-				results.getString(3), results.getString(4),
-				results.getString(5), results.getString(6));
+		UserData user = null;
+		while (results.next()) {
+			user = new UserData(results.getString(1), results.getString(2),
+					results.getString(3), results.getString(4),
+					results.getString(5), results.getString(6));
+		}
+
 		return user;
 	}
 
@@ -825,11 +829,15 @@ public class SQLQueries {
 
 	public void updateRequestTutor(String reqid, String tutor)
 			throws SQLException {
+		reqid = "\"" + reqid + "\"";
+		tutor = "\"" + tutor + "\"";
 		String query = "UPDATE requests SET tutor_id=? WHERE request_id=?";
 		PreparedStatement stat = conn.prepareStatement(query);
+		System.out.println("TUTOR ID: " + tutor);
+		System.out.println("REQUEST ID: " + reqid);
 		stat.setString(1, tutor);
 		stat.setString(2, reqid);
-		stat.executeQuery();
+		stat.executeUpdate();
 	}
 
 	public void updateTimeResponded(String timeRes, String reqid)
@@ -838,7 +846,7 @@ public class SQLQueries {
 		PreparedStatement stat = conn.prepareStatement(query);
 		stat.setString(1, timeRes);
 		stat.setString(2, reqid);
-		stat.executeQuery();
+		stat.executeUpdate();
 	}
 
 	public void updateRating(String rating, String reqid) throws SQLException {
