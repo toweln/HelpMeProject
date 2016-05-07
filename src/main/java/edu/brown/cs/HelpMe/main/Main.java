@@ -36,6 +36,7 @@ import edu.brown.cs.HelpMe.autocorrect.CommandParser;
 import edu.brown.cs.HelpMe.autocorrect.SuggestionGenerator;
 import edu.brown.cs.HelpMe.email.EmailSending;
 import edu.brown.cs.HelpMe.email.UserData;
+import edu.brown.cs.acj.chat.Chat;
 import freemarker.template.Configuration;
 
 public class Main {
@@ -102,7 +103,10 @@ public class Main {
 		// }
 
 		dbQuery.initializeExistingCounts();
+		Chat c = new Chat();
+		c.initializeSocket();
 		runSparkServer();
+		c.startSocket();
 		// } else {
 		// Process commands
 		// }
@@ -150,6 +154,7 @@ public class Main {
 		Spark.get("/questions/:questionID", new QuestionPageHandler(),
 				freeMarker);
 		Spark.get("/profiles/:userID", new ProfileHandler(), freeMarker);
+		Spark.get("/room/:roomID", new ChatroomHandler(), freeMarker);
 	}
 
 	private class FrontHandler implements TemplateViewRoute {
@@ -158,6 +163,17 @@ public class Main {
 
 			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!");
 			return new ModelAndView(variables, "index.html");
+		}
+	}
+
+	private static class ChatroomHandler implements TemplateViewRoute {
+		@Override
+		public ModelAndView handle(Request req, Response res) {
+			String roomID = req.params(":roomID");
+
+			Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+					.build();
+			return new ModelAndView(variables, "chatroom.html");
 		}
 	}
 
@@ -373,7 +389,7 @@ public class Main {
 
 	/**
 	 * Class for handling responding to a question and closing it.
-	 * 
+	 *
 	 * @author Jared
 	 */
 	private static class closeQuestionhandler implements Route {
@@ -421,6 +437,9 @@ public class Main {
 			String title = qm.value("title");
 			String body = qm.value("message");
 			String topics = qm.value("topics");
+			//ADDED LATITUDE AND LONGITUDE
+			String lat = qm.value("lat");
+			String lon = qm.value("lng");
 			List<String> topicsList = Arrays.asList(topics
 					.substring(1, topics.length() - 1).split("\\s*,\\s*"));
 			System.out.println("BODY " + body);
@@ -430,7 +449,7 @@ public class Main {
 			String dateString = dateFormat.format(date);
 			try {
 				dbQuery.insertNewRequest(reqid, user, "", "", topicsList, title,
-						body, "", "", dateString, "", "");
+						body, lat, lon, dateString, "", "");
 				dbQuery.updateWordCount(topicsList, body);
 			} catch (SQLException e) {
 				e.printStackTrace();

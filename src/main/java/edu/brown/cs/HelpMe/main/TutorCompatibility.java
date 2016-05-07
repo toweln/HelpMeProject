@@ -11,10 +11,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.MinMaxPriorityQueue;
+
 /**
  * a class to assess the compatibility to between tutor/question and
  * question/tutor's past questions.
- * 
+ *
  * @author andrewjones
  *
  */
@@ -22,10 +24,12 @@ public class TutorCompatibility {
 
 	private TagDatabase td;
 	private SQLQueries dbQuery;
+	private Map<Question, Double> unsortedCompats;
+
 
 	/**
 	 * initialize a TutorCompatibility.
-	 * 
+	 *
 	 * @param td
 	 *            the TagDatabase.
 	 */
@@ -47,7 +51,7 @@ public class TutorCompatibility {
 
 	/**
 	 * get the compatibility of a user and a question (dot product).
-	 * 
+	 *
 	 * @param u
 	 *            user.
 	 * @param q
@@ -147,7 +151,7 @@ public class TutorCompatibility {
 	/**
 	 * find compatibility between the current question and questions the user
 	 * has answered in the past.
-	 * 
+	 *
 	 * @param u
 	 *            user.
 	 * @param q
@@ -208,7 +212,7 @@ public class TutorCompatibility {
 
 	/**
 	 * get the sum of both types of compatibility.
-	 * 
+	 *
 	 * @param u
 	 *            the user.
 	 * @param q
@@ -237,7 +241,7 @@ public class TutorCompatibility {
 
 	/**
 	 * sort the map of questions and compatibilities.
-	 * 
+	 *
 	 * @param unsortMap
 	 *            the unsorted map.
 	 * @return the sorted map.
@@ -251,7 +255,8 @@ public class TutorCompatibility {
 
 		// Sort list with comparator, to compare the Map values
 		Collections.sort(list, new Comparator<Map.Entry<Question, Double>>() {
-			public int compare(Map.Entry<Question, Double> o1,
+			@Override
+      public int compare(Map.Entry<Question, Double> o1,
 					Map.Entry<Question, Double> o2) {
 //				System.out.println(o2.getKey().getMessage());
 //				System.out.println(o2.getValue());
@@ -273,7 +278,7 @@ public class TutorCompatibility {
 	/**
 	 * given multiple questions, rank the tutor's compatibility with each and
 	 * sort.
-	 * 
+	 *
 	 * @param u
 	 *            the user.
 	 * @param qs
@@ -282,7 +287,7 @@ public class TutorCompatibility {
 	 */
 	public Map<Question, Double> rankCompatibilities(User u,
 			List<Question> qs) {
-		Map<Question, Double> unsortedCompats = new HashMap<>();
+		this.unsortedCompats = new HashMap<>();
 		for (Question q : qs) {
 			double currCompat = getOverallCompatibility(u, q);
 			unsortedCompats.put(q, currCompat);
@@ -293,17 +298,31 @@ public class TutorCompatibility {
 
 	public List<Question> getSortedQuestions(String userID)
 			throws SQLException {
-		Map<Question, Double> unsortedCompats = new HashMap<>();
-		List<String> qIDs = dbQuery.getAllQIDs();
-		// System.out.println(qIDs);
-		for (String qID : qIDs) {
-			Question q = dbQuery.makeQuestion(qID);
-			double currCompat = getOverallCompatibility(userID, qID);
-			unsortedCompats.put(q, currCompat);
-		}
-		Map<Question, Double> sortedCompats = sortByComparator(unsortedCompats);
+	  MinMaxPriorityQueue<Question> questions = MinMaxPriorityQueue.orderedBy(new QuestionComparator()).create();
+	  this.unsortedCompats = new HashMap<>();
+    List<String> qIDs = dbQuery.getAllQIDs();
+    // System.out.println(qIDs);
+    for (String qID : qIDs) {
+      Question q = dbQuery.makeQuestion(qID);
+      double currCompat = getOverallCompatibility(userID, qID);
+      unsortedCompats.put(q, currCompat);
+      questions.add(q);
+    }
 		List<Question> sortedQs = new ArrayList<>();
-		sortedQs.addAll(sortedCompats.keySet());
+		while(!questions.isEmpty()){
+		  sortedQs.add(questions.pollFirst());
+		}
 		return sortedQs;
 	}
+
+  /**
+   * Path comparator.
+   * @author jplee
+   */
+  private class QuestionComparator implements Comparator<Question> {
+    @Override
+    public int compare(Question q1, Question q2) {
+      return unsortedCompats.get(q2).compareTo(unsortedCompats.get(q1));
+    }
+  }
 }

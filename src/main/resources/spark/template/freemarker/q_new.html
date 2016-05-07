@@ -169,6 +169,8 @@
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 		<script>
 		var user = "";
+		var latitude = 0;
+		var longitude = 0;
 		$(document).ready(function() {
 			var c = document.cookie;
 			a = c.split(";");
@@ -188,6 +190,20 @@
 		        $(tab).fadeIn();
 		    });
 		});
+		function init() {
+		    if (navigator.geolocation) {
+		        var geo = navigator.geolocation.getCurrentPosition(showPosition);
+		    } else { 
+		        x.innerHTML = "Geolocation is not supported by this browser.";
+		    }
+		}
+
+		function showPosition(position) {
+			var lat = position.coords.latitude;
+			var lng = position.coords.longitude;
+			latitude = lat;
+			longitude = lng;
+		}
 		$("#q_submit").click(function() {
 			var favorite = [];
 			$.each($("input[name='topics']:checked"), function(){
@@ -199,7 +215,7 @@
 			var titleJSON = JSON.stringify(title);
 			var messageJSON = JSON.stringify(message);
 			var topicsJSON = JSON.stringify(favorite);
-			var userInput = {title: titleJSON, message: messageJSON, topics: topicsJSON, userid: JSON.stringify(user)};
+			var userInput = {title: titleJSON, message: messageJSON, topics: topicsJSON, userid: JSON.stringify(user), lat: JSON.stringify(latitude), lng: JSON.stringify(longitude)};
 
 			$.post("/insertQ", userInput, function(response) {
 				console.log(user);
@@ -246,5 +262,6 @@
 			window.location.href = "/profiles/" + user;
 		});
 		</script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRI318_aOYM3i8I7gogIvnbaB-el_S0Xo&callback=init" async defer></script>
 	</body>
 </html>
