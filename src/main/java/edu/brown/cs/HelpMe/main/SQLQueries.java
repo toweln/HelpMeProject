@@ -579,7 +579,7 @@ public class SQLQueries {
 				if (t.equals("Us History")) {
 					t = "US History";
 				}
-//				System.out.println(t);
+				// System.out.println(t);
 				for (String w : words) {
 
 					int currCount = 0;
@@ -695,14 +695,18 @@ public class SQLQueries {
 				}
 			}
 		}
-		StringBuilder sb = new StringBuilder();
-		for (String t : frontEndTags) {
-			sb.append(t);
-			sb.append(", ");
+		String tagList = "";
+		if (frontEndTags.isEmpty()) {
+			tagList = "";
+		} else {
+			StringBuilder sb = new StringBuilder();
+			for (String t : frontEndTags) {
+				sb.append(t);
+				sb.append(", ");
+			}
+			tagList = sb.toString();
+			tagList = tagList.substring(0, tagList.length() - 2);
 		}
-		String tagList = sb.toString();
-		tagList = tagList.substring(0, tagList.length() - 2);
-
 		String query2 = "SELECT first_name, last_name, email_address, username FROM users WHERE user_id = ?";
 		// System.out.println(query2);
 		PreparedStatement stat2 = conn.prepareStatement(query2);
