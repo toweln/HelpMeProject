@@ -32,13 +32,13 @@ public class EmailSending {
 
   public static void sendTuteeEmail(String email, String summary, String tutor, String link) throws AddressException, MessagingException{
     String subject = tutor + " wants to help you!";
-    String body = tutor + "wants to help you with " + summary + "<br><br> Go to " + link + " to chat!";
+    String body = tutor + " wants to help you with " + summary + "<br><br> Go to " + link + " to chat!";
     generateAndSendEmail(email, subject, body);
   }
 
   public static void sendTutorEmail(String email, String summary, String tutee, String link) throws AddressException, MessagingException{
     String subject = "You are helping " + tutee;
-    String body = "You are helping " + tutee + "with " + summary + "<br><br> Go to " + link + " to chat!";
+    String body = "You are helping " + tutee + " with " + summary + "<br><br> Go to " + link + " to chat!";
     generateAndSendEmail(email, subject, body);
   }
   public static void generateAndSendEmail(String address, String subject, String body) throws AddressException, MessagingException {
