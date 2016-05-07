@@ -198,7 +198,7 @@
 		var userInput = {username: usernameJSON, first_name: first_nameJSON, last_name: last_nameJSON, email: email_JSON, phone_number: phone_numberJSON, password: passwordJSON, topics: topicsJSON};
 		$.post("/newUser", userInput, function(response) {
 			login_valid = JSON.parse(response);
-			console.log(login_valid);
+			console.log(login_valid.length);
 			if (login_valid != "") {
 				document.cookie= 'helpme_username=' + login_valid;
 				window.location.href = "/home.html";
