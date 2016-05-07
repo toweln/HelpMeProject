@@ -460,6 +460,7 @@ public class Main {
 				dbQuery.insertNewRequest(reqid, user, "", "", topicsList, title,
 						body, lat, lon, dateString, "", "");
 				dbQuery.updateWordCount(topicsList, body);
+				System.out.println("question is being inserted!!!!!!!!");
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

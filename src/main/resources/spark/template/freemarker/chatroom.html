@@ -1,18 +1,77 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html>
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>WebsSockets</title>
-    <link rel="stylesheet" href="../css/style_chat.css">
-</head>
-<body>
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-    <div id="chatControls">
-        <input id="message" placeholder="Type your message">
-        <button id="send">Send</button>
-    </div>
-    <ul id="userlist"> <!-- Built by JS --> </ul>
-    <div id="chat">    <!-- Built by JS --> </div>
-    <script src="../js/websocketDemo.js"></script>
-</body>
+    <head>
+        <title>Help Me</title>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="" />
+        <meta name="keywords" content="" />
+        <link rel="icon" type="image/x-icon" href="../favicon.ico">
+        <link rel="stylesheet" href="../css/style.css" />
+        <link rel="stylesheet" href="../css/style_chat.css" />
+    </head>
+    <body>
+
+        <!-- Wrapper -->
+            <div class="wrapper style1">
+
+                <!-- Header -->
+                    <div id="header" class="skel-panels-fixed">
+                    <a href='../home.html'><div id='small-logo'></div></a>
+                        <nav id="nav">
+                            <ul>
+                                <li class="active"><a href="#" id='profile'>Profile</a></li>
+                                <li><a href='../settings.html'>Settings</a></li>
+                                <li><a href='../leaderboard.html'>Leaderboard</a></li>
+                                <li><a href='../index.html'>Log Out</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                    <center><center><img src='../images/logo.png'><br>
+
+                   <div id="chatControls" style='width: 400px; overflow: hidden'>
+                        <input id="message" placeholder="Type your message">
+                        <center><button id="send" style='display: none'>Send</button></center>
+                    </div><ul id='userlist'></ul>
+                    <div id="chat">    <!-- Built by JS --> </div>
+                    <script src="../js/websocketDemo.js"></script>
+                    </center>
+
+            </div>
+        </div>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+        <script>
+        var users = [];
+        $(document).ready(function() {
+            var c = document.cookie;
+            a = c.split(";");
+            for (x = 0; x < a.length; x++) {
+                if (a[x].split("=")[0] == "helpme_username") {
+                    user = a[x].split("=")[1];
+                }
+            }
+        });
+        $("a[href='../index.html']").click(function() {
+            document.cookie = "helpme_username=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+        });
+        $("#profile").click(function() {
+            window.location.href = "/profiles/" + user;
+        });
+        $("#chat").bind("DOMNodeInserted", function(event) {
+            console.log("a)");
+            $("#chat").children("article").each(function() {
+                console.log("background-color: hsl(" + hash($(this).attr("class")) + ",100%,80%);");
+                $(this).attr("style", "background-color: hsl(" + hash($(this).attr("class")) + ", 100%, 80%);")
+            });
+        });
+        function hash(str) {
+            var h = 1;
+            for (t = 5; t < str.length; t++) {
+                h *= str.charCodeAt(t);
+            }
+            return h % 256;
+        }
+        </script>
+    </body>
 </html>
