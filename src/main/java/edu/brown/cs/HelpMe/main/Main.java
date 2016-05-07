@@ -182,7 +182,7 @@ public class Main {
 	private class HomeHandler implements TemplateViewRoute {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
-			
+
 			// Sends information to map
 			List<String> qs = new ArrayList<>();
 			try {
@@ -190,7 +190,7 @@ public class Main {
 			} catch (SQLException e) {
 				System.out.println("ERROR: Database does not exist");
 			}
-			
+
 			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!");
 			return new ModelAndView(variables, "home.html");
 		}
@@ -417,7 +417,8 @@ public class Main {
 				String summary = dbQuery.getRequestSummary(request);
 				String chatRoomURL = "localhost:4567/room/" + request;
 				System.out.println("MY EMAIL: " + tutorUser.getEmail());
-				System.out.println("THEIR EMAIL: " + tuteeUser.getEmail());
+				System.out.println("HELLOOOO???");
+				// System.out.println("THEIR EMAIL: " + tuteeUser.getEmail());
 				System.out.println("CHAT URL: " + chatRoomURL);
 				emailSender.sendTutorEmail(tutorUser.getEmail(), summary,
 						tuteeUser.getFirstName(), chatRoomURL);
