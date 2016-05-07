@@ -1,7 +1,5 @@
 package edu.brown.cs.HelpMe.main;
 
-import static spark.Spark.init;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -412,14 +410,21 @@ public class Main {
 				dbQuery.updateRequestTutor(request, tutor);
 				dbQuery.updateTimeResponded(dateString, request);
 				String tuteeId = dbQuery.getTuteeFromReqId(request);
+				System.out.println("tutee " + tuteeId);
 				UserData tuteeUser = dbQuery.getUserDataFromId(tuteeId);
 				UserData tutorUser = dbQuery.getUserDataFromId(tutor);
 				String summary = dbQuery.getRequestSummary(request);
 				String chatRoomURL = "localhost:4567/room/" + request;
-				System.out.println("MY EMAIL: " + tutorUser.getEmail());
-				System.out.println("HELLOOOO???");
-				// System.out.println("THEIR EMAIL: " + tuteeUser.getEmail());
-				System.out.println("CHAT URL: " + chatRoomURL);
+
+
+
+
+				System.out.println("About to send emails to ");
+				System.out.println("Tutor");
+				System.out.println(tutorUser.getEmail());
+				System.out.println("Tutee");
+        System.out.println(tuteeUser.getEmail());
+
 				emailSender.sendTutorEmail(tutorUser.getEmail(), summary,
 						tuteeUser.getFirstName(), chatRoomURL);
 				emailSender.sendTuteeEmail(tuteeUser.getEmail(), summary,
@@ -440,6 +445,7 @@ public class Main {
 			// THIS SHOULD BE ADDED WHEN USERID COOKIES ARE IMPLEMENTED ON
 			// FRONTEND
 			String user = qm.value("userid");
+			user = user.substring(1, user.length()-1);
 			// THIS SHOULD BE ADDED WHEN USERID COOKIES ARE IMPLEMENTED ON
 			// FRONTEND
 

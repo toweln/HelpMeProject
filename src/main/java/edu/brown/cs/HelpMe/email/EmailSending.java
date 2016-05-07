@@ -31,18 +31,20 @@ public class EmailSending {
   }
 
   public static void sendTuteeEmail(String email, String summary, String tutor, String link) throws AddressException, MessagingException{
+    System.out.println("Sendning email to " + email);
     String subject = tutor + " wants to help you!";
     String body = tutor + " wants to help you with " + summary + "<br><br> Go to " + link + " to chat!";
     generateAndSendEmail(email, subject, body);
   }
 
   public static void sendTutorEmail(String email, String summary, String tutee, String link) throws AddressException, MessagingException{
+    System.out.println("Sendning email to " + email);
     String subject = "You are helping " + tutee;
     String body = "You are helping " + tutee + " with " + summary + "<br><br> Go to " + link + " to chat!";
     generateAndSendEmail(email, subject, body);
   }
   public static void generateAndSendEmail(String address, String subject, String body) throws AddressException, MessagingException {
-
+    System.out.println(address);
     // Step1
     mailServerProperties = System.getProperties();
     mailServerProperties.put("mail.smtp.port", "587");
@@ -64,5 +66,6 @@ public class EmailSending {
     transport.connect("smtp.gmail.com", "helpmebrown@gmail.com", "ilovecs32");
     transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
     transport.close();
+    System.out.println("Message sent");
   }
 }
