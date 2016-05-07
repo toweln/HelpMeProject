@@ -186,6 +186,9 @@
 			console.log(user);
 			$.post("/sortedQs", {userid: JSON.stringify(user)}, function(response) {
 				var qs = JSON.parse(response);
+
+				var map = document.getElementById("map").map;
+				
 				for (i = 0; i < Math.min(qs.length, 12); i++) {
 					console.log(qs[i]);
 					$("h2#title" + (i + 1)).html(qs[i]["title"].substring(1, qs[i]["title"].length - 1));
@@ -193,7 +196,7 @@
 					$("p#message" + (i + 1)).html(qs[i]["message"].substring(1, qs[i]["message"].length - 1));
 					$("a#button" + (i + 1)).attr("href", "/questions/" + qs[i]["ID"]);
 					$("a#button" + (i + 1)).attr("style", "margin-bottom: 20px");
-					var html_tag = ""
+					var html_tag = "";
 					for (j = 0; j < Math.min(qs[i]["frontEndTags"].length, 4); j++) {
 						html_tag += "<span class='tag'>" + qs[i]["frontEndTags"][j] + "</span>";
 					}
@@ -202,7 +205,7 @@
 					new google.maps.Marker({
 					    position: {lat: qs[i]["latitude"], lng: qs[i]["longitude"]},
 					    map: map,
-					    title: qs[i]["title"],
+					    title: qs[i]["title"].substring(1, qs[i]["title"].length - 1),
 					    animation: google.maps.Animation.DROP
 					});
 					

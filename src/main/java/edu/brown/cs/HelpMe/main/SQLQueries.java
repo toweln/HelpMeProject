@@ -365,7 +365,7 @@ public class SQLQueries {
 	 *             if the databse doesn't exist.
 	 */
 	public Question makeQuestion(String qID) throws SQLException {
-		String query = "SELECT body, tags, summary FROM requests WHERE request_id = ?;";
+		String query = "SELECT body, tags, summary, post_lat, post_lon FROM requests WHERE request_id = ?;";
 		PreparedStatement stat = conn.prepareStatement(query);
 		stat.setString(1, qID);
 		// System.out.println("ID: " + qID);
@@ -373,10 +373,15 @@ public class SQLQueries {
 		String body = "";
 		String tags = "";
 		String title = "";
+		String lat = "";
+		String lon = "";
+
 		while (rs.next()) {
 			body = rs.getString(1);
 			tags = rs.getString(2);
 			title = rs.getString(3);
+			lat = rs.getString(4);
+			lon = rs.getString(5);
 			// System.out.println("TAGS: " + tags);
 			// System.out.println("BODY: " + body);
 		}
@@ -414,7 +419,7 @@ public class SQLQueries {
 		// System.out.println(qoverallRating);
 		TagDatabase td = new TagDatabase();
 		TagRating trq = new TagRating(qoverallRating, td);
-		Question q = new Question(qID, title, body, trq, td, frontEndTags);
+		Question q = new Question(qID, title, body, trq, td, frontEndTags, lat, lon);
 		return q;
 	}
 
