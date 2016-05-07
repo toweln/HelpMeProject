@@ -1,5 +1,7 @@
 package edu.brown.cs.HelpMe.main;
 
+import static spark.Spark.init;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -180,7 +182,7 @@ public class Main {
 	private class HomeHandler implements TemplateViewRoute {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
-			
+
 			// Sends information to map
 			List<String> qs = new ArrayList<>();
 			try {
@@ -188,7 +190,7 @@ public class Main {
 			} catch (SQLException e) {
 				System.out.println("ERROR: Database does not exist");
 			}
-			
+
 			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!");
 			return new ModelAndView(variables, "home.html");
 		}
@@ -397,24 +399,31 @@ public class Main {
 		public Object handle(Request req, Response res) {
 			QueryParamsMap qm = req.queryMap();
 			String request = qm.value("reqid");
+			// request = "\"" + request + "\"";
 			System.out.println("REQ ID: " + request);
 			String tutor = qm.value("userid");
 			request = request.substring(1, request.length() - 1);
+			tutor = tutor.substring(1, tutor.length() - 1);
 			Boolean status = false;
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			Date date = new Date();
 			String dateString = dateFormat.format(date);
 			try {
-				dbQuery.updateRequestTutor(request, userID);
+				dbQuery.updateRequestTutor(request, tutor);
 				dbQuery.updateTimeResponded(dateString, request);
 				String tuteeId = dbQuery.getTuteeFromReqId(request);
 				UserData tuteeUser = dbQuery.getUserDataFromId(tuteeId);
 				UserData tutorUser = dbQuery.getUserDataFromId(tutor);
 				String summary = dbQuery.getRequestSummary(request);
+				String chatRoomURL = "localhost:4567/room/" + request;
+				System.out.println("MY EMAIL: " + tutorUser.getEmail());
+				System.out.println("HELLOOOO???");
+				// System.out.println("THEIR EMAIL: " + tuteeUser.getEmail());
+				System.out.println("CHAT URL: " + chatRoomURL);
 				emailSender.sendTutorEmail(tutorUser.getEmail(), summary,
-						tuteeUser.getFirstName(), "CHAT LINK GOES HERE");
+						tuteeUser.getFirstName(), chatRoomURL);
 				emailSender.sendTuteeEmail(tuteeUser.getEmail(), summary,
-						tutorUser.getFirstName(), "CHAT LINK GOES HERE");
+						tutorUser.getFirstName(), chatRoomURL);
 			} catch (SQLException | MessagingException e) {
 				e.printStackTrace();
 			}
@@ -437,7 +446,7 @@ public class Main {
 			String title = qm.value("title");
 			String body = qm.value("message");
 			String topics = qm.value("topics");
-			//ADDED LATITUDE AND LONGITUDE
+			// ADDED LATITUDE AND LONGITUDE
 			String lat = qm.value("lat");
 			String lon = qm.value("lng");
 			List<String> topicsList = Arrays.asList(topics
