@@ -39,16 +39,16 @@
 								<textarea name="message" id="login-form" placeholder="Question" style='width: 850px'></textarea>
 							</div>
 						</div><br><br>
-						<div style='width: 200px; position: static; left: 50%; margin-left: 0px'>
-						<center><ul class="tabs-menu" style='margin-left: -150px'>
+						<div style='width: 300px; position: static; left: 50%; margin-left: 0px'>
+						<center><ul class="tabs-menu" style='margin-left: -350px'>
 					        <li class="current"><a href="#tab-1">Math</a></li>
 					        <li><a href="#tab-2">Science</a></li>
 					        <li><a href="#tab-3">Humanities</a></li>
 					        <li><a href="#tab-4">CS</a></li>
 					        <li><a href="#tab-5">History</a></li>
 					        <li><a href="#tab-6">Languages</a></li>
-					    </ul></center>
-					    <div class="tab" style='margin-left: -110px; text-align: left'>
+					    </ul></center><br><br>
+					    <div class="tab" style='margin-left: -310px; text-align: left; padding: 10px; margin-top: -44px'>
 					        <div id="tab-1" class="tab-content">
 					            <input type='checkbox' name='topics' class='tag-checkbox' value='algebra'>Algebra<br>
 					            <input type='checkbox' name='topics' class='tag-checkbox' value='calculus'>Calculus<br>
@@ -147,12 +147,16 @@
 					            <input type='checkbox' name='topics' class='tag-checkbox' value='spanish'>Spanish<br>
 					            <input type='checkbox' name='topics' class='tag-checkbox' value='swahili'>Swahili<br>
 					        </div>
-					    </div></div><br>
+					    </div>
+					    </div><br>
+					    <center style='margin-left: -50px'><a href="#" id='q_submit' class="button" style='height: 20px; padding-top: 7px; margin-top: -5px; margin-bottom: 50px;'>Submit question!</a></center>
 						<div class="row half">
+
 							<div class="12u">
+
 								<ul class="actions">
 									<li>
-										<center style='margin-top: 450px; margin-left: 100px'><a href="#" id='q_submit' class="button" style='height: 20px; padding-top: 7px; margin-top: -5px; margin-bottom: 50px;'>Submit question!</a></center>
+										
 									</li>
 								</ul>
 
@@ -163,9 +167,6 @@
 			</div>
 		</div>
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-		<script type="text/javascript" src="js/jquery.event.drag-2.0.js"></script>
-		<script src="http://localhost:4000/socket.io/socket.io.js"></script>
-		<script type="text/javascript" src="scripts.js"></script>
 		<script>
 		var user = "";
 		$(document).ready(function() {
