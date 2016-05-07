@@ -18,6 +18,8 @@ public class Question {
 	private TagRating rating;
 	private TagDatabase td;
 	private List<String> frontEndTags;
+	private String latitude;
+	private String longitude;
 
 	/**
 	 * create new question.
@@ -36,7 +38,7 @@ public class Question {
 	 * rating, TagDatabase td) { this.title = title; this.message = message;
 	 * this.owner = owner; this.ID = UUID.randomUUID().toString(); this.rating =
 	 * rating; this.wc = new WordCount(message); this.td = td;
-	 * 
+	 *
 	 * for (Discipline d : td.getTaxonomy()) { if
 	 * (rating.getRating().containsKey(d)) { for (Tag t : d.getSubdisciplines())
 	 * { if (rating.getRating().get(d).containsKey(t)) {
@@ -44,7 +46,7 @@ public class Question {
 	 */
 
 	public Question(String ID, String title, String message, TagRating rating,
-			TagDatabase td, List<String> frontEndTags) {
+			TagDatabase td, List<String> frontEndTags, String lat, String lon) {
 		this.title = title;
 		this.message = message;
 		this.ID = ID;
@@ -52,6 +54,8 @@ public class Question {
 		this.wc = new WordCount(message);
 		this.td = td;
 		this.frontEndTags = frontEndTags;
+		this.latitude = lat;
+		this.longitude = lon;
 
 		for (Discipline d : td.getTaxonomy()) {
 			if (rating.getRating().containsKey(d)) {
