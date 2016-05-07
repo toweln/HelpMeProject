@@ -18,7 +18,7 @@
 					<a href='home.html'><div id='small-logo'></div></a>
 						<nav id="nav">
 							<ul>
-								<li class="active"><a href="index.html">Profile</a></li>
+								<li class="active"><a href="#" id='profile'>Profile</a></li>
 								<li><a href='settings.html'>Settings</a></li>
 								<li><a href='leaderboard.html'>Leaderboard</a></li>
 								<li><a href='index.html'>Log Out</a></li>
@@ -79,6 +79,18 @@
 		</div>
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 		<script>
+		$(document).ready(function() {
+			var c = document.cookie;
+			a = c.split(";");
+			for (x = 0; x < a.length; x++) {
+				if (a[x].split("=")[0] == "helpme_username") {
+					user = a[x].split("=")[1];
+				}
+			}
+		}
+		$("#profile").click(function() {
+			window.location.href = "/profiles/" + user;
+		});
 		$("a[href='/index.html']").click(function() {
 			document.cookie = "helpme_username=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
 		});
