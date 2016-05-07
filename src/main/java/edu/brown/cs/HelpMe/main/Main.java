@@ -164,7 +164,15 @@ public class Main {
 	private class HomeHandler implements TemplateViewRoute {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
-
+			
+			// Sends information to map
+			List<String> qs = new ArrayList<>();
+			try {
+				qs = dbQuery.getAllQIDs();
+			} catch (SQLException e) {
+				System.out.println("ERROR: Database does not exist");
+			}
+			
 			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!");
 			return new ModelAndView(variables, "home.html");
 		}
