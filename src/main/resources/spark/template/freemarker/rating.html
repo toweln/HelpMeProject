@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Help Me</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<link rel="icon" type="image/x-icon" href="favicon.ico">
+		<link rel="stylesheet" href="../css/style.css" />
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div class="wrapper style1">
+
+				<!-- Header -->
+					<div id="header" class="skel-panels-fixed">
+					<a href='home.html'><div id='small-logo'></div></a>
+						<nav id="nav">
+							<ul>
+								<li class="active"><a href="#" id='profile'>Profile</a></li>
+								<li><a href='settings.html'>Settings</a></li>
+								<li><a href='leaderboard.html'>Leaderboard</a></li>
+								<li><a href='index.html'>Log Out</a></li>
+							</ul>
+						</nav>
+					</div>
+
+					<center><img src='../images/logo.png' height='125' width='150'><br>
+					<span class="byline" style='font-size: 36px; margin: 10px; font-weight: bold'>How helpful was your tutor?</span><br><br>
+
+					<div id='fightme'>
+						<input type="radio" name="rating" value="1" checked>Very unhelpful<br>
+						<input type="radio" name="rating" value="2" checked>Somewhat unhelpful<br>
+						<input type="radio" name="rating" value="3" checked>Neutral<br>
+						<input type="radio" name="rating" value="4" checked>Somewhat helpful<br>
+						<input type="radio" name="rating" value="5" checked>Very helpful<br>
+					</div>
+					<center><a href="#" id='rating_submit' class="button" style='height: 20px; padding-top: 7px; margin-top: 15px; margin-bottom: 50px;'>Submit rating</a></center>
+					</center>
+
+			</div>
+		</div>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+		<script>
+		$("#rating_submit").click(function() {
+			var rate = $("input[name='rating']:checked").val()
+			// console.log(rate)
+			var userInput = {rate: rate};
+
+			$.post("/insertRating", userInput, function(response) {
+				// console.log(user);
+				login_valid = JSON.parse(response);
+				window.location.href = '/home.html';
+				// if (login_valid == true) {
+				// 	// window.location.href = "/q.html";
+				// } else {
+				// 	$("b").html("ERROR: User already exists");
+				// }
+			});
+		});
+		</script>
+	</body>
+</html>

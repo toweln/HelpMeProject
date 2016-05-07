@@ -157,6 +157,8 @@ public class Main {
 				freeMarker);
 		Spark.get("/profiles/:userID", new ProfileHandler(), freeMarker);
 		Spark.get("/room/:roomID", new ChatroomHandler(), freeMarker);
+		Spark.get("/rating/:tutorID", new RatingHandler(), freeMarker);
+		Spark.post("/insertRating", new InsertRatingHandler());
 	}
 
 	private class FrontHandler implements TemplateViewRoute {
@@ -257,6 +259,17 @@ public class Main {
 					.put("name", name).put("email", email)
 					.put("username", username).put("tags", tags).build();
 			return new ModelAndView(variables, "profile.html");
+		}
+	}
+
+	private class RatingHandler implements TemplateViewRoute {
+		@Override
+		public ModelAndView handle(Request req, Response res) {
+			String userID = req.params(":tutor");
+
+			Map<String, Object> variables = new ImmutableMap.Builder<String, Object>()
+					.build();
+			return new ModelAndView(variables, "rating.html");
 		}
 	}
 
@@ -399,8 +412,6 @@ public class Main {
 		public Object handle(Request req, Response res) {
 			QueryParamsMap qm = req.queryMap();
 			String request = qm.value("reqid");
-			// request = "\"" + request + "\"";
-			System.out.println("REQ ID: " + request);
 			String tutor = qm.value("userid");
 			request = request.substring(1, request.length() - 1);
 			tutor = tutor.substring(1, tutor.length() - 1);
@@ -412,14 +423,11 @@ public class Main {
 				dbQuery.updateRequestTutor(request, tutor);
 				dbQuery.updateTimeResponded(dateString, request);
 				String tuteeId = dbQuery.getTuteeFromReqId(request);
+				tuteeId = tuteeId.substring(1, tuteeId.length() - 1);
 				UserData tuteeUser = dbQuery.getUserDataFromId(tuteeId);
 				UserData tutorUser = dbQuery.getUserDataFromId(tutor);
 				String summary = dbQuery.getRequestSummary(request);
 				String chatRoomURL = "localhost:4567/room/" + request;
-				System.out.println("MY EMAIL: " + tutorUser.getEmail());
-				System.out.println("HELLOOOO???");
-				// System.out.println("THEIR EMAIL: " + tuteeUser.getEmail());
-				System.out.println("CHAT URL: " + chatRoomURL);
 				emailSender.sendTutorEmail(tutorUser.getEmail(), summary,
 						tuteeUser.getFirstName(), chatRoomURL);
 				emailSender.sendTuteeEmail(tuteeUser.getEmail(), summary,
@@ -470,6 +478,16 @@ public class Main {
 			// userID = status;
 			// }
 			return GSON.toJson(ret);
+		}
+	}
+
+	private static class InsertRatingHandler implements Route {
+		@Override
+		public Object handle(Request req, Response res) {
+			QueryParamsMap qm = req.queryMap();
+			String rating = qm.value("rate");
+			System.out.println(rating);
+			return GSON.toJson("Hey");
 		}
 	}
 

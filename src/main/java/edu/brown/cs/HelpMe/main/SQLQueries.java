@@ -455,6 +455,7 @@ public class SQLQueries {
 
 	public UserData getUserDataFromId(String userId) throws SQLException {
 		String query = "SELECT * FROM users WHERE user_id=?";
+		System.out.println("USER ID FROM MAKING USER: " + userId);
 		PreparedStatement stat = conn.prepareStatement(query);
 		stat.setString(1, userId);
 		ResultSet results = stat.executeQuery();
