@@ -61,13 +61,12 @@
         $("#chat").bind("DOMNodeInserted", function(event) {
             console.log("a)");
             $("#chat").children("article").each(function() {
-                console.log("background-color: hsl(" + hash($(this).attr("class")) + ",100%,80%);");
-                $(this).attr("style", "background-color: hsl(" + hash($(this).attr("class")) + ", 100%, 80%);")
+                $(this).attr("style", "background-color: hsl(" + hash($(this).attr("class")) + ", 100%, 90%);")
             });
         });
         function hash(str) {
             var h = 1;
-            for (t = 5; t < str.length; t++) {
+            for (t = 3; t < str.length; t++) {
                 h *= str.charCodeAt(t);
             }
             return h % 256;
