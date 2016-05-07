@@ -18,7 +18,7 @@
 					<a href='home.html'><div id='small-logo'></div></a>
 						<nav id="nav">
 							<ul>
-								<li class="active"><a href="profile.html">Profile</a></li>
+								<li class="active"><a href="#" id='profile'>Profile</a></li>
 								<li><a href='settings.html'>Settings</a></li>
 								<li><a href='leaderboard.html'>Leaderboard</a></li>
 								<li><a href='index.html'>Log Out</a></li>
@@ -241,6 +241,9 @@
 		        };
 
 		    });
+		});
+		$("#profile").click(function() {
+			window.location.href = "/profiles/" + user;
 		});
 		</script>
 	</body>
