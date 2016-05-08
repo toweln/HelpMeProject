@@ -217,7 +217,7 @@
 				$("#error").attr("style", "display: block; color: black;");
 				ok_input = false;
 			}
-			if (title.length > 50) {
+			if (title.length > 500) {
 				$("#error").html("ERROR: Title is too long.");
 				$("#error").attr("style", "display: block; color: black;");
 				ok_input = false;
@@ -228,7 +228,7 @@
 				$("#error").attr("style", "display: block; color: black;");
 				ok_input = false;
 			}
-			if (message.length > 1000) {
+			if (message.length > 10000) {
 				$("#error").html("ERROR: Question text is too long.");
 				$("#error").attr("style", "display: block; color: black;");
 				ok_input = false;
