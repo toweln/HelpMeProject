@@ -101,8 +101,6 @@ public class Main {
 		// } catch (SQLException e) {
 		// System.out.println("ERROR: Database does not exist");
 		// }
-
-//		dbQuery.initializeExistingCounts();
 		Chat c = new Chat();
 		c.initializeSocket();
 		runSparkServer();
@@ -156,6 +154,7 @@ public class Main {
 		Spark.get("/profiles/:userID", new ProfileHandler(), freeMarker);
 		Spark.get("/room/:roomID", new ChatroomHandler(), freeMarker);
 		Spark.get("/rating/:tutorID", new RatingHandler(), freeMarker);
+		// Spark.post("/ratingEmail", new RatingEmailHandler());
 		Spark.post("/insertRating", new InsertRatingHandler());
 	}
 
@@ -188,6 +187,7 @@ public class Main {
 			try {
 				qs = dbQuery.getAllQIDs();
 			} catch (SQLException e) {
+				e.printStackTrace();
 				System.out.println("ERROR: Database does not exist");
 			}
 
@@ -427,11 +427,12 @@ public class Main {
 				UserData tutorUser = dbQuery.getUserDataFromId(tutor);
 				String summary = dbQuery.getRequestSummary(request);
 				String chatRoomURL = "localhost:4567/room/" + request;
+				String ratingURL = "localhost:4567/rating/" + request;
 
 				emailSender.sendTutorEmail(tutorUser.getEmail(), summary,
 						tuteeUser.getFirstName(), chatRoomURL);
 				emailSender.sendTuteeEmail(tuteeUser.getEmail(), summary,
-						tutorUser.getFirstName(), chatRoomURL);
+						tutorUser.getFirstName(), chatRoomURL, ratingURL);
 			} catch (SQLException | MessagingException e) {
 				e.printStackTrace();
 			}
@@ -439,6 +440,44 @@ public class Main {
 			return GSON.toJson(status);
 		}
 	}
+
+	// private static class RatingEmailHandler implements Route {
+	// @Override
+	// public Object handle(Request req, Response res) {
+	// System.out.println("Starting rating email");
+	// QueryParamsMap qm = req.queryMap();
+	// String request = qm.value("reqid");
+	// String tutor = qm.value("userid");
+	//
+	// request = request.substring(1, request.length() - 1);
+	// tutor = tutor.substring(1, tutor.length() - 1);
+	// Boolean status = false;
+	// DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	// Date date = new Date();
+	// String dateString = dateFormat.format(date);
+	// try {
+	// dbQuery.updateRequestTutor(request, tutor);
+	// dbQuery.updateTimeResponded(dateString, request);
+	// String tuteeId = dbQuery.getTuteeFromReqId(request);
+	// tuteeId = tuteeId.substring(1, tuteeId.length() - 1);
+	// UserData tuteeUser = dbQuery.getUserDataFromId(tuteeId);
+	// UserData tutorUser = dbQuery.getUserDataFromId(tutor);
+	// System.out.println("TUTOR: " + tutorUser.getEmail());
+	// System.out.println("TUTEE: " + tutorUser.getEmail());
+	// String summary = dbQuery.getRequestSummary(request);
+	// String link = "localhost:4567/rating/" + request;
+	// System.out.println("RATING LINK: " + link);
+	// System.out.println(
+	// "RATING EMAIL SENT TO " + tuteeUser.getEmail());
+	// emailSender.sendRatingEmail(tuteeUser.getEmail(), summary,
+	// tutor, link);
+	// } catch (SQLException | MessagingException e) {
+	// e.printStackTrace();
+	// }
+	//
+	// return GSON.toJson(status);
+	// }
+	// }
 
 	private static class InsertQuestionHandler implements Route {
 		@Override
@@ -448,7 +487,7 @@ public class Main {
 			// THIS SHOULD BE ADDED WHEN USERID COOKIES ARE IMPLEMENTED ON
 			// FRONTEND
 			String user = qm.value("userid");
-			user = user.substring(1, user.length()-1);
+			user = user.substring(1, user.length() - 1);
 			// THIS SHOULD BE ADDED WHEN USERID COOKIES ARE IMPLEMENTED ON
 			// FRONTEND
 
@@ -484,11 +523,16 @@ public class Main {
 
 	private static class InsertRatingHandler implements Route {
 		@Override
-		public Object handle(Request req, Response res) {
+		public Object handle(Request req, Response res) throws SQLException {
 			QueryParamsMap qm = req.queryMap();
 			String rating = qm.value("rate");
-			System.out.println(rating);
-			return GSON.toJson("Hey");
+			String reqid = qm.value("reqid");
+			rating = rating.substring(1, rating.length() - 1);
+			reqid = reqid.substring(1, reqid.length() - 1);
+			// System.out.println("RATING: " + rating);
+			// System.out.println("REQID: " + reqid);
+			dbQuery.insertRating(rating, reqid);
+			return GSON.toJson(null);
 		}
 	}
 

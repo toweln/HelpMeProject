@@ -43,21 +43,18 @@
 		</div>
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 		<script>
+		var url = window.location.href;
+		var path = url.split("/");
+		var reqid = path[path.length - 1];
+
 		$("#rating_submit").click(function() {
 			var rate = $("input[name='rating']:checked").val()
-			// console.log(rate)
-			var userInput = {rate: rate};
+			console.log(rate)
+			var userInput = {rate: JSON.stringify(rate), reqid: JSON.stringify(reqid)};
 
 			$.post("/insertRating", userInput, function(response) {
-				// console.log(user);
-				login_valid = JSON.parse(response);
-				window.location.href = '/home.html';
-				// if (login_valid == true) {
-				// 	// window.location.href = "/q.html";
-				// } else {
-				// 	$("b").html("ERROR: User already exists");
-				// }
 			});
+			window.location.href = '/home.html';
 		});
 		</script>
 	</body>

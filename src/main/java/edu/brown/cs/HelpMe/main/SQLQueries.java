@@ -420,7 +420,8 @@ public class SQLQueries {
 		// System.out.println(qoverallRating);
 		TagDatabase td = new TagDatabase();
 		TagRating trq = new TagRating(qoverallRating, td);
-		Question q = new Question(qID, title, body, trq, td, frontEndTags, lat, lon, tutee);
+		Question q = new Question(qID, title, body, trq, td, frontEndTags, lat,
+				lon);
 		return q;
 	}
 
@@ -822,6 +823,16 @@ public class SQLQueries {
 			qIDs.add(rs.getString(1));
 		}
 		return qIDs;
+	}
+
+	public void insertRating(String rating, String reqid) throws SQLException {
+		String query = "update requests set rating = ? where request_id = ?;";
+		// System.out.println("REQID: " + reqid);
+		// System.out.println("RATING: " + rating);
+		PreparedStatement stat = conn.prepareStatement(query);
+		stat.setString(1, rating);
+		stat.setString(2, reqid);
+		stat.executeUpdate();
 	}
 
 	public void updateRequestBody(String reqid, String body)
