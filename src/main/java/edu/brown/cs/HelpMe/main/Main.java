@@ -438,6 +438,8 @@ public class Main {
 			try {
 				dbQuery.updateRequestTutor(request, tutor);
 				dbQuery.updateTimeResponded(dateString, request);
+        dbQuery.updateQuestionsAnswered(tutor);
+
 				String tuteeId = dbQuery.getTuteeFromReqId(request);
 				System.out.println(tutor);
 
@@ -494,6 +496,7 @@ public class Main {
 			try {
 				dbQuery.insertNewRequest(reqid, user, "", "", topicsList, title,
 						body, lat, lon, dateString, "", "");
+				dbQuery.updateQuestionsAsked(user);
 				dbQuery.updateWordCount(topicsList, body);
 				System.out.println("question is being inserted!!!!!!!!");
 			} catch (SQLException e) {
@@ -528,6 +531,7 @@ public class Main {
 		public Object handle(Request req, Response res) {
 			QueryParamsMap qm = req.queryMap();
 			String user = qm.value("userid");
+			user = user.substring(1, user.length()-1);
 			TagDatabase td = new TagDatabase();
 			TutorCompatibility tc = new TutorCompatibility(td);
 			List<Question> sortedQuestions = new ArrayList<>();
