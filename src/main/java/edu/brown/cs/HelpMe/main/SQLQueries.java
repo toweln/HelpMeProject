@@ -825,25 +825,29 @@ public class SQLQueries {
 		stat.setString(1, rating);
 		stat.setString(2, reqid);
 		stat.executeUpdate();
+		System.out.println("insert rating");
 		updateLeaderboardRating(reqid, rating);
 	}
 	public void updateLeaderboardRating(String reqid, String rating) throws SQLException{
 	  String tutorid = getTutorFromRequest(reqid);
+	  System.out.println(tutorid);
 	  String query = "SELECT num_requests_answered, average_rating FROM leaderboard WHERE user_id=?";
 	  PreparedStatement stat = conn.prepareStatement(query);
 	  stat.setString(1, tutorid);
 	  ResultSet rs = stat.executeQuery();
-	  Double numRating = Double.parseDouble(rating);
-	  int reqAnswered = Integer.parseInt(rs.getString(1));
-	  Double avg = Double.parseDouble(rs.getString(2));
+    Double numRating = Double.parseDouble(rating);
+    Double reqAnswered = Double.parseDouble(rs.getString(1));
+    Double avg = Double.parseDouble(rs.getString(2));
 
 	  double newAvg = (avg * reqAnswered) + numRating;
+
 	  newAvg = newAvg/(reqAnswered + 1);
+
 
 	  String query2 = "UPDATE leaderboard SET average_rating=? WHERE user_id=?";
 	  PreparedStatement stat2 = conn.prepareStatement(query2);
 	  stat2.setString(1, Double.toString(newAvg));
-	  stat.setString(2, tutorid);
+	  stat2.setString(2, tutorid);
 	  stat2.executeUpdate();
 
 	}
@@ -865,12 +869,8 @@ public class SQLQueries {
 
 	public void updateRequestTutor(String reqid, String tutor)
 			throws SQLException {
-		reqid = "\"" + reqid + "\"";
-		tutor = "\"" + tutor + "\"";
 		String query = "UPDATE requests SET tutor_id=? WHERE request_id=?";
 		PreparedStatement stat = conn.prepareStatement(query);
-		System.out.println("TUTOR ID: " + tutor);
-		System.out.println("REQUEST ID: " + reqid);
 		stat.setString(1, tutor);
 		stat.setString(2, reqid);
 		stat.executeUpdate();
