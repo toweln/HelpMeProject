@@ -421,7 +421,7 @@ public class SQLQueries {
 		TagDatabase td = new TagDatabase();
 		TagRating trq = new TagRating(qoverallRating, td);
 		Question q = new Question(qID, title, body, trq, td, frontEndTags, lat,
-				lon);
+				lon, tutee);
 		return q;
 	}
 
