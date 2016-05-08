@@ -433,6 +433,8 @@ public class Main {
 			try {
 				dbQuery.updateRequestTutor(request, tutor);
 				dbQuery.updateTimeResponded(dateString, request);
+        dbQuery.updateQuestionsAnswered(tutor);
+
 				String tuteeId = dbQuery.getTuteeFromReqId(request);
 
 				// tuteeId = tuteeId.substring(1, tuteeId.length() - 1);
@@ -486,6 +488,7 @@ public class Main {
 			try {
 				dbQuery.insertNewRequest(reqid, user, "", "", topicsList, title,
 						body, lat, lon, dateString, "", "");
+				dbQuery.updateQuestionsAsked(user);
 				dbQuery.updateWordCount(topicsList, body);
 				System.out.println("question is being inserted!!!!!!!!");
 			} catch (SQLException e) {

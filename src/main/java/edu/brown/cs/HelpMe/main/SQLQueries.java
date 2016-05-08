@@ -303,16 +303,7 @@ public class SQLQueries {
 		}
 		String query = "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?)";
 		PreparedStatement stat = conn.prepareStatement(query);
-		List<String> toprint = new ArrayList<String>();
-		toprint.add(userName);
-		toprint.add(pw);
-		toprint.add(first);
-		toprint.add(last);
-		toprint.add(email);
-		toprint.add(phoneNumber);
-		for (int i = 0; i < toprint.size(); i++) {
-			System.out.println(toprint.get(i));
-		}
+
 		stat.setString(1, userid);
 		stat.setString(2, first);
 		stat.setString(3, last);
@@ -321,6 +312,7 @@ public class SQLQueries {
 		stat.setString(6, userName);
 		stat.setString(7, pw);
 		int test = stat.executeUpdate();
+		insertIntoLeaderBoard(userid, userName);
 		// conn.commit();
 		System.out.println(test);
 		return true;
@@ -833,8 +825,35 @@ public class SQLQueries {
 		stat.setString(1, rating);
 		stat.setString(2, reqid);
 		stat.executeUpdate();
+		updateLeaderboardRating(reqid, rating);
 	}
+	public void updateLeaderboardRating(String reqid, String rating) throws SQLException{
+	  String tutorid = getTutorFromRequest(reqid);
+	  String query = "SELECT num_requests_answered, average_rating FROM leaderboard WHERE user_id=?";
+	  PreparedStatement stat = conn.prepareStatement(query);
+	  stat.setString(1, tutorid);
+	  ResultSet rs = stat.executeQuery();
+	  Double numRating = Double.parseDouble(rating);
+	  int reqAnswered = Integer.parseInt(rs.getString(1));
+	  Double avg = Double.parseDouble(rs.getString(2));
 
+	  double newAvg = (avg * reqAnswered) + numRating;
+	  newAvg = newAvg/(reqAnswered + 1);
+
+	  String query2 = "UPDATE leaderboard SET average_rating=? WHERE user_id=?";
+	  PreparedStatement stat2 = conn.prepareStatement(query2);
+	  stat2.setString(1, Double.toString(newAvg));
+	  stat.setString(2, tutorid);
+	  stat2.executeUpdate();
+
+	}
+	public String getTutorFromRequest(String reqid) throws SQLException{
+	  String query = "SELECT tutor_id FROM requests WHERE request_id=?";
+	  PreparedStatement stat = conn.prepareStatement(query);
+	  stat.setString(1, reqid);
+	  ResultSet rs = stat.executeQuery();
+	  return rs.getString(1);
+	}
 	public void updateRequestBody(String reqid, String body)
 			throws SQLException {
 		String query = "UPDATE requests SET body=? WHERE request_id=?";
@@ -929,6 +948,55 @@ public class SQLQueries {
 		}
 		return "";
 	}
+
+	public void updateQuestionsAsked(String tuteeid) throws SQLException{
+    System.out.println("inupdatequses");
+    String query = "SELECT num_requests_made FROM leaderboard WHERE user_id=?";
+    PreparedStatement stat = conn.prepareStatement(query);
+    stat.setString(1,  tuteeid);
+    ResultSet rs = stat.executeQuery();
+    String numQuestionsAsked = rs.getString(1);
+    Integer numAsked = Integer.parseInt(numQuestionsAsked);
+    numAsked++;
+    String toString = numAsked.toString();
+    System.out.println(toString);
+    String query2 = "UPDATE leaderboard SET num_requests_made=? WHERE user_id=?";
+    PreparedStatement stat2 = conn.prepareStatement(query2);
+    stat2.setString(1, toString);
+    stat2.setString(2, tuteeid);
+    Integer up = stat2.executeUpdate();
+    System.out.println(up);
+
+  }
+  public void updateQuestionsAnswered(String tuteeid) throws SQLException{
+    System.out.println("inupdatequses");
+    String query = "SELECT num_requests_answered FROM leaderboard WHERE user_id=?";
+    PreparedStatement stat = conn.prepareStatement(query);
+    stat.setString(1,  tuteeid);
+    ResultSet rs = stat.executeQuery();
+    String numQuestionsAsked = rs.getString(1);
+    Integer numAsked = Integer.parseInt(numQuestionsAsked);
+    numAsked++;
+    String toString = numAsked.toString();
+    System.out.println(toString);
+    String query2 = "UPDATE leaderboard SET num_requests_answered=? WHERE user_id=?";
+    PreparedStatement stat2 = conn.prepareStatement(query2);
+    stat2.setString(1, toString);
+    stat2.setString(2, tuteeid);
+    Integer up = stat2.executeUpdate();
+    System.out.println(up);
+  }
+
+  public void insertIntoLeaderBoard(String id, String userName) throws SQLException{
+    String query = "INSERT INTO requests VALUES (?, ?, ?, ?, ?)";
+    PreparedStatement stat = conn.prepareStatement(query);
+    stat.setString(1, id);
+    stat.setString(2, userName);
+    stat.setString(3, "0");
+    stat.setString(4, "0");
+    stat.setString(5, "3");
+    stat.executeUpdate();
+  }
 
 	/**
 	 * function that closes the connection.
