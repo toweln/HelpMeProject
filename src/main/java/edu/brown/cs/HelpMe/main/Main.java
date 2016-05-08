@@ -42,7 +42,8 @@ import edu.brown.cs.acj.chat.Chat;
 import freemarker.template.Configuration;
 
 public class Main {
-	public static void main(String[] args) throws SQLException, UnknownHostException {
+	public static void main(String[] args)
+			throws SQLException, UnknownHostException {
 		new Main(args).run();
 	}
 
@@ -414,7 +415,8 @@ public class Main {
 	 */
 	private static class closeQuestionhandler implements Route {
 		@Override
-		public Object handle(Request req, Response res) {
+		public Object handle(Request req, Response res)
+				throws UnknownHostException {
 			QueryParamsMap qm = req.queryMap();
 			String request = qm.value("reqid");
 			String tutor = qm.value("userid");
@@ -424,17 +426,25 @@ public class Main {
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			Date date = new Date();
 			String dateString = dateFormat.format(date);
+
+			InetAddress lh = InetAddress.getLocalHost();
+			String hostAddress = lh.getHostAddress();
+
 			try {
 				dbQuery.updateRequestTutor(request, tutor);
 				dbQuery.updateTimeResponded(dateString, request);
 				String tuteeId = dbQuery.getTuteeFromReqId(request);
 
-				tuteeId = tuteeId.substring(1, tuteeId.length() - 1);
+				// tuteeId = tuteeId.substring(1, tuteeId.length() - 1);
+				System.out.println("TUTEE ID: " + tuteeId);
 				UserData tuteeUser = dbQuery.getUserDataFromId(tuteeId);
 				UserData tutorUser = dbQuery.getUserDataFromId(tutor);
 				String summary = dbQuery.getRequestSummary(request);
-				String chatRoomURL = "localhost:4567/room/" + request;
-				String ratingURL = "localhost:4567/rating/" + request;
+				String chatRoomURL = hostAddress + ":4567/room/" + request;
+				String ratingURL = hostAddress + ":4567/rating/" + request;
+
+				System.out.println("EMAIL TO TUTOR: " + tutorUser.getEmail());
+				System.out.println("EMAIL TO TUTEE: " + tuteeUser.getEmail());
 
 				emailSender.sendTutorEmail(tutorUser.getEmail(), summary,
 						tuteeUser.getFirstName(), chatRoomURL);
@@ -447,44 +457,6 @@ public class Main {
 			return GSON.toJson(status);
 		}
 	}
-
-	// private static class RatingEmailHandler implements Route {
-	// @Override
-	// public Object handle(Request req, Response res) {
-	// System.out.println("Starting rating email");
-	// QueryParamsMap qm = req.queryMap();
-	// String request = qm.value("reqid");
-	// String tutor = qm.value("userid");
-	//
-	// request = request.substring(1, request.length() - 1);
-	// tutor = tutor.substring(1, tutor.length() - 1);
-	// Boolean status = false;
-	// DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-	// Date date = new Date();
-	// String dateString = dateFormat.format(date);
-	// try {
-	// dbQuery.updateRequestTutor(request, tutor);
-	// dbQuery.updateTimeResponded(dateString, request);
-	// String tuteeId = dbQuery.getTuteeFromReqId(request);
-	// tuteeId = tuteeId.substring(1, tuteeId.length() - 1);
-	// UserData tuteeUser = dbQuery.getUserDataFromId(tuteeId);
-	// UserData tutorUser = dbQuery.getUserDataFromId(tutor);
-	// System.out.println("TUTOR: " + tutorUser.getEmail());
-	// System.out.println("TUTEE: " + tutorUser.getEmail());
-	// String summary = dbQuery.getRequestSummary(request);
-	// String link = "localhost:4567/rating/" + request;
-	// System.out.println("RATING LINK: " + link);
-	// System.out.println(
-	// "RATING EMAIL SENT TO " + tuteeUser.getEmail());
-	// emailSender.sendRatingEmail(tuteeUser.getEmail(), summary,
-	// tutor, link);
-	// } catch (SQLException | MessagingException e) {
-	// e.printStackTrace();
-	// }
-	//
-	// return GSON.toJson(status);
-	// }
-	// }
 
 	private static class InsertQuestionHandler implements Route {
 		@Override

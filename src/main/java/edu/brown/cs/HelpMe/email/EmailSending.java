@@ -1,5 +1,7 @@
 package edu.brown.cs.HelpMe.email;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -20,7 +22,7 @@ public class EmailSending {
 	static Session getMailSession;
 	static MimeMessage generateMailMessage;
 
-	public EmailSending() {
+	public EmailSending() throws UnknownHostException {
 
 	}
 
