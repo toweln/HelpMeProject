@@ -108,6 +108,11 @@ public class Main {
 		// InetAddress lh = InetAddress.getLocalHost();
 		// System.out.println("HOST NAME: " + lh.getHostName());
 		// System.out.println("ADDRESS: " + lh.getHostAddress());
+//
+////		String s = "\"\\n\"";
+//		String s = "\\n";
+//		System.out.println(s);
+//		System.out.println(s.replaceAll("\\\\n", ""));
 
 		Chat c = new Chat();
 		c.initializeSocket();
@@ -436,8 +441,9 @@ public class Main {
         dbQuery.updateQuestionsAnswered(tutor);
 
 				String tuteeId = dbQuery.getTuteeFromReqId(request);
+				System.out.println(tutor);
 
-				// tuteeId = tuteeId.substring(1, tuteeId.length() - 1);
+				tuteeId = tuteeId.substring(1, tuteeId.length() - 1);
 				System.out.println("TUTEE ID: " + tuteeId);
 				UserData tuteeUser = dbQuery.getUserDataFromId(tuteeId);
 				UserData tutorUser = dbQuery.getUserDataFromId(tutor);
@@ -474,6 +480,8 @@ public class Main {
 
 			String title = qm.value("title");
 			String body = qm.value("message");
+			body = body.replaceAll("\\\\n", "<br>");
+			System.out.println(body);
 			String topics = qm.value("topics");
 			// ADDED LATITUDE AND LONGITUDE
 			String lat = qm.value("lat");
