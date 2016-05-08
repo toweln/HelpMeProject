@@ -26,7 +26,6 @@ public class TutorCompatibility {
 	private SQLQueries dbQuery;
 	private Map<Question, Double> unsortedCompats;
 
-
 	/**
 	 * initialize a TutorCompatibility.
 	 *
@@ -234,7 +233,7 @@ public class TutorCompatibility {
 		// " CPQ: " + currentPastQuestionCompatibility(userID, qID));
 		double compat = tutorQuestionCompatibility(userID, qID)
 				+ currentPastQuestionCompatibility(userID, qID);
-//		System.out.println(" OVERALL: " + compat);
+		// System.out.println(" OVERALL: " + compat);
 
 		return Math.round(compat * 1000.0) / 1000.0;
 	}
@@ -256,11 +255,11 @@ public class TutorCompatibility {
 		// Sort list with comparator, to compare the Map values
 		Collections.sort(list, new Comparator<Map.Entry<Question, Double>>() {
 			@Override
-      public int compare(Map.Entry<Question, Double> o1,
+			public int compare(Map.Entry<Question, Double> o1,
 					Map.Entry<Question, Double> o2) {
-//				System.out.println(o2.getKey().getMessage());
-//				System.out.println(o2.getValue());
-//				System.out.println(o1.getValue());
+				// System.out.println(o2.getKey().getMessage());
+				// System.out.println(o2.getValue());
+				// System.out.println(o1.getValue());
 				return (o2.getValue()).compareTo(o1.getValue());
 			}
 		});
@@ -298,33 +297,38 @@ public class TutorCompatibility {
 
 	public List<Question> getSortedQuestions(String userID)
 			throws SQLException {
-	  MinMaxPriorityQueue<Question> questions = MinMaxPriorityQueue.orderedBy(new QuestionComparator()).create();
-	  this.unsortedCompats = new HashMap<>();
-    List<String> qIDs = dbQuery.getAllQIDs();
-    // System.out.println(qIDs);
-    for (String qID : qIDs) {
-      Question q = dbQuery.makeQuestion(qID);
-      double currCompat = getOverallCompatibility(userID, qID);
-      unsortedCompats.put(q, currCompat);
-      if(!q.getOwnerID().equals(userID) && q.getTutor().equals("")){
-        questions.add(q);
-      }
-    }
+		MinMaxPriorityQueue<Question> questions = MinMaxPriorityQueue
+				.orderedBy(new QuestionComparator()).create();
+		this.unsortedCompats = new HashMap<>();
+		List<String> qIDs = dbQuery.getAllQIDs();
+		// System.out.println(qIDs);
+		for (String qID : qIDs) {
+			Question q = dbQuery.makeQuestion(qID);
+			double currCompat = getOverallCompatibility(userID, qID);
+			unsortedCompats.put(q, currCompat);
+			System.out.println(q.getMessage());
+			System.out.println(currCompat);
+			System.out.println(q.getFrontEndTags());
+			if (!q.getOwnerID().equals(userID) && q.getTutor().equals("")) {
+				questions.add(q);
+			}
+		}
 		List<Question> sortedQs = new ArrayList<>();
-		while(!questions.isEmpty()){
-		  sortedQs.add(questions.pollFirst());
+		while (!questions.isEmpty()) {
+			sortedQs.add(questions.pollFirst());
 		}
 		return sortedQs;
 	}
 
-  /**
-   * Path comparator.
-   * @author jplee
-   */
-  private class QuestionComparator implements Comparator<Question> {
-    @Override
-    public int compare(Question q1, Question q2) {
-      return unsortedCompats.get(q2).compareTo(unsortedCompats.get(q1));
-    }
-  }
+	/**
+	 * Path comparator.
+	 * 
+	 * @author jplee
+	 */
+	private class QuestionComparator implements Comparator<Question> {
+		@Override
+		public int compare(Question q1, Question q2) {
+			return unsortedCompats.get(q2).compareTo(unsortedCompats.get(q1));
+		}
+	}
 }

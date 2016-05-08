@@ -1,4 +1,4 @@
-package edu.brown.cs.acj.chat;
+package edu.brown.cs.HelpMe.chat;
 
 import org.eclipse.jetty.websocket.api.*;
 import org.json.*;
@@ -47,7 +47,7 @@ public class Chat {
 								.sendString(String.valueOf(new JSONObject()
 										.put("userMessage",
 												createHtmlMessageFromSender(
-														sender, message))
+														"", message))
 										.put("userlist",
 												userUsernameMap.values())));
 					} catch (Exception e) {
@@ -59,7 +59,8 @@ public class Chat {
 	// Builds a HTML element with a sender-name, a message, and a timestamp,
 	private static String createHtmlMessageFromSender(String sender,
 			String message) {
-		return article().withClass("user_" + sender).with(b(sender + " says:"), p(message),
+		return article().withClass("user_" + sender).with(b(sender + ""),
+				p(message),
 				span().withClass("timestamp").withText(
 						new SimpleDateFormat("HH:mm:ss").format(new Date())))
 				.render();

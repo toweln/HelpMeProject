@@ -36,9 +36,9 @@ import com.google.gson.Gson;
 
 import edu.brown.cs.HelpMe.autocorrect.CommandParser;
 import edu.brown.cs.HelpMe.autocorrect.SuggestionGenerator;
+import edu.brown.cs.HelpMe.chat.Chat;
 import edu.brown.cs.HelpMe.email.EmailSending;
 import edu.brown.cs.HelpMe.email.UserData;
-import edu.brown.cs.acj.chat.Chat;
 import freemarker.template.Configuration;
 
 public class Main {
@@ -90,20 +90,20 @@ public class Main {
 			System.out.println("ERROR: Cannot find table");
 		}
 
-		// TagDatabase td = new TagDatabase();
-		// TutorCompatibility tc = new TutorCompatibility(td);
-		// List<Question> sortedQuestions = new ArrayList<>();
-		// try {
-		// sortedQuestions = tc
-		// .getSortedQuestions("d53438cf-aa97-49d6-a0a0-ff5db0728806");
-		// for (Question q : sortedQuestions) {
-		// // System.out.println(q.getID());
-		// System.out.println(q.getMessage());
-		// // System.out.println(q.getRating().getRating());
-		// }
-		// } catch (SQLException e) {
-		// System.out.println("ERROR: Database does not exist");
-		// }
+		TagDatabase td = new TagDatabase();
+		TutorCompatibility tc = new TutorCompatibility(td);
+		List<Question> sortedQuestions = new ArrayList<>();
+		try {
+			sortedQuestions = tc
+					.getSortedQuestions("2317b198-561d-4b05-8a7c-5bbd2b0df4e3");
+			// for (Question q : sortedQuestions) {
+			// // System.out.println(q.getID());
+			// System.out.println(q.getMessage());
+			// // System.out.println(q.getRating().getRating());
+			// }
+		} catch (SQLException e) {
+			System.out.println("ERROR: Database does not exist");
+		}
 
 		// InetAddress lh = InetAddress.getLocalHost();
 		// System.out.println("HOST NAME: " + lh.getHostName());
