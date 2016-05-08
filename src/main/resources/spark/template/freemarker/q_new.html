@@ -220,13 +220,15 @@
 			$.post("/insertQ", userInput, function(response) {
 				console.log(user);
 				login_valid = JSON.parse(response);
-				window.location.href = '/home.html';
 				// if (login_valid == true) {
 				// 	// window.location.href = "/q.html";
 				// } else {
 				// 	$("b").html("ERROR: User already exists");
 				// }
 			});
+
+			window.location.href = '/home.html';
+			
 		});
 
 		$("input[name='tags']").keyup(function(event) {
