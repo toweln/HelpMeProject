@@ -200,9 +200,17 @@
 				
 				for (i = 0; i < Math.min(qs.length, 12); i++) {
 					console.log(qs[i]);
-					$("h2#title" + (i + 1)).html(qs[i]["title"].substring(1, qs[i]["title"].length - 1));
+					var title = qs[i]["title"].substring(1, qs[i]["title"].length - 1);
+					if (title.length > 30) {
+						title = title.substring(0, 30) + "...";
+					}
+					$("h2#title" + (i + 1)).html(title);
+					var message = qs[i]["message"].substring(1, qs[i]["message"].length - 1);
+					if (message.length > 100) {
+						message = message.substring(0, 100) + "...";
+					}
 					$("h2#title" + (i + 1)).attr("style", "margin-top: -20px; margin-bottom: 20px");
-					$("p#message" + (i + 1)).html(qs[i]["message"].substring(1, qs[i]["message"].length - 1));
+					$("p#message" + (i + 1)).html(message);
 					$("a#button" + (i + 1)).attr("href", "/questions/" + qs[i]["ID"]);
 					$("a#button" + (i + 1)).attr("style", "margin-bottom: 20px");
 					var html_tag = "";
