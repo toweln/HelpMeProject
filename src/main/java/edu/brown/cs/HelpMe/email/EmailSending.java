@@ -14,55 +14,77 @@ import edu.brown.cs.HelpMe.main.SQLQueries;
 
 public class EmailSending {
 
-  private SQLQueries queries;
+	private SQLQueries queries;
 
-  static Properties mailServerProperties;
-  static Session getMailSession;
-  static MimeMessage generateMailMessage;
+	static Properties mailServerProperties;
+	static Session getMailSession;
+	static MimeMessage generateMailMessage;
 
-  public EmailSending(){
+	public EmailSending() {
 
+	}
 
-  }
+	public static void sendWelcomeEmail(String email)
+			throws AddressException, MessagingException {
+		String body = "Welcome to HelpMe! We hope you find the site useful!"
+				+ "<br><br> Regards, <br>The HelpMe Team";
+		generateAndSendEmail(email, "Welcome to HelpMe!", body);
+	}
 
-  public static void sendWelcomeEmail(String email) throws AddressException, MessagingException{
-    String body = "Welcome to HelpMe! We hope you find the site useful!" + "<br><br> Regards, <br>The HelpMe Team";
-    generateAndSendEmail(email, "Welcome to HelpMe!", body);
-  }
+	public static void sendTuteeEmail(String email, String summary,
+			String tutor, String link)
+			throws AddressException, MessagingException {
+		String subject = tutor + " wants to help you!";
+		String body = tutor + " wants to help you with " + summary
+				+ "<br><br> Go to " + link + " to chat!";
+		generateAndSendEmail(email, subject, body);
+	}
 
-  public static void sendTuteeEmail(String email, String summary, String tutor, String link) throws AddressException, MessagingException{
-    String subject = tutor + " wants to help you!";
-    String body = tutor + " wants to help you with " + summary + "<br><br> Go to " + link + " to chat!";
-    generateAndSendEmail(email, subject, body);
-  }
+	public static void sendTutorEmail(String email, String summary,
+			String tutee, String link)
+			throws AddressException, MessagingException {
+		String subject = "You are helping " + tutee;
+		String body = "You are helping " + tutee + " with " + summary
+				+ " <br><br> Go to " + link + " to chat!";
+		generateAndSendEmail(email, subject, body);
+	}
 
-  public static void sendTutorEmail(String email, String summary, String tutee, String link) throws AddressException, MessagingException{
-    String subject = "You are helping " + tutee;
-    String body = "You are helping " + tutee + " with " + summary + "<br><br> Go to " + link + " to chat!";
-    generateAndSendEmail(email, subject, body);
-  }
-  public static void generateAndSendEmail(String address, String subject, String body) throws AddressException, MessagingException {
+	public static void sendRatingEmail(String email, String summary,
+			String tutor, String link)
+			throws AddressException, MessagingException {
+		String subject = "Rate your HelpMe Tutor";
+		String body = "How effective was " + tutor
+				+ " as a tutor? Rate them here: <br><br> " + link
+				+ " to improve our site";
+		generateAndSendEmail(email, subject, body);
+	}
 
-    // Step1
-    mailServerProperties = System.getProperties();
-    mailServerProperties.put("mail.smtp.port", "587");
-    mailServerProperties.put("mail.smtp.auth", "true");
-    mailServerProperties.put("mail.smtp.starttls.enable", "true");
+	public static void generateAndSendEmail(String address, String subject,
+			String body) throws AddressException, MessagingException {
 
-    // Step2
-    getMailSession = Session.getDefaultInstance(mailServerProperties, null);
-    generateMailMessage = new MimeMessage(getMailSession);
-    generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(address));
-    generateMailMessage.setSubject(subject);
-    generateMailMessage.setContent(body, "text/html");
+		// Step1
+		mailServerProperties = System.getProperties();
+		mailServerProperties.put("mail.smtp.port", "587");
+		mailServerProperties.put("mail.smtp.auth", "true");
+		mailServerProperties.put("mail.smtp.starttls.enable", "true");
 
-    // Step3
-    Transport transport = getMailSession.getTransport("smtp");
+		// Step2
+		getMailSession = Session.getDefaultInstance(mailServerProperties, null);
+		generateMailMessage = new MimeMessage(getMailSession);
+		generateMailMessage.addRecipient(Message.RecipientType.TO,
+				new InternetAddress(address));
+		generateMailMessage.setSubject(subject);
+		generateMailMessage.setContent(body, "text/html");
 
-    // Enter your correct gmail UserID and Password
-    // if you have 2FA enabled then provide App Specific Password
-    transport.connect("smtp.gmail.com", "helpmebrown@gmail.com", "ilovecs32");
-    transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
-    transport.close();
-  }
+		// Step3
+		Transport transport = getMailSession.getTransport("smtp");
+
+		// Enter your correct gmail UserID and Password
+		// if you have 2FA enabled then provide App Specific Password
+		transport.connect("smtp.gmail.com", "helpmebrown@gmail.com",
+				"ilovecs32");
+		transport.sendMessage(generateMailMessage,
+				generateMailMessage.getAllRecipients());
+		transport.close();
+	}
 }
