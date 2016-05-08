@@ -306,7 +306,9 @@ public class TutorCompatibility {
       Question q = dbQuery.makeQuestion(qID);
       double currCompat = getOverallCompatibility(userID, qID);
       unsortedCompats.put(q, currCompat);
-      questions.add(q);
+      if(!q.getOwnerID().equals(userID) && q.getTutor().equals("")){
+        questions.add(q);
+      }
     }
 		List<Question> sortedQs = new ArrayList<>();
 		while(!questions.isEmpty()){
