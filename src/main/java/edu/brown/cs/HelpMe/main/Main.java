@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -40,7 +42,8 @@ import edu.brown.cs.acj.chat.Chat;
 import freemarker.template.Configuration;
 
 public class Main {
-	public static void main(String[] args) throws SQLException {
+	public static void main(String[] args)
+			throws SQLException, UnknownHostException {
 		new Main(args).run();
 	}
 
@@ -57,7 +60,7 @@ public class Main {
 		this.args = args;
 	}
 
-	private void run() throws SQLException {
+	private void run() throws SQLException, UnknownHostException {
 		userID = "";
 		emailSender = new EmailSending();
 		OptionParser parser = new OptionParser();
@@ -102,7 +105,10 @@ public class Main {
 		// System.out.println("ERROR: Database does not exist");
 		// }
 
-//		dbQuery.initializeExistingCounts();
+		// InetAddress lh = InetAddress.getLocalHost();
+		// System.out.println("HOST NAME: " + lh.getHostName());
+		// System.out.println("ADDRESS: " + lh.getHostAddress());
+
 		Chat c = new Chat();
 		c.initializeSocket();
 		runSparkServer();
@@ -156,6 +162,7 @@ public class Main {
 		Spark.get("/profiles/:userID", new ProfileHandler(), freeMarker);
 		Spark.get("/room/:roomID", new ChatroomHandler(), freeMarker);
 		Spark.get("/rating/:tutorID", new RatingHandler(), freeMarker);
+		// Spark.post("/ratingEmail", new RatingEmailHandler());
 		Spark.post("/insertRating", new InsertRatingHandler());
 	}
 
@@ -188,6 +195,7 @@ public class Main {
 			try {
 				qs = dbQuery.getAllQIDs();
 			} catch (SQLException e) {
+				e.printStackTrace();
 				System.out.println("ERROR: Database does not exist");
 			}
 
@@ -407,7 +415,8 @@ public class Main {
 	 */
 	private static class closeQuestionhandler implements Route {
 		@Override
-		public Object handle(Request req, Response res) {
+		public Object handle(Request req, Response res)
+				throws UnknownHostException {
 			QueryParamsMap qm = req.queryMap();
 			String request = qm.value("reqid");
 			String tutor = qm.value("userid");
@@ -417,21 +426,30 @@ public class Main {
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			Date date = new Date();
 			String dateString = dateFormat.format(date);
+
+			InetAddress lh = InetAddress.getLocalHost();
+			String hostAddress = lh.getHostAddress();
+
 			try {
 				dbQuery.updateRequestTutor(request, tutor);
 				dbQuery.updateTimeResponded(dateString, request);
 				String tuteeId = dbQuery.getTuteeFromReqId(request);
 
-				tuteeId = tuteeId.substring(1, tuteeId.length() - 1);
+				// tuteeId = tuteeId.substring(1, tuteeId.length() - 1);
+				System.out.println("TUTEE ID: " + tuteeId);
 				UserData tuteeUser = dbQuery.getUserDataFromId(tuteeId);
 				UserData tutorUser = dbQuery.getUserDataFromId(tutor);
 				String summary = dbQuery.getRequestSummary(request);
-				String chatRoomURL = "localhost:4567/room/" + request;
+				String chatRoomURL = hostAddress + ":4567/room/" + request;
+				String ratingURL = hostAddress + ":4567/rating/" + request;
+
+				System.out.println("EMAIL TO TUTOR: " + tutorUser.getEmail());
+				System.out.println("EMAIL TO TUTEE: " + tuteeUser.getEmail());
 
 				emailSender.sendTutorEmail(tutorUser.getEmail(), summary,
 						tuteeUser.getFirstName(), chatRoomURL);
 				emailSender.sendTuteeEmail(tuteeUser.getEmail(), summary,
-						tutorUser.getFirstName(), chatRoomURL);
+						tutorUser.getFirstName(), chatRoomURL, ratingURL);
 			} catch (SQLException | MessagingException e) {
 				e.printStackTrace();
 			}
@@ -448,7 +466,7 @@ public class Main {
 			// THIS SHOULD BE ADDED WHEN USERID COOKIES ARE IMPLEMENTED ON
 			// FRONTEND
 			String user = qm.value("userid");
-			user = user.substring(1, user.length()-1);
+			user = user.substring(1, user.length() - 1);
 			// THIS SHOULD BE ADDED WHEN USERID COOKIES ARE IMPLEMENTED ON
 			// FRONTEND
 
@@ -484,11 +502,16 @@ public class Main {
 
 	private static class InsertRatingHandler implements Route {
 		@Override
-		public Object handle(Request req, Response res) {
+		public Object handle(Request req, Response res) throws SQLException {
 			QueryParamsMap qm = req.queryMap();
 			String rating = qm.value("rate");
-			System.out.println(rating);
-			return GSON.toJson("Hey");
+			String reqid = qm.value("reqid");
+			rating = rating.substring(1, rating.length() - 1);
+			reqid = reqid.substring(1, reqid.length() - 1);
+			// System.out.println("RATING: " + rating);
+			// System.out.println("REQID: " + reqid);
+			dbQuery.insertRating(rating, reqid);
+			return GSON.toJson(null);
 		}
 	}
 

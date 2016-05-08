@@ -33,7 +33,6 @@
 						<nav id="nav">
 							<ul>
 								<li class="active"><a href="#" id='profile'>Profile</a></li>
-								<li><a href='settings.html'>Settings</a></li>
 								<li><a href='/leaderboard.html'>Leaderboard</a></li>
 								<li><a href='/index.html'>Log Out</a></li>
 							</ul>
@@ -45,12 +44,13 @@
 					<div id="map"></div>
 					<p id="error"></p></div>
 
+
 				<!-- Extra -->
 					<div id="extra">
 						<div class="container" style='width: 75%; position: static'>
 						<div id="banner" class="container">
 						<section>
-							<a href='/q_new.html' style='text-decoration: none'><div id='footer' class='wrapper style2' style='margin-top: -200px; height: 25px; position: relative; margin-left: -35%'>Ask a new question!</div></a>
+							<a href='/q_new.html' style='text-decoration: none; display: block; width: 700px; margin-left: 10%'><div id='footer' class='wrapper style2' style='margin-top: -200px; height: 25px; position: relative; width: 100%'>Ask a new question!</div></a>
 						</section>
 					</div>
 							<div class="row no-collapse-1">
@@ -134,12 +134,47 @@
 								</section>
 							</div>
 						</div>
-						<center><a href='/home' style='text-decoration: none'><span id='nextpage'>Next page >></span></a></center>
 					</div>
 		
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRI318_aOYM3i8I7gogIvnbaB-el_S0Xo&callback=init" async defer></script>
 		<script>
+		var map;
+		var x = document.getElementById("error");
+		function init() {
+		    if (navigator.geolocation) {
+		        var geo = navigator.geolocation.getCurrentPosition(showPosition);
+		    } else { 
+		        x.innerHTML = "Geolocation is not supported by this browser.";
+		    }
+		}
+
+		function showPosition(position) {
+			var latlng = {lat: position.coords.latitude, lng: position.coords.longitude};
+
+		    map = new google.maps.Map(document.getElementById('map'), {
+				center: latlng,
+				zoom: 18
+	        });
+
+	        var marker = new google.maps.Marker({
+			    position: latlng,
+			    map: map,
+			    title: 'My location!',
+			    animation: google.maps.Animation.DROP,
+			    draggable: true
+			});
+		}
+
+		function addMarker(latlng) {
+			var marker = new google.maps.Marker({
+			    position: latlng,
+			    map: map,
+			    animation: google.maps.Animation.DROP,
+			    draggable: true
+			});
+		}
+
 		var user = "";
 		$(document).ready(function() {
 			var c = document.cookie;
@@ -149,10 +184,13 @@
 					user = a[x].split("=")[1];
 				}
 			}
+			if (user.length == 0) {
+				window.location.href = "/index.html";
+			}
 			console.log(user);
+			var marker;
 			$.post("/sortedQs", {userid: JSON.stringify(user)}, function(response) {
 				var qs = JSON.parse(response);
-
 				var markers = [];
 				
 				for (i = 0; i < Math.min(qs.length, 12); i++) {
@@ -273,8 +311,11 @@
 			window.location.href = "/profiles/" + user;
 		});
 		</script>
-		<script>
-			
+		<script type="application/javascript">
+		    function getip(json){
+		      alert(json.ip); // alerts the ip address
+		      console.log(json.ip);
+		    }
 		</script>
 	</body>
 </html>
