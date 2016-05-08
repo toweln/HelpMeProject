@@ -20,7 +20,7 @@
         	}
     	</style>
 	</head>
-	<body onload="init()">
+	<body>
 
 		<!-- Wrapper -->
 			<div class="wrapper style1">
@@ -40,52 +40,10 @@
 						</nav>
 					</div>
 					
-					<!-- Geolocation and Map-->
+					<!-- Map -->
 					<div style='position: fixed; -webkit-transform: translate3d(0, 0, 0); width: 30%; right: 0; height: 750px'>
 					<div id="map"></div>
 					<p id="error"></p></div>
-					
-					
-					<script>
-					var map;
-					var x = document.getElementById("error");
-					
-					function init() {
-					    if (navigator.geolocation) {
-					        var geo = navigator.geolocation.getCurrentPosition(showPosition);
-					    } else { 
-					        x.innerHTML = "Geolocation is not supported by this browser.";
-					    }
-					}
-
-					function showPosition(position) {
-						var latlng = {lat: position.coords.latitude, lng: position.coords.longitude};
-
-					    map = new google.maps.Map(document.getElementById('map'), {
-							center: latlng,
-							zoom: 18
-				        });
-
-				        var marker = new google.maps.Marker({
-						    position: latlng,
-						    map: map,
-						    title: 'My location!',
-						    animation: google.maps.Animation.DROP,
-						    draggable: true
-						});
-					}
-
-					function addMarker(latlng) {
-						var marker = new google.maps.Marker({
-						    position: latlng,
-						    map: map,
-						    animation: google.maps.Animation.DROP,
-						    draggable: true
-						});
-					}
-					</script>
-					
-					
 
 				<!-- Extra -->
 					<div id="extra">
@@ -195,14 +153,19 @@
 			$.post("/sortedQs", {userid: JSON.stringify(user)}, function(response) {
 				var qs = JSON.parse(response);
 
-				var map = document.getElementById("map").map;
+				var markers = [];
 				
 				for (i = 0; i < Math.min(qs.length, 12); i++) {
 					console.log(qs[i]);
-					$("h2#title" + (i + 1)).html(qs[i]["title"].substring(1, qs[i]["title"].length - 1));
+					
+					var title = qs[i]["title"].substring(1, qs[i]["title"].length - 1);
+					var latlng = {lat: parseFloat(qs[i]["latitude"]), lng: parseFloat(qs[i]["longitude"])};
+					var url = "/questions/" + qs[i]["ID"];
+					
+					$("h2#title" + (i + 1)).html(title);
 					$("h2#title" + (i + 1)).attr("style", "margin-top: -20px; margin-bottom: 20px");
 					$("p#message" + (i + 1)).html(qs[i]["message"].substring(1, qs[i]["message"].length - 1));
-					$("a#button" + (i + 1)).attr("href", "/questions/" + qs[i]["ID"]);
+					$("a#button" + (i + 1)).attr("href", url);
 					$("a#button" + (i + 1)).attr("style", "margin-bottom: 20px");
 					var html_tag = "";
 					for (j = 0; j < Math.min(qs[i]["frontEndTags"].length, 4); j++) {
@@ -210,10 +173,92 @@
 					}
 					$("span#tag" + (i + 1)).html(html_tag);
 
-					var latlng = {lat: qs[i]["latitude"], lng: qs[i]["longitude"]};
-					addMarker(latlng);
+					<!-- Adds marker to list of markers -->
+					markers.push([title,latlng,url]);
 					
 				}
+
+				<!-- Sends markers to JS for maps to draw markers -->
+				init(markers);
+
+				<!----------------------- ALL MAP STUFF ----------------------->
+
+				var map;
+				var x = document.getElementById("error");
+				var homeImg = {
+					url: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|4d79ff',
+					size: new google.maps.Size(21,34),
+					origin: new google.maps.Point(0,0),
+					anchor: new google.maps.Point(10,34)
+				};
+				var homeShape = {
+					coords: [0,0,21,0,21,34,0,34],
+					type: 'poly'
+				}
+				
+				<!-- Checks browser compatability with geolocation -->
+				function init(markers) {
+				    if (navigator.geolocation) {
+				        var geo = navigator.geolocation.getCurrentPosition(function(position) {
+							init2(markers, position);
+					    });
+				    } else { 
+				        x.innerHTML = "Geolocation is not supported by this browser.";
+				    }
+				}
+
+				<!-- Draws map and markers -->
+				function init2(markers, position) {
+					<!-- Draws map -->
+					var latlng = {lat: position.coords.latitude, lng: position.coords.longitude};
+						map = new google.maps.Map(document.getElementById('map'), {
+						center: latlng,
+						zoom: 18
+			        });
+
+					<!-- Draws marker of user's current location -->
+			        myloc = new google.maps.Marker({
+					    position: latlng,
+					    map: map,
+					    icon: homeImg,
+					    animation: google.maps.Animation.DROP,
+					    draggable: true
+					});
+
+					<!-- Click handler for myloc -->
+			        google.maps.event.addListener(myloc, 'click', (function(myloc) {
+				    	return function() {
+				    		infowindow.setContent("Your current location");
+				    		infowindow.open(map, myloc);
+				    	}
+				    })(myloc));
+
+					<!-- Loops over list of markers -->
+					var infowindow = new google.maps.InfoWindow();
+					var marker, i;
+					
+					for (i=0; i < markers.length; i++) {
+						<!-- Draws each marker -->
+						console.log(markers[i][1].lat + ", " + markers[i][1].lng);
+						marker = new google.maps.Marker({
+						    position: new google.maps.LatLng(markers[i][1].lat, markers[i][1].lng),
+						    map: map,
+						    animation: google.maps.Animation.DROP,
+						    draggable: true
+						});
+
+						<!-- Creates a click handler for each marker, which displays a popup window on click -->
+						google.maps.event.addListener(marker, 'click', (function(marker, i) {
+					    	return function() {
+					    		infowindow.setContent('<a href="' + markers[i][2] + '">' + markers[i][0] + '</a>');
+					    		infowindow.open(map, marker);
+					    	}
+					    })(marker, i));
+					}
+				}
+				
+				<!------------------- END ALL MAP STUFF ----------------------->
+
 				for (i = qs.length + 1; i < 13; i++) {
 					if ($("h2#title" + (i)).text().length == 0) {
 						$("div#box" + (i)).attr("style", "display: none;");
@@ -227,6 +272,9 @@
 		$("#profile").click(function() {
 			window.location.href = "/profiles/" + user;
 		});
+		</script>
+		<script>
+			
 		</script>
 	</body>
 </html>
