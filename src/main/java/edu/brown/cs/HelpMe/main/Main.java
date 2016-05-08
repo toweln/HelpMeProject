@@ -108,6 +108,11 @@ public class Main {
 		// InetAddress lh = InetAddress.getLocalHost();
 		// System.out.println("HOST NAME: " + lh.getHostName());
 		// System.out.println("ADDRESS: " + lh.getHostAddress());
+		//
+		//// String s = "\"\\n\"";
+		// String s = "\\n";
+		// System.out.println(s);
+		// System.out.println(s.replaceAll("\\\\n", ""));
 
 		Chat c = new Chat();
 		c.initializeSocket();
@@ -433,11 +438,12 @@ public class Main {
 			try {
 				dbQuery.updateRequestTutor(request, tutor);
 				dbQuery.updateTimeResponded(dateString, request);
-        dbQuery.updateQuestionsAnswered(tutor);
+				dbQuery.updateQuestionsAnswered(tutor);
 
 				String tuteeId = dbQuery.getTuteeFromReqId(request);
+				System.out.println(tutor);
 
-				// tuteeId = tuteeId.substring(1, tuteeId.length() - 1);
+				tuteeId = tuteeId.substring(1, tuteeId.length() - 1);
 				System.out.println("TUTEE ID: " + tuteeId);
 				UserData tuteeUser = dbQuery.getUserDataFromId(tuteeId);
 				UserData tutorUser = dbQuery.getUserDataFromId(tutor);
@@ -474,13 +480,13 @@ public class Main {
 
 			String title = qm.value("title");
 			String body = qm.value("message");
+			body = body.replaceAll("\\\\n", "<br>");
 			String topics = qm.value("topics");
 			// ADDED LATITUDE AND LONGITUDE
 			String lat = qm.value("lat");
 			String lon = qm.value("lng");
 			List<String> topicsList = Arrays.asList(topics
 					.substring(1, topics.length() - 1).split("\\s*,\\s*"));
-			System.out.println("BODY " + body);
 			String reqid = UUID.randomUUID().toString();
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			Date date = new Date();
@@ -490,7 +496,6 @@ public class Main {
 						body, lat, lon, dateString, "", "");
 				dbQuery.updateQuestionsAsked(user);
 				dbQuery.updateWordCount(topicsList, body);
-				System.out.println("question is being inserted!!!!!!!!");
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -523,7 +528,7 @@ public class Main {
 		public Object handle(Request req, Response res) {
 			QueryParamsMap qm = req.queryMap();
 			String user = qm.value("userid");
-			user = user.substring(1, user.length()-1);
+			user = user.substring(1, user.length() - 1);
 			TagDatabase td = new TagDatabase();
 			TutorCompatibility tc = new TutorCompatibility(td);
 			List<Question> sortedQuestions = new ArrayList<>();

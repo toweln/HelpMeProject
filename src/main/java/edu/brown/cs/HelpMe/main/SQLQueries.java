@@ -357,7 +357,7 @@ public class SQLQueries {
 	 *             if the databse doesn't exist.
 	 */
 	public Question makeQuestion(String qID) throws SQLException {
-		String query = "SELECT body, tags, summary, post_lat, post_lon, tutee_id FROM requests WHERE request_id = ?;";
+		String query = "SELECT body, tags, summary, post_lat, post_lon, tutee_id, tutor_id FROM requests WHERE request_id = ?;";
 		PreparedStatement stat = conn.prepareStatement(query);
 		stat.setString(1, qID);
 		// System.out.println("ID: " + qID);
@@ -368,6 +368,7 @@ public class SQLQueries {
 		String lat = "";
 		String lon = "";
 		String tutee = "";
+		String tutor = "";
 		while (rs.next()) {
 			body = rs.getString(1);
 			tags = rs.getString(2);
@@ -375,6 +376,7 @@ public class SQLQueries {
 			lat = rs.getString(4);
 			lon = rs.getString(5);
 			tutee = rs.getString(6);
+			tutor = rs.getString(7);
 			// System.out.println("TAGS: " + tags);
 			// System.out.println("BODY: " + body);
 		}
@@ -413,7 +415,7 @@ public class SQLQueries {
 		TagDatabase td = new TagDatabase();
 		TagRating trq = new TagRating(qoverallRating, td);
 		Question q = new Question(qID, title, body, trq, td, frontEndTags, lat,
-				lon, tutee);
+				lon, tutee, tutor);
 		return q;
 	}
 
@@ -837,11 +839,12 @@ public class SQLQueries {
 	  ResultSet rs = stat.executeQuery();
     Double numRating = Double.parseDouble(rating);
     Double reqAnswered = Double.parseDouble(rs.getString(1));
+    reqAnswered--;
     Double avg = Double.parseDouble(rs.getString(2));
 
 	  double newAvg = (avg * reqAnswered) + numRating;
-
-	  newAvg = newAvg/(reqAnswered + 1);
+	  reqAnswered++;
+	  newAvg = newAvg/(reqAnswered);
 
 
 	  String query2 = "UPDATE leaderboard SET average_rating=? WHERE user_id=?";

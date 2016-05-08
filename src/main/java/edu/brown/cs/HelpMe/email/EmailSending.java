@@ -38,7 +38,7 @@ public class EmailSending {
 			throws AddressException, MessagingException {
 		String subject = tutor + " wants to help you!";
 		String body = tutor + " wants to help you with " + summary
-				+ "<br><br> Go to " + link
+				+ "<br><br> Go to" + link
 				+ " to chat! <br><br> When you're done, rate your tutor here: "
 				+ ratingLink;
 		generateAndSendEmail(email, subject, body);
