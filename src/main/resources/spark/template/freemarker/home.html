@@ -197,12 +197,23 @@
 					console.log(qs[i]);
 					
 					var title = qs[i]["title"].substring(1, qs[i]["title"].length - 1);
+
+					if (title.length > 50) {
+						title = title.substring(0, 50) + "...";
+					}
+
+					var message = qs[i]["message"].substring(1, qs[i]["message"].length - 1);
+
+					if (message.length > 100) {
+						message = message.substring(0, 100) + "...";
+					}
+
 					var latlng = {lat: parseFloat(qs[i]["latitude"]), lng: parseFloat(qs[i]["longitude"])};
 					var url = "/questions/" + qs[i]["ID"];
-					
-					$("h2#title" + (i + 1)).html(title);
+
+					$("h2#title" + (i + 1)).html(title.replace(/<\/?[^>]+(>|$)/g, "").replace(/(\r\n|\n|\r)/gm," "));
 					$("h2#title" + (i + 1)).attr("style", "margin-top: -20px; margin-bottom: 20px");
-					$("p#message" + (i + 1)).html(qs[i]["message"].substring(1, qs[i]["message"].length - 1));
+					$("p#message" + (i + 1)).html(message.replace(/<\/?[^>]+(>|$)/g, "").replace(/\\n/g," "));
 					$("a#button" + (i + 1)).attr("href", url);
 					$("a#button" + (i + 1)).attr("style", "margin-bottom: 20px");
 					var html_tag = "";
