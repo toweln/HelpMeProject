@@ -1,7 +1,5 @@
 package edu.brown.cs.HelpMe.main;
 
-import static spark.Spark.init;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -104,7 +102,11 @@ public class Main {
 		// System.out.println("ERROR: Database does not exist");
 		// }
 
+<<<<<<< HEAD
 		// dbQuery.initializeExistingCounts();
+=======
+//		dbQuery.initializeExistingCounts();
+>>>>>>> 8df071db0e2ef443705c2bdb5ff712d470512ddc
 		Chat c = new Chat();
 		c.initializeSocket();
 		runSparkServer();
@@ -424,11 +426,13 @@ public class Main {
 				dbQuery.updateRequestTutor(request, tutor);
 				dbQuery.updateTimeResponded(dateString, request);
 				String tuteeId = dbQuery.getTuteeFromReqId(request);
+
 				tuteeId = tuteeId.substring(1, tuteeId.length() - 1);
 				UserData tuteeUser = dbQuery.getUserDataFromId(tuteeId);
 				UserData tutorUser = dbQuery.getUserDataFromId(tutor);
 				String summary = dbQuery.getRequestSummary(request);
 				String chatRoomURL = "localhost:4567/room/" + request;
+
 				emailSender.sendTutorEmail(tutorUser.getEmail(), summary,
 						tuteeUser.getFirstName(), chatRoomURL);
 				emailSender.sendTuteeEmail(tuteeUser.getEmail(), summary,
@@ -487,6 +491,7 @@ public class Main {
 			// THIS SHOULD BE ADDED WHEN USERID COOKIES ARE IMPLEMENTED ON
 			// FRONTEND
 			String user = qm.value("userid");
+			user = user.substring(1, user.length()-1);
 			// THIS SHOULD BE ADDED WHEN USERID COOKIES ARE IMPLEMENTED ON
 			// FRONTEND
 
@@ -507,6 +512,7 @@ public class Main {
 				dbQuery.insertNewRequest(reqid, user, "", "", topicsList, title,
 						body, lat, lon, dateString, "", "");
 				dbQuery.updateWordCount(topicsList, body);
+				System.out.println("question is being inserted!!!!!!!!");
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

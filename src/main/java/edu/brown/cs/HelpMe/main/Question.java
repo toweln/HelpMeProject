@@ -20,7 +20,7 @@ public class Question {
 	private List<String> frontEndTags;
 	private String latitude;
 	private String longitude;
-
+	private String ownerID;
 	/**
 	 * create new question.
 	 *
@@ -46,7 +46,7 @@ public class Question {
 	 */
 
 	public Question(String ID, String title, String message, TagRating rating,
-			TagDatabase td, List<String> frontEndTags, String lat, String lon) {
+			TagDatabase td, List<String> frontEndTags, String lat, String lon, String ownerID) {
 		this.title = title;
 		this.message = message;
 		this.ID = ID;
@@ -56,7 +56,7 @@ public class Question {
 		this.frontEndTags = frontEndTags;
 		this.latitude = lat;
 		this.longitude = lon;
-
+		this.ownerID = ownerID;
 		for (Discipline d : td.getTaxonomy()) {
 			if (rating.getRating().containsKey(d)) {
 				for (Tag t : d.getSubdisciplines()) {
@@ -135,5 +135,47 @@ public class Question {
 	public List<String> getFrontEndTags() {
 		return frontEndTags;
 	}
+
+  /**
+   * @return the latitude
+   */
+  public String getLatitude() {
+    return latitude;
+  }
+
+  /**
+   * @param latitude the latitude to set
+   */
+  public void setLatitude(String latitude) {
+    this.latitude = latitude;
+  }
+
+  /**
+   * @return the longitude
+   */
+  public String getLongitude() {
+    return longitude;
+  }
+
+  /**
+   * @param longitude the longitude to set
+   */
+  public void setLongitude(String longitude) {
+    this.longitude = longitude;
+  }
+
+  /**
+   * @return the ownerID
+   */
+  public String getOwnerID() {
+    return ownerID;
+  }
+
+  /**
+   * @param ownerID the ownerID to set
+   */
+  public void setOwnerID(String ownerID) {
+    this.ownerID = ownerID;
+  }
 
 }
