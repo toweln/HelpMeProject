@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -40,7 +42,7 @@ import edu.brown.cs.acj.chat.Chat;
 import freemarker.template.Configuration;
 
 public class Main {
-	public static void main(String[] args) throws SQLException {
+	public static void main(String[] args) throws SQLException, UnknownHostException {
 		new Main(args).run();
 	}
 
@@ -57,7 +59,7 @@ public class Main {
 		this.args = args;
 	}
 
-	private void run() throws SQLException {
+	private void run() throws SQLException, UnknownHostException {
 		userID = "";
 		emailSender = new EmailSending();
 		OptionParser parser = new OptionParser();
@@ -101,6 +103,11 @@ public class Main {
 		// } catch (SQLException e) {
 		// System.out.println("ERROR: Database does not exist");
 		// }
+
+		// InetAddress lh = InetAddress.getLocalHost();
+		// System.out.println("HOST NAME: " + lh.getHostName());
+		// System.out.println("ADDRESS: " + lh.getHostAddress());
+
 		Chat c = new Chat();
 		c.initializeSocket();
 		runSparkServer();
