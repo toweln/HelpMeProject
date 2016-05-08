@@ -102,7 +102,7 @@ public class Main {
 		// System.out.println("ERROR: Database does not exist");
 		// }
 
-		dbQuery.initializeExistingCounts();
+//		dbQuery.initializeExistingCounts();
 		Chat c = new Chat();
 		c.initializeSocket();
 		runSparkServer();
