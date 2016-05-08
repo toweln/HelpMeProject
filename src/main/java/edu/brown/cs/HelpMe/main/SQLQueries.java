@@ -988,7 +988,7 @@ public class SQLQueries {
   }
 
   public void insertIntoLeaderBoard(String id, String userName) throws SQLException{
-    String query = "INSERT INTO requests VALUES (?, ?, ?, ?, ?)";
+    String query = "INSERT INTO leaderboard VALUES (?, ?, ?, ?, ?)";
     PreparedStatement stat = conn.prepareStatement(query);
     stat.setString(1, id);
     stat.setString(2, userName);
