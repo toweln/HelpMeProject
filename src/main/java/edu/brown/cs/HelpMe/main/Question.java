@@ -21,6 +21,7 @@ public class Question {
 	private String latitude;
 	private String longitude;
 	private String ownerID;
+	private String tutor;
 	/**
 	 * create new question.
 	 *
@@ -46,7 +47,7 @@ public class Question {
 	 */
 
 	public Question(String ID, String title, String message, TagRating rating,
-			TagDatabase td, List<String> frontEndTags, String lat, String lon, String ownerID) {
+			TagDatabase td, List<String> frontEndTags, String lat, String lon, String ownerID, String tutor) {
 		this.title = title;
 		this.message = message;
 		this.ID = ID;
@@ -57,6 +58,7 @@ public class Question {
 		this.latitude = lat;
 		this.longitude = lon;
 		this.ownerID = ownerID;
+		this.tutor = tutor;
 		for (Discipline d : td.getTaxonomy()) {
 			if (rating.getRating().containsKey(d)) {
 				for (Tag t : d.getSubdisciplines()) {
@@ -176,6 +178,20 @@ public class Question {
    */
   public void setOwnerID(String ownerID) {
     this.ownerID = ownerID;
+  }
+
+  /**
+   * @return the tutor
+   */
+  public String getTutor() {
+    return tutor;
+  }
+
+  /**
+   * @param tutor the tutor to set
+   */
+  public void setTutor(String tutor) {
+    this.tutor = tutor;
   }
 
 }
