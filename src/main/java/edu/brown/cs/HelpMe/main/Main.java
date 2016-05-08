@@ -523,6 +523,7 @@ public class Main {
 		public Object handle(Request req, Response res) {
 			QueryParamsMap qm = req.queryMap();
 			String user = qm.value("userid");
+			user = user.substring(1, user.length()-1);
 			TagDatabase td = new TagDatabase();
 			TutorCompatibility tc = new TutorCompatibility(td);
 			List<Question> sortedQuestions = new ArrayList<>();
