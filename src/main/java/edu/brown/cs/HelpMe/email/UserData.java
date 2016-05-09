@@ -1,4 +1,5 @@
 package edu.brown.cs.HelpMe.email;
+
 /**
  * Class for having user data for the frontend.
  * @author Jared
@@ -13,7 +14,17 @@ public class UserData {
   private String userName;
   private String password;
 
-  public UserData(String uid, String first, String last, String email, String phone, String username){
+  /**
+   * Wrapper of userdata for the Main primarily.
+   * @param uid
+   * @param first
+   * @param last
+   * @param email
+   * @param phone
+   * @param username
+   */
+  public UserData(String uid, String first, String last, String email,
+      String phone, String username) {
     userId = uid;
     firstName = first;
     lastName = last;
