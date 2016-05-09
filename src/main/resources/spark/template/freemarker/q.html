@@ -45,9 +45,12 @@
 			var c = document.cookie;
 			a = c.split(";");
 			for (x = 0; x < a.length; x++) {
-				if (a[x].split("=")[0] == "helpme_username") {
+				if (a[x].split("=")[0].replace(/\s/g, '') == "helpme_username") {
 					user = a[x].split("=")[1];
 				}
+			}
+			if (user.length == 0) {
+				window.location.href = "/index.html";
 			}
 		});
 		$("#help").click(function() {

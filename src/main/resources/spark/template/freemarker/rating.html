@@ -47,6 +47,21 @@
 		var path = url.split("/");
 		var reqid = path[path.length - 1];
 
+		var user = "";
+
+		$(document).ready(function() {
+			var c = document.cookie;
+			a = c.split(";");
+			for (x = 0; x < a.length; x++) {
+				if (a[x].split("=")[0].replace(/\s/g, '') == "helpme_username") {
+					user = a[x].split("=")[1];
+				}
+			}
+			if (user.length == 0) {
+				window.location.href = "/index.html";
+			}
+		});
+
 		$("#rating_submit").click(function() {
 			var rate = $("input[name='rating']:checked").val()
 			console.log(rate)
