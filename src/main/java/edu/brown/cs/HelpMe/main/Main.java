@@ -36,9 +36,9 @@ import com.google.gson.Gson;
 
 import edu.brown.cs.HelpMe.autocorrect.CommandParser;
 import edu.brown.cs.HelpMe.autocorrect.SuggestionGenerator;
-import edu.brown.cs.HelpMe.chat.Chat;
 import edu.brown.cs.HelpMe.email.EmailSending;
 import edu.brown.cs.HelpMe.email.UserData;
+import edu.brown.cs.acj.chat.Chat;
 import freemarker.template.Configuration;
 
 public class Main {
@@ -75,7 +75,6 @@ public class Main {
 		parser.accepts("gui");
 		OptionSet options = parser.parse(args);
 
-		// if (options.has("gui")) {
 		this.cp = new CommandParser(false, 2, true, false, false);
 		this.sg = null;
 		try {
@@ -96,31 +95,13 @@ public class Main {
 		try {
 			sortedQuestions = tc
 					.getSortedQuestions("2317b198-561d-4b05-8a7c-5bbd2b0df4e3");
-			// for (Question q : sortedQuestions) {
-			// // System.out.println(q.getID());
-			// System.out.println(q.getMessage());
-			// // System.out.println(q.getRating().getRating());
-			// }
 		} catch (SQLException e) {
 			System.out.println("ERROR: Database does not exist");
 		}
-
-		// InetAddress lh = InetAddress.getLocalHost();
-		// System.out.println("HOST NAME: " + lh.getHostName());
-		// System.out.println("ADDRESS: " + lh.getHostAddress());
-		//
-		//// String s = "\"\\n\"";
-		// String s = "\\n";
-		// System.out.println(s);
-		// System.out.println(s.replaceAll("\\\\n", ""));
-
 		Chat c = new Chat();
 		c.initializeSocket();
 		runSparkServer();
 		c.startSocket();
-		// } else {
-		// Process commands
-		// }
 	}
 
 	private static FreeMarkerEngine createEngine() {
@@ -158,7 +139,6 @@ public class Main {
 		Spark.get("/signup.html", new SignupDropdownHandler(), freeMarker);
 		Spark.get("/q_new.html", new NewQuestionHandler(), freeMarker);
 		Spark.get("/q.html", new SubmittedQuestion(), freeMarker);
-		// Spark.get("/profile.html", new ProfileHandler(), freeMarker);
 		Spark.get("/settings.html", new SettingsHandler(), freeMarker);
 		Spark.post("/sortedQs", new SortedQuestionHandler());
 		Spark.post("/insertQ", new InsertQuestionHandler());
@@ -167,7 +147,6 @@ public class Main {
 		Spark.get("/profiles/:userID", new ProfileHandler(), freeMarker);
 		Spark.get("/room/:roomID", new ChatroomHandler(), freeMarker);
 		Spark.get("/rating/:tutorID", new RatingHandler(), freeMarker);
-		// Spark.post("/ratingEmail", new RatingEmailHandler());
 		Spark.post("/insertRating", new InsertRatingHandler());
 	}
 
@@ -253,7 +232,6 @@ public class Main {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
 			String userID = req.params(":userID");
-			// System.out.println("ID: " + userID);
 			User u = null;
 			try {
 				u = dbQuery.makeUserProfile(userID);
@@ -305,7 +283,6 @@ public class Main {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
 			String qID = req.params(":questionID");
-			System.out.println("ID: " + qID);
 			Question q = null;
 			try {
 				q = dbQuery.makeQuestion(qID);
@@ -315,12 +292,8 @@ public class Main {
 
 			String questionTitle = q.getTitle();
 			String questionMessage = q.getMessage();
-			System.out.println(questionTitle);
-			System.out.println(questionMessage);
 			questionTitle = questionTitle.replaceAll("\"", "");
 			questionMessage = questionMessage.replaceAll("\"", "");
-			System.out.println(questionTitle);
-			System.out.println(questionMessage);
 
 			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!",
 					"questionTitle", questionTitle, "questionMessage",
@@ -332,36 +305,11 @@ public class Main {
 	private class NewQuestionHandler implements TemplateViewRoute {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
-
-			// QueryParamsMap qm = req.queryMap();
-			// String questionTitle = qm.value("title");
-			// String questionMessage = qm.value("message");
-			// // String tags = qm.value("tags");
-			//
-			// // List<String> lTags = Arrays.asList(tags.split("\\s*,\\s*"));
-			// System.out.println(questionTitle);
-			//
-			// String reqid = UUID.randomUUID().toString();
-			//
-			// try {
-			// dbQuery.insertNewRequest(reqid, userID, "", "", null,
-			// questionTitle, questionMessage, "", "", "", "", "");
-			// } catch (SQLException e) {
-			// e.printStackTrace();
-			// }
-
 			Map<String, String> variables = ImmutableMap.of("title", "HelpMe!");
 			return new ModelAndView(variables, "q_new.html");
 		}
 	}
 
-	// private class ProfileHandler implements TemplateViewRoute {
-	// @Override
-	// public ModelAndView handle(Request req, Response res) {
-	// Map<String, String> variables = ImmutableMap.of("title", "HelpMe!");
-	// return new ModelAndView(variables, "profile.html");
-	// }
-	// }
 
 	private class SubmittedQuestion implements TemplateViewRoute {
 		@Override
@@ -393,8 +341,6 @@ public class Main {
 			userName = userName.toLowerCase();
 			userName = userName.substring(1, userName.length() - 1);
 			password = password.substring(1, password.length() - 1);
-			System.out.println(userName);
-			System.out.println(password);
 			String status = "";
 			Boolean ret = true;
 			try {
@@ -404,7 +350,6 @@ public class Main {
 			}
 			if (status.equals("")) {
 				ret = false;
-				System.out.println("false");
 			} else {
 				userID = status;
 			}
@@ -441,18 +386,13 @@ public class Main {
 				dbQuery.updateQuestionsAnswered(tutor);
 
 				String tuteeId = dbQuery.getTuteeFromReqId(request);
-				System.out.println(tutor);
 
 				tuteeId = tuteeId.substring(1, tuteeId.length() - 1);
-				System.out.println("TUTEE ID: " + tuteeId);
 				UserData tuteeUser = dbQuery.getUserDataFromId(tuteeId);
 				UserData tutorUser = dbQuery.getUserDataFromId(tutor);
 				String summary = dbQuery.getRequestSummary(request);
 				String chatRoomURL = hostAddress + ":4567/room/" + request;
 				String ratingURL = hostAddress + ":4567/rating/" + request;
-
-				System.out.println("EMAIL TO TUTOR: " + tutorUser.getEmail());
-				System.out.println("EMAIL TO TUTEE: " + tuteeUser.getEmail());
 
 				emailSender.sendTutorEmail(tutorUser.getEmail(), summary,
 						tuteeUser.getFirstName(), chatRoomURL);
@@ -469,14 +409,11 @@ public class Main {
 	private static class InsertQuestionHandler implements Route {
 		@Override
 		public Object handle(Request req, Response res) {
-			System.out.println("INSERT HANDLER");
 			QueryParamsMap qm = req.queryMap();
-			// THIS SHOULD BE ADDED WHEN USERID COOKIES ARE IMPLEMENTED ON
-			// FRONTEND
+
 			String user = qm.value("userid");
 			user = user.substring(1, user.length() - 1);
-			// THIS SHOULD BE ADDED WHEN USERID COOKIES ARE IMPLEMENTED ON
-			// FRONTEND
+
 
 			String title = qm.value("title");
 			String body = qm.value("message");
@@ -500,10 +437,7 @@ public class Main {
 				e.printStackTrace();
 			}
 			boolean ret = true;
-			// System.out.println("false");
-			// } else {
-			// userID = status;
-			// }
+
 			return GSON.toJson(ret);
 		}
 	}
@@ -516,8 +450,6 @@ public class Main {
 			String reqid = qm.value("reqid");
 			rating = rating.substring(1, rating.length() - 1);
 			reqid = reqid.substring(1, reqid.length() - 1);
-			// System.out.println("RATING: " + rating);
-			// System.out.println("REQID: " + reqid);
 			dbQuery.insertRating(rating, reqid);
 			return GSON.toJson(null);
 		}
@@ -584,10 +516,8 @@ public class Main {
 				if (status) {
 					userID = newID.toString();
 					emailSender.sendWelcomeEmail(email);
-					System.out.println("new user success");
 				} else {
 					userID = "";
-					System.out.println("user fail");
 				}
 			} catch (SQLException | MessagingException e) {
 				e.printStackTrace();
@@ -596,28 +526,6 @@ public class Main {
 			return GSON.toJson(userID);
 		}
 	}
-
-	// private static class SubmitQuestionHandler implements Route {
-	// @Override
-	// public Object handle(Request req, Response res) {
-	// QueryParamsMap qm = req.queryMap();
-	// String title = qm.value("title");
-	// String rawTags = qm.value("tags");
-	// String body = qm.value("message");
-	// List<String> tags = Arrays.asList(rawTags.split("\\s*,\\s*"));
-	// String message = qm.value("message");
-	// String reqid = UUID.randomUUID().toString();
-	// try {
-	// dbQuery.insertNewRequest(reqid, userID, "", "", tags, title,
-	// body, "", "", "", "", "");
-	// dbQuery.updateWordCount(tags, body);
-	// } catch (SQLException e) {
-	// e.printStackTrace();
-	// }
-	// // CHANGE THIS
-	// return GSON.toJson(message);
-	// }
-	// }
 
 	private static class SuggestHandler implements Route {
 		@Override
