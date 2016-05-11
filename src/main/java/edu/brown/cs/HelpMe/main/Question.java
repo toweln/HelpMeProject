@@ -29,8 +29,6 @@ public class Question {
 	 *            title of question
 	 * @param message
 	 *            message of question
-	 * @param owner
-	 *            user who asked question
 	 * @param rating
 	 *            TagRating of question
 	 */

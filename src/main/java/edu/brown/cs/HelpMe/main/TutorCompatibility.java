@@ -98,6 +98,13 @@ public class TutorCompatibility {
 		return Math.round((dotProd / vectorDist) * 1000.0) / 1000.0;
 	}
 
+	/**
+	 * 
+	 * @param userID
+	 * @param qID
+	 * @return
+	 * @throws SQLException
+	 */
 	public double tutorQuestionCompatibility(String userID, String qID)
 			throws SQLException {
 		// System.out.println(qID);
@@ -180,6 +187,13 @@ public class TutorCompatibility {
 		return Math.round((dotProd / vectorDist) * 1000.0) / 1000.0;
 	}
 
+	/**
+	 * how compatible a user is based on their past questions
+	 * @param userID user
+	 * @param qID question
+	 * @return compatibility
+	 * @throws SQLException if nothing can be found
+	 */
 	public double currentPastQuestionCompatibility(String userID, String qID)
 			throws SQLException {
 		Question q = dbQuery.makeQuestion(qID);
@@ -224,6 +238,13 @@ public class TutorCompatibility {
 		return Math.round(compat * 1000.0) / 1000.0;
 	}
 
+	/**
+	 * get the sum of both types of compatibility
+	 * @param userID user 
+	 * @param qID q
+	 * @return overall compatibility
+	 * @throws SQLException if nothing is found
+	 */
 	public double getOverallCompatibility(String userID, String qID)
 			throws SQLException {
 		// System.out.println(qID);
@@ -295,6 +316,12 @@ public class TutorCompatibility {
 		return sortedCompats;
 	}
 
+	/**
+	 * sorts questions based on compatibility
+	 * @param userID user 
+	 * @return sorted questions
+	 * @throws SQLException if nothing can be found
+	 */
 	public List<Question> getSortedQuestions(String userID)
 			throws SQLException {
 		MinMaxPriorityQueue<Question> questions = MinMaxPriorityQueue

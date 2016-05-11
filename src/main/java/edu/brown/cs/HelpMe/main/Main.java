@@ -38,7 +38,7 @@ import edu.brown.cs.HelpMe.autocorrect.CommandParser;
 import edu.brown.cs.HelpMe.autocorrect.SuggestionGenerator;
 import edu.brown.cs.HelpMe.email.EmailSending;
 import edu.brown.cs.HelpMe.email.UserData;
-import edu.brown.cs.acj.chat.Chat;
+import edu.brown.cs.HelpMe.chat.Chat;
 import freemarker.template.Configuration;
 
 public class Main {

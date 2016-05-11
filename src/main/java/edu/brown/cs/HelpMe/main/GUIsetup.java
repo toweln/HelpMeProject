@@ -34,6 +34,9 @@ public class GUIsetup {
 		runSparkServer();
 	}
 
+	/**
+	 * runs spark server
+	 */
 	private void runSparkServer() {
 		Spark.externalStaticFileLocation("src/main/resources/static");
 
@@ -45,6 +48,9 @@ public class GUIsetup {
 		Spark.get("/home.html", new NewUserHandler(), freeMarker);
 	}
 
+	/**
+	 * handles the front index home page where you log in
+	 */
 	private class FrontHandler implements TemplateViewRoute {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
@@ -53,6 +59,9 @@ public class GUIsetup {
 		}
 	}
 
+	/*
+	 * handles sign up page
+	 */
 	private class SignUpDropdownHandler implements TemplateViewRoute {
 		@Override
 		public ModelAndView handle(Request req, Response res) {
@@ -92,6 +101,9 @@ public class GUIsetup {
 		}
 	}
 
+	/**
+	 * something about engines
+	 */
 	private static FreeMarkerEngine createEngine() {
 		Configuration config = new Configuration();
 		File templates = new File(

@@ -22,14 +22,23 @@ public class LeaderboardEntry {
 		this.numQuestionsAnswered = numQuestionsAnswered;
 	}
 
+	/**
+	 * gets rating
+	 */
 	public String getRating() {
 		return rating;
 	}
 
+	/**
+	 * gets username
+	 */
 	public String getUsername() {
 		return username;
 	}
 	
+	/**
+	 * gets the number of questions someone has ever answered
+	 */
 	public String getNumQuestionsAnswered() {
 		return numQuestionsAnswered;
 	}
