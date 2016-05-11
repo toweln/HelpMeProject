@@ -135,11 +135,15 @@
 							</div>
 						</div>
 					</div>
+					<h1 id='nextpage' class='prevpage' style='display: none'>Previous page >></h1>
+					<h1 id='nextpage' class='nextpage'>Next page >></h1>
 		
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRI318_aOYM3i8I7gogIvnbaB-el_S0Xo&callback=init" async defer></script>
 		<script>
 		var map;
+		var totalQs = 0;
+		var currentPage = 0;
 		var x = document.getElementById("error");
 		function init() {
 		    if (navigator.geolocation) {
@@ -190,43 +194,8 @@
 			}
 			console.log(user);
 			var marker;
-			$.post("/sortedQs", {userid: JSON.stringify(user)}, function(response) {
-				var qs = JSON.parse(response);
-				var markers = [];
-				
-				for (i = 0; i < Math.min(qs.length, 12); i++) {
-					console.log(qs[i]);
-					
-					var title = qs[i]["title"].substring(1, qs[i]["title"].length - 1);
-
-					if (title.length > 30) {
-						title = title.substring(0, 30) + "...";
-					}
-
-					var message = qs[i]["message"].substring(1, qs[i]["message"].length - 1);
-
-					if (message.length > 100) {
-						message = message.substring(0, 100) + "...";
-					}
-
-					var latlng = {lat: parseFloat(qs[i]["latitude"]), lng: parseFloat(qs[i]["longitude"])};
-					var url = "/questions/" + qs[i]["ID"];
-
-					$("h2#title" + (i + 1)).html(title.replace(/<\/?[^>]+(>|$)/g, "").replace(/(\r\n|\n|\r)/gm," "));
-					$("h2#title" + (i + 1)).attr("style", "margin-top: -20px; margin-bottom: 20px");
-					$("p#message" + (i + 1)).html(message.replace(/<\/?[^>]+(>|$)/g, "").replace(/\\n/g," "));
-					$("a#button" + (i + 1)).attr("href", url);
-					$("a#button" + (i + 1)).attr("style", "margin-bottom: 20px");
-					var html_tag = "";
-					for (j = 0; j < Math.min(qs[i]["frontEndTags"].length, 4); j++) {
-						html_tag += "<span class='tag'>" + qs[i]["frontEndTags"][j] + "</span>";
-					}
-					$("span#tag" + (i + 1)).html(html_tag);
-
-					<!-- Adds marker to list of markers -->
-					markers.push([title,latlng,url]);
-					
-				}
+			
+			loadQs(currentPage);
 
 				<!-- Sends markers to JS for maps to draw markers -->
 				init(markers);
@@ -315,12 +284,70 @@
 					}
 				}
 			});
-		});
 		$("a[href='/index.html']").click(function() {
 			document.cookie = "helpme_username=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
 		});
 		$("#profile").click(function() {
 			window.location.href = "/profiles/" + user;
+		});
+		function loadQs(currentPage) {
+			$.post("/sortedQs", {userid: JSON.stringify(user)}, function(response) {
+				var qs = JSON.parse(response);
+				console.log(qs.length);
+				totalQs = qs.length;
+				var markers = [];
+				
+				for (i = currentPage; i < Math.min(qs.length, currentPage + 12); i++) {
+					
+					var title = qs[i]["title"].substring(1, qs[i]["title"].length - 1);
+
+					if (title.length > 30) {
+						title = title.substring(0, 30) + "...";
+					}
+
+					var message = qs[i]["message"].substring(1, qs[i]["message"].length - 1);
+
+					if (message.length > 100) {
+						message = message.substring(0, 100) + "...";
+					}
+
+					var latlng = {lat: parseFloat(qs[i]["latitude"]), lng: parseFloat(qs[i]["longitude"])};
+					var url = "/questions/" + qs[i]["ID"];
+
+					$("h2#title" + (i%12 + 1)).html(title.replace(/<\/?[^>]+(>|$)/g, "").replace(/(\r\n|\n|\r)/gm," "));
+					$("h2#title" + (i%12 + 1)).attr("style", "margin-top: -20px; margin-bottom: 20px");
+					$("p#message" + (i%12 + 1)).html(message.replace(/<\/?[^>]+(>|$)/g, "").replace(/\\n/g," "));
+					$("a#button" + (i%12 + 1)).attr("href", url);
+					$("a#button" + (i%12 + 1)).attr("style", "margin-bottom: 20px");
+					var html_tag = "";
+					for (j = 0; j < Math.min(qs[i]["frontEndTags"].length, 4); j++) {
+						html_tag += "<span class='tag'>" + qs[i]["frontEndTags"][j] + "</span>";
+					}
+					$("span#tag" + (i + 1)).html(html_tag);
+
+					<!-- Adds marker to list of markers -->
+					markers.push([title,latlng,url]);
+					
+				}
+			});
+		}
+		$(".nextpage").click(function() {
+			if (currentPage <= totalQs - 12) {
+				currentPage += 12;
+				$(".prevpage").attr("style", "display:block");
+			} else {
+				$(".nextpage").attr("style", "display:none");
+			}
+			loadQs(currentPage);
+		});
+		$(".prevpage").click(function() {
+			if (currentPage > 0) {
+				currentPage -= 12;
+				$(".nextpage").attr("style", "display: block");
+			} else {
+				$(".prevpage").attr("style", "display: none");
+			}
+			loadQs(currentPage);
 		});
 		</script>
 		<script type="application/javascript">

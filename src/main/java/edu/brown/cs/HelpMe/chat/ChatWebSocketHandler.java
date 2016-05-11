@@ -20,13 +20,8 @@ public class ChatWebSocketHandler {
 	public void onConnect(Session user) throws Exception {
 		String username = "User" + Chat.nextUserNumber++;
 		Chat.userUsernameMap.put(user, username);
-<<<<<<< HEAD
 //		 Chat.broadcastMessage(sender = "Server",
 //		 msg = (username + " joined the chat"));
-=======
-		Chat.broadcastMessage(sender = "Server",
-				msg = (username + " joined the chat"));
->>>>>>> b44f0ee3de8de1dee0729a74d2401f8b40164966
 	}
 
 	/**
@@ -39,13 +34,8 @@ public class ChatWebSocketHandler {
 	public void onClose(Session user, int statusCode, String reason) {
 		String username = Chat.userUsernameMap.get(user);
 		Chat.userUsernameMap.remove(user);
-<<<<<<< HEAD
 //		 Chat.broadcastMessage(sender = "Server",
 //		 msg = (username + " left the chat"));
-=======
-		Chat.broadcastMessage(sender = "Server",
-				msg = (username + " left the chat"));
->>>>>>> b44f0ee3de8de1dee0729a74d2401f8b40164966
 	}
 
 	/**
