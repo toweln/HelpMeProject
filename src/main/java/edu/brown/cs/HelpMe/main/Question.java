@@ -1,6 +1,7 @@
 package edu.brown.cs.HelpMe.main;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * a class for a question submitted on the site.
@@ -22,6 +23,7 @@ public class Question {
 	private String longitude;
 	private String ownerID;
 	private String tutor;
+
 	/**
 	 * create new question.
 	 *
@@ -34,20 +36,31 @@ public class Question {
 	 * @param rating
 	 *            TagRating of question
 	 */
-	/*
-	 * public Question(String title, String message, User owner, TagRating
-	 * rating, TagDatabase td) { this.title = title; this.message = message;
-	 * this.owner = owner; this.ID = UUID.randomUUID().toString(); this.rating =
-	 * rating; this.wc = new WordCount(message); this.td = td;
-	 *
-	 * for (Discipline d : td.getTaxonomy()) { if
-	 * (rating.getRating().containsKey(d)) { for (Tag t : d.getSubdisciplines())
-	 * { if (rating.getRating().get(d).containsKey(t)) {
-	 * t.updateWordCount(message); } } } } }
-	 */
+
+	public Question(String title, String message, User owner, TagRating rating,
+			TagDatabase td) {
+		this.title = title;
+		this.message = message;
+		this.owner = owner;
+		this.ID = UUID.randomUUID().toString();
+		this.rating = rating;
+		this.wc = new WordCount(message);
+		this.td = td;
+
+		for (Discipline d : td.getTaxonomy()) {
+			if (rating.getRating().containsKey(d)) {
+				for (Tag t : d.getSubdisciplines()) {
+					if (rating.getRating().get(d).containsKey(t)) {
+						t.updateWordCount(message);
+					}
+				}
+			}
+		}
+	}
 
 	public Question(String ID, String title, String message, TagRating rating,
-			TagDatabase td, List<String> frontEndTags, String lat, String lon, String ownerID, String tutor) {
+			TagDatabase td, List<String> frontEndTags, String lat, String lon,
+			String ownerID, String tutor) {
 		this.title = title;
 		this.message = message;
 		this.ID = ID;
@@ -138,60 +151,64 @@ public class Question {
 		return frontEndTags;
 	}
 
-  /**
-   * @return the latitude
-   */
-  public String getLatitude() {
-    return latitude;
-  }
+	/**
+	 * @return the latitude
+	 */
+	public String getLatitude() {
+		return latitude;
+	}
 
-  /**
-   * @param latitude the latitude to set
-   */
-  public void setLatitude(String latitude) {
-    this.latitude = latitude;
-  }
+	/**
+	 * @param latitude
+	 *            the latitude to set
+	 */
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
 
-  /**
-   * @return the longitude
-   */
-  public String getLongitude() {
-    return longitude;
-  }
+	/**
+	 * @return the longitude
+	 */
+	public String getLongitude() {
+		return longitude;
+	}
 
-  /**
-   * @param longitude the longitude to set
-   */
-  public void setLongitude(String longitude) {
-    this.longitude = longitude;
-  }
+	/**
+	 * @param longitude
+	 *            the longitude to set
+	 */
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
 
-  /**
-   * @return the ownerID
-   */
-  public String getOwnerID() {
-    return ownerID;
-  }
+	/**
+	 * @return the ownerID
+	 */
+	public String getOwnerID() {
+		return ownerID;
+	}
 
-  /**
-   * @param ownerID the ownerID to set
-   */
-  public void setOwnerID(String ownerID) {
-    this.ownerID = ownerID;
-  }
+	/**
+	 * @param ownerID
+	 *            the ownerID to set
+	 */
+	public void setOwnerID(String ownerID) {
+		this.ownerID = ownerID;
+	}
 
-  /**
-   * @return the tutor
-   */
-  public String getTutor() {
-    return tutor;
-  }
+	/**
+	 * @return the tutor
+	 */
+	public String getTutor() {
+		return tutor;
+	}
 
-  /**
-   * @param tutor the tutor to set
-   */
-  public void setTutor(String tutor) {
-    this.tutor = tutor;
-  }
+	/**
+	 * @param tutor
+	 *            the tutor to set
+	 */
+	public void setTutor(String tutor) {
+		this.tutor = tutor;
+	}
 
 }
