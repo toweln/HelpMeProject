@@ -1,7 +1,10 @@
 package edu.brown.cs.HelpMe.chat;
 
-import org.eclipse.jetty.websocket.api.*;
-import org.eclipse.jetty.websocket.api.annotations.*;
+import org.eclipse.jetty.websocket.api.Session;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
+import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
 /**
  * Handles chat web socket
@@ -13,7 +16,7 @@ public class ChatWebSocketHandler {
 
 	/**
 	 * Message emitted when a user connects
-	 * 
+	 *
 	 * @param user user
 	 */
 	@OnWebSocketConnect
@@ -25,8 +28,8 @@ public class ChatWebSocketHandler {
 	}
 
 	/**
-	 * message emitted on close 
-	 * @param user user 
+	 * message emitted on close
+	 * @param user user
 	 * @param statusCode status code
 	 * @param reason reason
 	 */
@@ -34,8 +37,12 @@ public class ChatWebSocketHandler {
 	public void onClose(Session user, int statusCode, String reason) {
 		String username = Chat.userUsernameMap.get(user);
 		Chat.userUsernameMap.remove(user);
+<<<<<<< HEAD
 //		 Chat.broadcastMessage(sender = "Server",
 //		 msg = (username + " left the chat"));
+=======
+
+>>>>>>> 52915a18e2e26d6ca86a32402eafa8787ed1f270
 	}
 
 	/**
