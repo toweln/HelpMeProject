@@ -9,6 +9,11 @@
         <link rel="icon" type="image/x-icon" href="../favicon.ico">
         <link rel="stylesheet" href="../css/style.css" />
         <link rel="stylesheet" href="../css/style_chat.css" />
+        <style>
+            b {
+                display: none;
+            }
+        </style>
     </head>
     <body>
 
@@ -70,7 +75,7 @@
         function hash(str) {
             var h = 1;
             for (t = 3; t < str.length; t++) {
-                h *= str.charCodeAt(t);
+                h *= Math.abs(str.charCodeAt(t) - 100);
             }
             return h % 256;
         }

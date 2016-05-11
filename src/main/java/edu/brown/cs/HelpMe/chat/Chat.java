@@ -23,6 +23,9 @@ import java.util.*;
 import static j2html.TagCreator.*;
 import static spark.Spark.*;
 
+/*
+ * Class for the chat
+ */
 public class Chat {
 
 	static Map<Session, String> userUsernameMap = new HashMap<>();
@@ -31,14 +34,25 @@ public class Chat {
 	public Chat() {
 	}
 
+	/**
+	 * starts a web socket
+	 */
 	public void initializeSocket() {
 		webSocket("/chat", ChatWebSocketHandler.class);
 	}
 
+	/**
+	 * Starts the web socket
+	 */
 	public void startSocket() {
 		init();
 	}
 
+	/**
+	 * emits messages that the user submits
+	 * @param sender user
+	 * @param message message
+	 */
 	public static void broadcastMessage(String sender, String message) {
 		userUsernameMap.keySet().stream().filter(Session::isOpen)
 				.forEach(session -> {
@@ -47,7 +61,7 @@ public class Chat {
 								.sendString(String.valueOf(new JSONObject()
 										.put("userMessage",
 												createHtmlMessageFromSender(
-														"", message))
+														sender, message))
 										.put("userlist",
 												userUsernameMap.values())));
 					} catch (Exception e) {
@@ -56,16 +70,24 @@ public class Chat {
 				});
 	}
 
-	// Builds a HTML element with a sender-name, a message, and a timestamp,
+	/**
+	 * creates html message from sender
+	 * @param sender user
+ 	 * @param message message
+	 * @return
+	 */
 	private static String createHtmlMessageFromSender(String sender,
 			String message) {
-		return article().withClass("user_" + sender).with(b(sender + ""),
+		return article().withClass("user_" + sender).with(b(sender + " says"),
 				p(message),
 				span().withClass("timestamp").withText(
 						new SimpleDateFormat("HH:mm:ss").format(new Date())))
 				.render();
 	}
 
+	/**
+	 * Helps create html page for chat
+	 */
 	private static FreeMarkerEngine createEngine() {
 		Configuration config = new Configuration();
 		// Spark.externalStaticFileLocation(

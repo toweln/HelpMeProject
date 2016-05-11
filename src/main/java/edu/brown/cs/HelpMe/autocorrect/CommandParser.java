@@ -18,8 +18,6 @@ public class CommandParser {
   /**
    * Constructor for building command parser from scratch.
    *
-   * @param db
-   *          list of files.
    * @param led
    *          boolean for edit dist.
    * @param ledmaxdist

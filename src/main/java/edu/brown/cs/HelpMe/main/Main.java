@@ -415,6 +415,8 @@ public class Main {
       String tutor = qm.value("userid");
       request = request.substring(1, request.length() - 1);
       tutor = tutor.substring(1, tutor.length() - 1);
+
+
       Boolean status = false;
       DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
       Date date = new Date();
@@ -429,8 +431,6 @@ public class Main {
         dbQuery.updateQuestionsAnswered(tutor);
 
         String tuteeId = dbQuery.getTuteeFromReqId(request);
-
-        tuteeId = tuteeId.substring(1, tuteeId.length() - 1);
         UserData tuteeUser = dbQuery.getUserDataFromId(tuteeId);
         UserData tutorUser = dbQuery.getUserDataFromId(tutor);
         String summary = dbQuery.getRequestSummary(request);

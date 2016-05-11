@@ -32,6 +32,8 @@ public class SuggestionGenerator {
 	 *
 	 * @param cp
 	 *            command parser with all suggestion specs.
+	 * @param td
+	 * database of tags
 	 * @throws FileNotFoundException
 	 *             if file does not exist.
 	 * @throws SQLException
