@@ -47,7 +47,7 @@ public class Chat {
 								.sendString(String.valueOf(new JSONObject()
 										.put("userMessage",
 												createHtmlMessageFromSender(
-														"", message))
+														sender, message))
 										.put("userlist",
 												userUsernameMap.values())));
 					} catch (Exception e) {
@@ -59,7 +59,7 @@ public class Chat {
 	// Builds a HTML element with a sender-name, a message, and a timestamp,
 	private static String createHtmlMessageFromSender(String sender,
 			String message) {
-		return article().withClass("user_" + sender).with(b(sender + ""),
+		return article().withClass("user_" + sender).with(b(sender + " says"),
 				p(message),
 				span().withClass("timestamp").withText(
 						new SimpleDateFormat("HH:mm:ss").format(new Date())))
