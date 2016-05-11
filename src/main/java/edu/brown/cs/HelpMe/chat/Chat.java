@@ -78,7 +78,7 @@ public class Chat {
 	 */
 	private static String createHtmlMessageFromSender(String sender,
 			String message) {
-		return article().withClass("user_" + sender).with(b(sender + ""),
+		return article().withClass("user_" + sender).with(b(sender + " says"),
 				p(message),
 				span().withClass("timestamp").withText(
 						new SimpleDateFormat("HH:mm:ss").format(new Date())))

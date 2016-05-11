@@ -333,9 +333,9 @@ public class TutorCompatibility {
 			Question q = dbQuery.makeQuestion(qID);
 			double currCompat = getOverallCompatibility(userID, qID);
 			unsortedCompats.put(q, currCompat);
-			System.out.println(q.getMessage());
-			System.out.println(currCompat);
-			System.out.println(q.getFrontEndTags());
+			// System.out.println(q.getMessage());
+			// System.out.println(currCompat);
+			// System.out.println(q.getFrontEndTags());
 			if (!q.getOwnerID().equals(userID) && q.getTutor().equals("")) {
 				questions.add(q);
 			}
